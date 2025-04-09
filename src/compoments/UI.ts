@@ -411,7 +411,6 @@ export class UI<T extends Types = Types.Any> {
     static custom<T extends Renderer>(
         renderer: T,
         properties?: Panel | Specials[T],
-        propertyBag?: PropertyBag,
         identifier?: StaticUIInterface
     ) {
         return new UI<Types.Custom>(<UIInterface>{
@@ -419,7 +418,6 @@ export class UI<T extends Types = Types.Any> {
             type: Types.Custom,
             properties: {
                 ...properties,
-                property_bag: propertyBag,
                 renderer,
             },
         });

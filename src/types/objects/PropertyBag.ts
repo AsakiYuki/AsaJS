@@ -10,10 +10,14 @@
  * };
  * ```
  */
+export interface BindingPropertyBag {
+    /**
+     * A dynamic property where the key is a string that starts with `#`, and the value can be any type.
+     * The key must follow the pattern `#<property_name>`.
+     */
+    [key: `#${string}`]: string | number | boolean;
+}
+
 export interface PropertyBag {
-	/**
-	 * A dynamic property where the key is a string that starts with `#`, and the value can be any type.
-	 * The key must follow the pattern `#<property_name>`.
-	 */
-	[key: `#${string}`]: any;
+    [key: string]: string | number | boolean;
 }

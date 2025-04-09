@@ -1,6 +1,6 @@
 import { Controls } from "../properties/Controls";
 import { Layouts } from "../properties/Layouts";
 import { Variables } from "../properties/Variables";
-import { PropertyBag } from "../PropertyBag";
+import { BindingPropertyBag } from "../PropertyBag";
 
-export interface Panel extends Variables, Controls, Layouts, PropertyBag {}
+export interface Panel extends Variables, Controls, Layouts, BindingPropertyBag {}
