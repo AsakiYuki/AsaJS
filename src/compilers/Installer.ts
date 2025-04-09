@@ -143,7 +143,9 @@ export class ResourcePacks {
                 this.gamePath = `${process.env.LOCALAPPDATA}/Packages/${data.installGame}/LocalState`;
             } else if (process.env.HOME) {
                 this.gamePath = `${process.env.HOME}/.local/share/mcpelauncher`;
-            } else { this.gamePath = ""; }
+            } else {
+                this.gamePath = "";
+            }
         }
 
         this.gameDataPath = `${this.gamePath}/games/com.mojang`;
@@ -193,7 +195,7 @@ export class ResourcePacks {
             pack_id: uuid,
             version,
         });
-        UIWriteJson(this.globalResoucePacksPath, globalResourcePacks, "utf-8");
+        fs.writeJsonSync(this.globalResoucePacksPath, globalResourcePacks, "utf-8");
     }
 
     /**
@@ -221,7 +223,7 @@ export class ResourcePacks {
                 break;
             }
         }
-        UIWriteJson(this.globalResoucePacksPath, globalResourcePacks);
+        fs.writeJsonSync(this.globalResoucePacksPath, globalResourcePacks);
     }
 
     /**

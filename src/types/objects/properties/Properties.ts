@@ -4,7 +4,7 @@ import { Collections } from "./Collections";
 import { Controls } from "./Controls";
 import { Dropdowns } from "./Dropdowns";
 import { Focus } from "./Focus";
-import { Girds } from "./Girds";
+import { Grids } from "./Grids";
 import { Inputs } from "./Inputs";
 import { Layouts } from "./Layouts";
 import { Renderers } from "./Renderers";
@@ -24,27 +24,27 @@ import { TTS } from "./TTS";
 import { Variables } from "./Variables";
 
 export interface Properties
-	extends Buttons,
-		CollectionIndexs,
-		Collections,
-		Controls,
-		Dropdowns,
-		Focus,
-		Girds,
-		Inputs,
-		Renderers,
-		Screens,
-		ScrollViews,
-		SelectionWheels,
-		SliderBoxs,
-		Sliders,
-		Sounds,
-		Special,
-		Sprites,
-		StackPanels,
-		TextEdits,
-		Texts,
-		Toggles,
-		Layouts,
-		TTS,
-		Variables {}
+    extends Buttons,
+        CollectionIndexs,
+        Collections,
+        Controls,
+        Dropdowns,
+        Focus,
+        Grids,
+        Inputs,
+        Renderers,
+        Screens,
+        ScrollViews,
+        SelectionWheels,
+        SliderBoxs,
+        Sliders,
+        Sounds,
+        Special,
+        Sprites,
+        StackPanels,
+        TextEdits,
+        Texts,
+        Toggles,
+        Layouts,
+        TTS,
+        Variables {}

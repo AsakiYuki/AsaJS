@@ -5,7 +5,7 @@ import { CollectionPanel } from "./CollectionPanel";
 import { Custom } from "./Custom";
 import { Dropdown } from "./Dropdown";
 import { EditBox } from "./EditBox";
-import { Gird } from "./Gird";
+import { Grid } from "./Grid";
 import { Image } from "./Image";
 import { InputPanel } from "./InputPanel";
 import { Label } from "./Label";
@@ -29,7 +29,7 @@ export type PropertiesType = {
     [Types.Custom]: Custom;
     [Types.Dropdown]: Dropdown;
     [Types.EditBox]: EditBox;
-    [Types.Grid]: Gird;
+    [Types.Grid]: Grid;
     [Types.Image]: Image;
     [Types.Label]: Label;
     [Types.Screen]: Screen;

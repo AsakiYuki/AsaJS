@@ -2,18 +2,14 @@ import { JsonBuilder } from "../compilers/generator/JsonBuilder";
 import { ChildElement } from "../types/compoments/ChildIdentifier";
 import { Identifier } from "../types/compoments/Identifier";
 import { UIChildNameCallback } from "../types/compoments/NameCallback";
-import {
-    ExtendInterface,
-    StaticUIInterface,
-    UIInterface,
-} from "../types/compoments/UIInterface";
+import { ExtendInterface, StaticUIInterface, UIInterface } from "../types/compoments/UIInterface";
 import { Renderer } from "../types/enums/Renderer";
 import { Types } from "../types/enums/Types";
 import { Button } from "../types/objects/elements/Button";
 import { CollectionPanel } from "../types/objects/elements/CollectionPanel";
 import { Dropdown } from "../types/objects/elements/Dropdown";
 import { EditBox } from "../types/objects/elements/EditBox";
-import { Gird as Grid } from "../types/objects/elements/Gird";
+import { Grid as Grid } from "../types/objects/elements/Grid";
 import { Image } from "../types/objects/elements/Image";
 import { InputPanel } from "../types/objects/elements/InputPanel";
 import { Label } from "../types/objects/elements/Label";
@@ -135,9 +131,7 @@ export class UI<T extends Types = Types.Any> {
             this.namespace = Random.getNamespace();
             this.extends = identifier.getPath();
         } else {
-            this.name =
-                (!config.compiler.UI.obfuscateName && identifier?.name) ||
-                Random.getName();
+            this.name = (!config.compiler.UI.obfuscateName && identifier?.name) || Random.getName();
             this.namespace =
                 (!config.compiler.UI.obfuscateName && identifier?.namespace) ||
                 Random.getNamespace();
@@ -149,15 +143,10 @@ export class UI<T extends Types = Types.Any> {
 
                 if (identifier.extends instanceof UI)
                     this.extends = `${identifier.extends.getPath()}`;
-                else if (typeof identifier.extends === "string")
-                    this.extends = identifier.extends;
-                else
-                    this.extends = `${identifier.extends.namespace}.${identifier.extends.name}`;
+                else if (typeof identifier.extends === "string") this.extends = identifier.extends;
+                else this.extends = `${identifier.extends.namespace}.${identifier.extends.name}`;
             } else {
-                if (
-                    config.compiler.UI.obfuscateType &&
-                    identifier.namespace !== "_type_c"
-                ) {
+                if (config.compiler.UI.obfuscateType && identifier.namespace !== "_type_c") {
                     const type = identifier?.type || Types.Panel;
                     this.extends = typeExtend[type] ||= new UI({
                         name: type,
@@ -167,8 +156,7 @@ export class UI<T extends Types = Types.Any> {
                 } else this.type = identifier?.type || Types.Panel;
             }
 
-            if (identifier?.properties)
-                this.setProperties(<any>identifier.properties);
+            if (identifier?.properties) this.setProperties(<any>identifier.properties);
         }
 
         JsonBuilder.registerElement(this.namespace, <any>this);
@@ -208,10 +196,7 @@ export class UI<T extends Types = Types.Any> {
      * @param identifier An optional identifier for the UI element.
      * @returns A new UI instance representing a CollectionPanel.
      */
-    static collectionPanel(
-        properties?: CollectionPanel,
-        identifier?: StaticUIInterface
-    ) {
+    static collectionPanel(properties?: CollectionPanel, identifier?: StaticUIInterface) {
         return new UI<Types.CollectionPanel>(<UIInterface>{
             ...identifier,
             type: Types.CollectionPanel,
@@ -379,10 +364,7 @@ export class UI<T extends Types = Types.Any> {
      * @param identifier An optional identifier for the UI element.
      * @returns A new UI instance representing a ScrollbarTrack.
      */
-    static scrollbarTrack(
-        properties?: ScrollbarTrack,
-        identifier?: StaticUIInterface
-    ) {
+    static scrollbarTrack(properties?: ScrollbarTrack, identifier?: StaticUIInterface) {
         return new UI<Types.ScrollbarTrack>(<UIInterface>{
             ...identifier,
             type: Types.ScrollbarTrack,
@@ -396,10 +378,7 @@ export class UI<T extends Types = Types.Any> {
      * @param identifier An optional identifier for the UI element.
      * @returns A new UI instance representing a ScrollbarBox.
      */
-    static scrollbarBox(
-        properties?: ScrollbarBox,
-        identifier?: StaticUIInterface
-    ) {
+    static scrollbarBox(properties?: ScrollbarBox, identifier?: StaticUIInterface) {
         return new UI<Types.ScrollbarBox>(<UIInterface>{
             ...identifier,
             type: Types.ScrollbarBox,
@@ -452,10 +431,7 @@ export class UI<T extends Types = Types.Any> {
      * @param properties Additional properties for the extended element.
      * @returns A new UI instance representing the extended element.
      */
-    static extend<
-        K extends Types = Types.Any,
-        T extends string | Identifier | UI = UI
-    >(
+    static extend<K extends Types = Types.Any, T extends string | Identifier | UI = UI>(
         extendElement?: T,
         properties?: PropertiesType[ExtractUIType<typeof extendElement, K>],
         identifier?: StaticUIInterface
@@ -479,11 +455,7 @@ export class UI<T extends Types = Types.Any> {
      * @param targetBindingName Optional target binding name to filter further.
      * @returns The target binding name or undefined if not found.
      */
-    searchBinding(
-        bindingName: Binding,
-        controlName?: string,
-        targetBindingName?: Binding
-    ) {
+    searchBinding(bindingName: Binding, controlName?: string, targetBindingName?: Binding) {
         for (let index = 0; index < (this.bindings?.length || 0); index++) {
             const binding = this.bindings?.[index];
             if (controlName) {
@@ -492,9 +464,7 @@ export class UI<T extends Types = Types.Any> {
                     binding.source_property_name === bindingName
                 ) {
                     if (targetBindingName) {
-                        if (
-                            binding.target_property_name === targetBindingName
-                        ) {
+                        if (binding.target_property_name === targetBindingName) {
                             return targetBindingName;
                         } else return undefined;
                     } else return binding.target_property_name;
@@ -502,9 +472,7 @@ export class UI<T extends Types = Types.Any> {
             } else {
                 if (binding?.source_property_name === bindingName) {
                     if (targetBindingName) {
-                        if (
-                            binding.target_property_name === targetBindingName
-                        ) {
+                        if (binding.target_property_name === targetBindingName) {
                             return targetBindingName;
                         } else return undefined;
                     } else return binding.target_property_name;
@@ -547,15 +515,9 @@ export class UI<T extends Types = Types.Any> {
         return name === this.name;
     }
 
-    addChild<
-        K extends Types = Types.Any,
-        T extends string | Identifier | UI = UI
-    >(
+    addChild<K extends Types = Types.Any, T extends string | Identifier | UI = UI>(
         element: T,
-        properties?:
-            | PropertiesType[ExtractUIType<typeof element, K>]
-            | null
-            | 0,
+        properties?: PropertiesType[ExtractUIType<typeof element, K>] | null | 0,
         name?: string | null | 0,
         callback?: UIChildNameCallback
     ) {
@@ -563,9 +525,7 @@ export class UI<T extends Types = Types.Any> {
         name ||= Random.getName();
 
         if (this.isDuplicate(name)) {
-            Log.warning(
-                `${CurrentLine()} child element should have a unique name!`
-            );
+            Log.warning(`${CurrentLine()} child element should have a unique name!`);
         }
 
         if (typeof element === "string") {
@@ -573,9 +533,7 @@ export class UI<T extends Types = Types.Any> {
         } else if (element instanceof UI) {
             {
                 if (element?.getPath() === this.getPath()) {
-                    Log.warning(
-                        `${CurrentLine()} child element should have a unique name!`
-                    );
+                    Log.warning(`${CurrentLine()} child element should have a unique name!`);
                 }
 
                 this.controls.push({
@@ -595,8 +553,7 @@ export class UI<T extends Types = Types.Any> {
      * @returns The updated UI instance.
      */
     addBindings(bindings: Array<BindingInterface> | BindingInterface) {
-        if (Array.isArray(bindings))
-            for (const binding of bindings) this.addBindings(binding);
+        if (Array.isArray(bindings)) for (const binding of bindings) this.addBindings(binding);
         else (this.bindings ||= []).push(ReadBinding(<any>bindings, <any>this));
         return this;
     }
@@ -627,13 +584,7 @@ export class UI<T extends Types = Types.Any> {
     getUI() {
         const code: any = ReadProperties(<any>(this.properties ?? {}));
 
-        for (const key of [
-            "type",
-            "controls",
-            "bindings",
-            "button_mappings",
-            "anims",
-        ])
+        for (const key of ["type", "controls", "bindings", "button_mappings", "anims"])
             if ((<any>this)[key]) code[key] = (<any>this)[key];
 
         if (this.variables)
@@ -700,7 +651,7 @@ export class UI<T extends Types = Types.Any> {
      * Adds mappings to UI element.
      */
     addMapping(mapping: Array<ButtonMapping> | ButtonMapping) {
-        if (Array.isArray(mapping)) mapping.forEach((v) => this.addMapping(v));
+        if (Array.isArray(mapping)) mapping.forEach(v => this.addMapping(v));
         else {
             mapping.mapping_type ||= MappingType.Global;
             (this.button_mappings ||= []).push(mapping);

@@ -1,6 +1,7 @@
 import { Animation } from "../../compoments/Animation";
 import { LocalizeText } from "../../compoments/LocalizeText";
 import { Properties } from "../../types/objects/properties/Properties";
+import { Log } from "../generator/Log";
 import { SoundHandler as Sounds } from "../generator/Sounds";
 import { ColorHandler } from "./Color";
 import { Obj } from "./Object";
@@ -118,23 +119,30 @@ export function ReadProperties(properties: Properties) {
     }
 
     Obj.forEach(properties, (key, value) => {
-        (<any>properties)[key] = ReadValue(value, type => {
-            if (type === "var") {
-                const isSpecialProperty = ["size", "min_size", "max_size"].includes(key);
+        if (key.startsWith("#")) {
+            if (["string", "number", "boolean"].includes(typeof value)) {
+                (<any>(properties.property_bag ||= {}))[key] = value;
+            } else Log.error(`Invalid value for property "${key}"`);
+            delete (<any>properties)[key];
+        } else {
+            (<any>properties)[key] = ReadValue(value, type => {
+                if (type === "var") {
+                    const isSpecialProperty = ["size", "min_size", "max_size"].includes(key);
 
-                const disableDefault = value[2];
-                const propertyName = disableDefault ? value[0] : `${value[0]}|default`;
+                    const disableDefault = value[2];
+                    const propertyName = disableDefault ? value[0] : `${value[0]}|default`;
 
-                if (isSpecialProperty) {
-                    if (Array.isArray(value[1])) properties[propertyName] = value[1];
-                    else properties[propertyName] = [value[1], value[1]];
-                } else {
-                    properties[propertyName] = ReadValue(value[1]);
+                    if (isSpecialProperty) {
+                        if (Array.isArray(value[1])) properties[propertyName] = value[1];
+                        else properties[propertyName] = [value[1], value[1]];
+                    } else {
+                        properties[propertyName] = ReadValue(value[1]);
+                    }
+
+                    return value[0];
                 }
-
-                return value[0];
-            }
-        });
+            });
+        }
     });
 
     if (properties.anchor) {
