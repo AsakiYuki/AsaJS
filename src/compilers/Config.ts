@@ -1,8 +1,8 @@
 import { UUID } from "crypto";
 import { Save } from "./generator/Save";
-import { Version, SemverString, installer } from "..";
 import { Obj } from "./reader/Object";
 import { firstRun } from "./generator/Template";
+import { SemverString, Version } from "../types/objects/Manifest";
 
 firstRun();
 

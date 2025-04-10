@@ -1,7 +1,7 @@
-import { AnimationKeyFrame } from "../../compoments/AnimationKeyFrame";
-import { Class } from "../../compoments/Class";
-import { Modify } from "../../compoments/Modify";
-import { UI } from "../../compoments/UI";
+import { AnimationKeyFrame } from "../../components/AnimationKeyFrame";
+import { Class } from "../../components/Class";
+import { Modify } from "../../components/Modify";
+import { UI } from "../../components/UI";
 import { Configs } from "../Config";
 import { CurrentLine } from "../reader/CurrentLine";
 import { Log } from "./Log";
@@ -67,10 +67,7 @@ export class JsonBuilder extends Class {
      * @returns {void}
      * @static
      */
-    static registerElement(
-        namespace: string,
-        element: UI | AnimationKeyFrame
-    ): void {
+    static registerElement(namespace: string, element: UI | AnimationKeyFrame): void {
         const extension = Configs.getConfig().compiler.fileExtension;
         const buildFile = (this.save.build[
             `${namespace}${extension === "" ? "" : `.${extension}`}`
@@ -110,11 +107,7 @@ export class JsonBuilder extends Class {
      * @returns {Modify} The modified element that has been registered.
      * @static
      */
-    static registerModify(
-        modifyFile: string,
-        modifyElement: string,
-        modify: Modify
-    ): Modify {
+    static registerModify(modifyFile: string, modifyElement: string, modify: Modify): Modify {
         const modifyFileSave = (this.save.modify[modifyFile] ??= {});
         return (modifyFileSave[modifyElement] = modify);
     }

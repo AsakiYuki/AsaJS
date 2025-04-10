@@ -1,7 +1,7 @@
 import fs, { writeJSON } from "fs-extra";
 import { parse } from "jsonc-parser";
-import { Class } from "../../compoments/Class";
-import { Random } from "../../compoments/Random";
+import { Class } from "../../components/Class";
+import { Random } from "../../components/Random";
 import { UIWriteJson } from "../PreCompile";
 
 interface SoundID {
@@ -23,8 +23,7 @@ export class SoundHandler extends Class {
         const soundIds = Object.keys(sounds);
 
         if (soundIds.length) {
-            if (!fs.existsSync(`${installPath}/sounds`))
-                fs.mkdirSync(`${installPath}/sounds`);
+            if (!fs.existsSync(`${installPath}/sounds`)) fs.mkdirSync(`${installPath}/sounds`);
 
             const soundDefinitions: any = {};
 
@@ -47,10 +46,7 @@ export class SoundHandler extends Class {
             let bak;
             if (fs.existsSync(`.bedrock/sounds/sound_definitions.json`)) {
                 bak = parse(
-                    fs.readFileSync(
-                        `.bedrock/sounds/sound_definitions.json`,
-                        "utf-8"
-                    )
+                    fs.readFileSync(`.bedrock/sounds/sound_definitions.json`, "utf-8")
                 ).sound_definitions;
             }
 

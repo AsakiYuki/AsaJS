@@ -1,5 +1,5 @@
-import { OverrideInterface } from "../../compoments/Modify";
-import { UI } from "../../compoments/UI";
+import { OverrideInterface } from "../../components/Modify";
+import { UI } from "../../components/UI";
 import { BindingName } from "../../types/enums/BindingName";
 import { BindingType } from "../../types/enums/BindingType";
 import { BindingInterface } from "../../types/objects/BindingInterface";
@@ -53,11 +53,10 @@ export function ReadBinding(
                         BindingCompiler.compile(srcBin[0], arg)
                     );
                 else if (/^\[.+\]$/.test(srcBin)) {
-                    bindingObject.source_property_name =
-                        BindingCompiler.compile(
-                            srcBin.slice(1, srcBin.length - 1),
-                            arg
-                        );
+                    bindingObject.source_property_name = BindingCompiler.compile(
+                        srcBin.slice(1, srcBin.length - 1),
+                        arg
+                    );
                 }
             }
 

@@ -1,6 +1,6 @@
-import { OverrideInterface } from "../compoments/Modify";
-import { Random } from "../compoments/Random";
-import { UI } from "../compoments/UI";
+import { OverrideInterface } from "../components/Modify";
+import { Random } from "../components/Random";
+import { UI } from "../components/UI";
 import { Binding } from "../types/values/Binding";
 import { funcObj } from "./BindingFunctions";
 import { Log } from "./generator/Log";

@@ -1,4 +1,4 @@
-import { StaticUIInterface } from "../types/compoments/UIInterface";
+import { StaticUIInterface } from "../types/components/UIInterface";
 import { Label } from "../types/objects/elements/Label";
 import { UI } from "./UI";
 

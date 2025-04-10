@@ -1,9 +1,12 @@
-import { Binding, CurrentLine, Log, ModificationBindingsInterface, UI } from "../";
-import { Class } from "../compoments/Class";
-import { Items } from "../compoments/ItemDatas";
-import { OverrideInterface } from "../compoments/Modify";
-import { Random } from "../compoments/Random";
+import { Class } from "../components/Class";
+import { Items } from "../components/ItemDatas";
+import { ModificationBindingsInterface, OverrideInterface } from "../components/Modify";
+import { Random } from "../components/Random";
+import { UI } from "../components/UI";
+import { Binding } from "../types/values/Binding";
 import { BindingCompiler, BindingFunctionObject } from "./BindingCompiler";
+import { Log } from "./generator/Log";
+import { CurrentLine } from "./reader/CurrentLine";
 
 export const funcObj: BindingFunctionObject = {
     sum: (arg, params) => {

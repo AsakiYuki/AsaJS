@@ -70,7 +70,7 @@ const compilerOptions: CompilerOptions = {
     declarationDir: "./dist/types/",
 };
 
-let program: ts.Program | null = null;
+let program: ts.Program | undefined;
 
 async function setupCompiler() {
     const configPath = ts.findConfigFile("../", ts.sys.fileExists, "tsconfig.json");
@@ -94,9 +94,8 @@ async function setupCompiler() {
 async function generateTypes() {
     const start = performance.now();
     console.log(`\x1b[34mGenerating declaration types...\x1b[0m`);
-    if (!program) {
-        program = await setupCompiler();
-    }
+
+    if (!program) program = await setupCompiler();
 
     const emitResult = program.emit();
 
@@ -119,7 +118,7 @@ async function generateTypes() {
 
 function run() {
     build();
-    if (buildTypes) generateTypes();
+    buildTypes && generateTypes();
 }
 
 run();

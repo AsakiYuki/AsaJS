@@ -1,6 +1,6 @@
 import fs from "fs-extra";
-import { Class } from "../../compoments/Class";
-import { localizeText } from "../../compoments/LocalizeText";
+import { Class } from "../../components/Class";
+import { localizeText } from "../../components/LocalizeText";
 
 export class LangBuilder extends Class {
     static build(buildPath: string) {

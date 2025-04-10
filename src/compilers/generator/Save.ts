@@ -1,6 +1,6 @@
 import fs from "fs-extra";
-import { Class } from "../../compoments/Class";
-import { Random } from "../../compoments/Random";
+import { Class } from "../../components/Class";
+import { Random } from "../../components/Random";
 import { UUID } from "../../types/objects/Manifest";
 type ReturnValue = () => any;
 
@@ -35,8 +35,7 @@ export class Save extends Class {
         write: Function = fs.writeFileSync,
         read: Function = fs.readFileSync
     ) {
-        if (!Save.isSaveCreated && !fs.pathExistsSync(".save"))
-            fs.mkdirSync(".save");
+        if (!Save.isSaveCreated && !fs.pathExistsSync(".save")) fs.mkdirSync(".save");
         Save.isSaveCreated = true;
         if (!fs.pathExistsSync(`.save/${path}`)) {
             const $ = data();
@@ -73,8 +72,7 @@ export class Save extends Class {
         write: Function = fs.writeFileSync,
         read: Function = fs.readFileSync
     ) {
-        if (!Save.isSaveCreated && !fs.pathExistsSync(".save"))
-            fs.mkdirSync(".save");
+        if (!Save.isSaveCreated && !fs.pathExistsSync(".save")) fs.mkdirSync(".save");
         const backup = read(`.save/${path}`, "utf-8");
         write(`.save/${path}`, data());
         return backup;

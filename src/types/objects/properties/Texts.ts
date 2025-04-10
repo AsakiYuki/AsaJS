@@ -1,4 +1,4 @@
-import { LocalizeText } from "../../../compoments/LocalizeText";
+import { LocalizeText } from "../../../components/LocalizeText";
 import { Anchor } from "../../enums/Anchor";
 import { FontSize } from "../../enums/FontSize";
 import { FontType } from "../../enums/FontType";

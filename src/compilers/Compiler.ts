@@ -9,7 +9,7 @@ import { FormatAudio } from "./reader/Audio";
 import { Logs } from "./generator/Log";
 import { Encoder } from "./Encoder";
 import { UIWriteJson } from "./PreCompile";
-import { localizeText } from "../compoments/LocalizeText";
+import { localizeText } from "../components/LocalizeText";
 import { LangBuilder } from "./generator/LangBuilder";
 
 // Retrieve the configuration settings

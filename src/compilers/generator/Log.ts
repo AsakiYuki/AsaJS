@@ -1,4 +1,4 @@
-import { Class } from "../../compoments/Class";
+import { Class } from "../../components/Class";
 
 export const Logs: Array<{ type: "warning" | "error"; message: string }> = [];
 

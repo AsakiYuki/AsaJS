@@ -5,7 +5,9 @@
         "moduleResolution": "NodeNext",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "strict": true
+        "strict": true,
+        "incremental": true,
+        "tsBuildInfoFile": ".tsbuildinfo"
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]

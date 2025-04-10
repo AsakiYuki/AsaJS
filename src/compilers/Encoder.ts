@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import { Class } from "../compoments/Class";
+import { Class } from "../components/Class";
 import { jsonFilePath, WritePreComment } from "./PreCompile";
 import { Obj } from "./reader/Object";
 

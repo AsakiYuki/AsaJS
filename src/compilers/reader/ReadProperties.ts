@@ -1,5 +1,5 @@
-import { Animation } from "../../compoments/Animation";
-import { LocalizeText } from "../../compoments/LocalizeText";
+import { Animation } from "../../components/Animation";
+import { LocalizeText } from "../../components/LocalizeText";
 import { Properties } from "../../types/objects/properties/Properties";
 import { Log } from "../generator/Log";
 import { SoundHandler as Sounds } from "../generator/Sounds";
