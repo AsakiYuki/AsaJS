@@ -18,6 +18,9 @@ export enum Types {
     Screen = "screen",
     Custom = "custom",
     SelectionWheel = "selection_wheel",
+    TooltipTrigger = "tooltip_trigger",
+
+    // Special
     Factory = "Any",
     LabelCycler = "Any",
     ImageCycler = "Any",

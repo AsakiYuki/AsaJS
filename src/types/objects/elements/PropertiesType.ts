@@ -19,8 +19,9 @@ import { Slider } from "./Slider";
 import { SliderBox } from "./SliderBox";
 import { StackPanel } from "./StackPanel";
 import { Toggle } from "./Toggle";
+import { TooltipTrigger } from "./TooltipTrigger";
 
-export type PropertiesType = {
+export interface PropertiesType {
     [Types.Panel]: Panel;
     [Types.StackPanel]: StackPanel;
     [Types.InputPanel]: InputPanel;
@@ -40,5 +41,6 @@ export type PropertiesType = {
     [Types.Slider]: Slider;
     [Types.SliderBox]: SliderBox;
     [Types.Toggle]: Toggle;
+    [Types.TooltipTrigger]: TooltipTrigger;
     [Types.Any]: Properties;
 };

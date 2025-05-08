@@ -32,6 +32,7 @@ import { Slider } from "../types/objects/elements/Slider";
 import { SliderBox } from "../types/objects/elements/SliderBox";
 import { StackPanel } from "../types/objects/elements/StackPanel";
 import { Toggle } from "../types/objects/elements/Toggle";
+import { TooltipTrigger } from "../types/objects/elements/TooltipTrigger";
 import { Properties } from "../types/objects/properties/Properties";
 import { Specials } from "../types/objects/properties/Specials";
 import { VariablesInterface } from "../types/objects/Variables";
@@ -419,6 +420,14 @@ export class UI<T extends Types = Types.Any> {
         });
     }
 
+    static tooltipTrigger(properties?: TooltipTrigger, identifier?: StaticUIInterface) {
+        return new UI<Types.TooltipTrigger>(<UIInterface>{
+            ...identifier,
+            type: Types.TooltipTrigger,
+            properties,
+        });
+    }
+
     /**
      * Extends an existing UI element with specified properties.
      * @param extendElement The UI element or identifier to extend.
@@ -654,12 +663,12 @@ export class UI<T extends Types = Types.Any> {
         return this;
     }
 
-    private static apply() {}
+    private static apply() { }
     private static arguments = "";
-    private static bind() {}
-    private static call() {}
+    private static bind() { }
+    private static call() { }
     private static caller = "";
     private static length = "";
     private static name = "";
-    private static toString() {}
+    private static toString() { }
 }

@@ -20,31 +20,33 @@ import { StackPanels } from "./StackPanels";
 import { TextEdits } from "./TextEdits";
 import { Texts } from "./Texts";
 import { Toggles } from "./Toggles";
+import { TooltipTriggers } from "./TooltipTriggers";
 import { TTS } from "./TTS";
 import { Variables } from "./Variables";
 
 export interface Properties
     extends Buttons,
-        CollectionIndexs,
-        Collections,
-        Controls,
-        Dropdowns,
-        Focus,
-        Grids,
-        Inputs,
-        Renderers,
-        Screens,
-        ScrollViews,
-        SelectionWheels,
-        SliderBoxs,
-        Sliders,
-        Sounds,
-        Special,
-        Sprites,
-        StackPanels,
-        TextEdits,
-        Texts,
-        Toggles,
-        Layouts,
-        TTS,
-        Variables {}
+    CollectionIndexs,
+    Collections,
+    Controls,
+    Dropdowns,
+    Focus,
+    Grids,
+    Inputs,
+    Renderers,
+    Screens,
+    ScrollViews,
+    SelectionWheels,
+    SliderBoxs,
+    Sliders,
+    Sounds,
+    Special,
+    Sprites,
+    StackPanels,
+    TextEdits,
+    Texts,
+    Toggles,
+    Layouts,
+    TooltipTriggers,
+    TTS,
+    Variables { }

@@ -2,7 +2,7 @@ import { JsonBuilder } from "../compilers/generator/JsonBuilder";
 import { Obj } from "../compilers/reader/Object";
 import { ReadBinding } from "../compilers/reader/ReadBinding";
 import { ReadProperties, ReadValue } from "../compilers/reader/ReadProperties";
-import { ChildIdentifier, ChildElement } from "../types/components/ChildIdentifier";
+import { ChildElement } from "../types/components/ChildIdentifier";
 import { UIChildNameCallback } from "../types/components/NameCallback";
 import { BindingName } from "../types/enums/BindingName";
 import { Types } from "../types/enums/Types";
@@ -18,7 +18,7 @@ import { UI } from "./UI";
 type ExtractUIType<T> = T extends UI<infer U> ? U : never;
 
 export interface OverrideInterface {
-    setProperties(properties: Properties): OverrideInterface;
+    setProperties(properties: PropertiesType[Types]): OverrideInterface;
     addChild<T extends UI<any>>(
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
@@ -476,12 +476,12 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         );
     }
 
-    private static apply() {}
+    private static apply() { }
     private static arguments = "";
-    private static bind() {}
-    private static call() {}
+    private static bind() { }
+    private static call() { }
     private static caller = "";
     private static length = "";
     private static name = "";
-    private static toString() {}
+    private static toString() { }
 }
