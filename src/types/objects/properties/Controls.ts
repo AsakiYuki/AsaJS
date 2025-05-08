@@ -110,7 +110,7 @@ export interface Controls {
     collection_index?: Int;
 
     /**
-     * JsonUI Scripting not supported yet!
+     * factory is not supported yet!
      */
-    factory: Factory;
+    factory?: Factory;
 }
