@@ -2,6 +2,7 @@ import { Bool } from "../../values/Bool";
 import { Int, RangeFloat } from "../../values/Number";
 import { Str } from "../../values/Str";
 import { Vector2 } from "../../values/Vector";
+import { Factory } from "../Factory";
 import { PropertyBag } from "../PropertyBag";
 
 /**
@@ -107,4 +108,9 @@ export interface Controls {
      * Defines the index of the control within a collection. This property is optional.
      */
     collection_index?: Int;
+
+    /**
+     * JsonUI Scripting not supported yet!
+     */
+    factory: Factory;
 }
