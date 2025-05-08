@@ -1,5 +1,4 @@
 import { Class } from "../components/Class";
-import { Items } from "../components/ItemDatas";
 import { ModificationBindingsInterface, OverrideInterface } from "../components/Modify";
 import { Random } from "../components/Random";
 import { UI } from "../components/UI";
@@ -175,29 +174,6 @@ export const funcObj: BindingFunctionObject = {
         return bindingName;
     },
 
-    array: (arg, params) => {
-        const bindingName: any = Random.bindingName(),
-            arrayBindingName: any = Random.bindingName();
-
-        const accessIndex = params[0];
-        const arrayItems = params.slice(1);
-
-        arg.addBindings([
-            ...arrayItems.map((v, i) => ({
-                source_property_name: BindingCompiler.checkAndBuild(v, arg),
-                target_property_name: <any>`${arrayBindingName}${i}`,
-            })),
-            {
-                source_property_name: [
-                    `'${arrayBindingName}{${BindingCompiler.checkAndBuild(accessIndex, arg)}}'`,
-                ],
-                target_property_name: bindingName,
-            },
-        ]);
-
-        return bindingName;
-    },
-
     slice: (arg, [str, start, end]) => {
         const bindingName: any = Random.bindingName();
         if (!(BindingCompiler.isString(str) || BindingCompiler.isHasBinding(str))) str = `'${str}'`;
@@ -210,8 +186,8 @@ export const funcObj: BindingFunctionObject = {
             arg.addBindings({
                 source_property_name: [
                     Number.isNaN(+start)
-                        ? ` 'prefix{ ${str} }' - 'prefix{ '%.{ ${start} }s' * ${str} }' `
-                        : ` 'prefix{ ${str} }' - 'prefix{ '%.${start}s' * ${str} }' `,
+                        ? ` '__START__{ ${str} }' - '__START__{ '%.{ ${start} }s' * ${str} }' `
+                        : ` '__START__{ ${str} }' - '__START__{ '%.${start}s' * ${str} }' `,
                 ],
                 target_property_name: bindingName,
             });
