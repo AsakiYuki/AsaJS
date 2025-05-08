@@ -118,30 +118,6 @@ export const funcObj: BindingFunctionObject = {
         return bindingName;
     },
 
-    getItemID: (arg, [identification]) => {
-        const bindingName: any = Random.bindingName();
-
-        arg.setProperties({
-            property_bag: {
-                [bindingName]: Items.getID(identification),
-            },
-        });
-
-        return bindingName;
-    },
-
-    getItemAuxID: (arg, [identification]) => {
-        const bindingName: any = Random.bindingName();
-
-        arg.setProperties({
-            property_bag: {
-                [bindingName]: Items.getAuxID(identification),
-            },
-        });
-
-        return bindingName;
-    },
-
     int: (arg, [float, intLength]) => {
         const sumBnd: Array<string> = [];
         const _intLength = Number.isNaN(+intLength) ? -1 : +intLength;
@@ -222,28 +198,9 @@ export const funcObj: BindingFunctionObject = {
         return bindingName;
     },
 
-    getPrefix: (arg, [str, strLength = 0]) => {
-        const bindingName: any = Random.bindingName();
-
-        if (!(BindingCompiler.isString(str) || BindingCompiler.isHasBinding(str))) str = `'${str}'`;
-
-        arg.addBindings({
-            source_property_name: [
-                Number.isNaN(+strLength)
-                    ? `'%.{ ${strLength} }s' * ${str}`
-                    : `'%.${strLength}s' * ${str}`,
-            ],
-            target_property_name: bindingName,
-        });
-
-        return bindingName;
-    },
-
     slice: (arg, [str, start, end]) => {
         const bindingName: any = Random.bindingName();
-
         if (!(BindingCompiler.isString(str) || BindingCompiler.isHasBinding(str))) str = `'${str}'`;
-
         if (end) {
             arg.addBindings({
                 source_property_name: [` '%.{${end} - ${start}}s' * slice(${str}, ${start}) `],
@@ -259,90 +216,28 @@ export const funcObj: BindingFunctionObject = {
                 target_property_name: bindingName,
             });
         }
-
         return bindingName;
     },
 
-    getAfterPrefix: (arg, [splitStr, afterStr, prefix]) => {
+    getAfterString: (arg, [str, afterStr]) => {
         const returnBinding = Random.bindingName();
-        const slpStr = Random.bindingName();
-        const isDeleteAble = Random.bindingName();
-        const count = Random.bindingName();
+        const startMark = "__START__";
 
-        const rndPrefix = `§${Random.getName()}`;
-
-        arg.addBindings([
-            {
-                source_property_name: `[ '${rndPrefix}:${rndPrefix}:{ ${splitStr} }' - ( '${rndPrefix}:{ slice(${splitStr}, 0, ${count} ) + ${afterStr} }' ) ]`,
-                target_property_name: slpStr,
-            },
-            {
-                source_property_name: `[ '${rndPrefix}:${rndPrefix}:{ ${splitStr} }' == ${slpStr} ]`,
-                target_property_name: isDeleteAble,
-            },
-            {
-                source_property_name: `(${count} + ${isDeleteAble})`,
-                target_property_name: count,
-            },
-            {
-                source_property_name: `(${prefix} + ${slpStr} - '${rndPrefix}:')`,
-                target_property_name: returnBinding,
-            },
-        ]);
+        arg.addBindings({
+            source_property_name: `[ '${startMark}{${str}}' - ('${startMark}{ '%.{ find(${str}, ${afterStr}) }s' * ${str} }' + ${afterStr}) ]`,
+            target_property_name: returnBinding,
+        });
 
         return returnBinding;
     },
 
-    getAfter: (arg, [splitStr, afterStr]) => {
-        const returnBinding = Random.bindingName();
-        const slpStr = Random.bindingName();
-        const isDeleteAble = Random.bindingName();
-        const count = Random.bindingName();
-
-        const rndPrefix = `§${Random.getName()}`;
-
-        arg.addBindings([
-            {
-                source_property_name: `[ '${rndPrefix}:${rndPrefix}:{ ${splitStr} }' - ( '${rndPrefix}:{ slice(${splitStr}, 0, ${count} ) + ${afterStr} }' ) ]`,
-                target_property_name: slpStr,
-            },
-            {
-                source_property_name: `[ '${rndPrefix}:${rndPrefix}:{ ${splitStr} }' == ${slpStr} ]`,
-                target_property_name: isDeleteAble,
-            },
-            {
-                source_property_name: `(${count} + ${isDeleteAble})`,
-                target_property_name: count,
-            },
-            {
-                source_property_name: `(${slpStr} - '${rndPrefix}:')`,
-                target_property_name: returnBinding,
-            },
-        ]);
-
-        return returnBinding;
-    },
-
-    getBefore: (arg, [str, str2, maxLength = 30]) => {
+    getBeforeString: (arg, [str, beforeStr]) => {
         const bindingName: any = Random.bindingName();
 
         arg.addBindings({
-            source_property_name: [
-                ` ${str} - '{${str2}}{getAfter(${str}, ${str2}, ${maxLength})}' `,
-            ],
+            source_property_name: `[ '%.{ find(${str}, ${beforeStr}) }s' * ${str} ]`,
             target_property_name: bindingName,
-        });
-
-        return bindingName;
-    },
-
-    exclude: (arg, [str, excStr]) => {
-        const bindingName: any = Random.bindingName();
-
-        arg.addBindings({
-            source_property_name: `((${str} - ${excStr}) = ${str})`,
-            target_property_name: bindingName,
-        });
+        })
 
         return bindingName;
     },
@@ -466,7 +361,7 @@ export const funcObj: BindingFunctionObject = {
                 target_property_name: isNotIncludes
             },
             {
-                source_property_name: [` '${startMark}{ '%.{ 0 + ${cutToIndex} }s' * ${str} }{ ${findStr} }' `],
+                source_property_name: [` '${startMark}{ '%.{ 0 + ${cutToIndex} }s' * ${str} }' + ${findStr} `],
                 target_property_name: cutString
             },
             {

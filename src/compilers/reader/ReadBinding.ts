@@ -52,7 +52,7 @@ export function ReadBinding(
                     bindingObject.source_property_name = <any>(
                         BindingCompiler.compile(srcBin[0], arg)
                     );
-                else if (/^\[.+\]$/.test(srcBin)) {
+                else if (srcBin.startsWith("[") && srcBin.endsWith("]")) {
                     bindingObject.source_property_name = BindingCompiler.compile(
                         srcBin.slice(1, srcBin.length - 1),
                         arg
