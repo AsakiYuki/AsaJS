@@ -416,82 +416,71 @@ export const funcObj: BindingFunctionObject = {
         return bindingName;
     },
 
-    // sin: (arg, [deg]) => {
-    //     const bindingName: any = Random.bindingName();
+    length: (arg, [str]) => {
+        // Binding name
+        const cutToIndex = Random.bindingName();
+        const fixString = Random.bindingName();
+        const cutString = Random.bindingName();
 
-    //     if (BindingCompiler.isNumber(deg))
-    //         return `${(Math.sin((Math.PI * +deg) / 180) * 1000).toFixed(0)}`;
-    //     else {
-    //         API.sinTable.create(arg);
+        // Special value
+        const startMark = "__START__";
+        const endMark = "__END__";
 
-    //         const bn: any = Random.bindingName();
+        arg.addBindings([
+            {
+                source_property_name: [` '${startMark}{ ${str} }${endMark}' `],
+                target_property_name: fixString
+            },
+            {
+                source_property_name: [` '${startMark}{  '%.{ 0 + ${cutToIndex} }s' * ${str}  }${endMark}' `],
+                target_property_name: cutString
+            },
+            {
+                source_property_name: `(${cutToIndex} + (not (${fixString} = ${cutString})))`,
+                target_property_name: cutToIndex
+            }
+        ]);
 
-    //         arg.addBindings([
-    //             {
-    //                 source_property_name: `[ ${deg} % 360 ]`,
-    //                 target_property_name: bn,
-    //             },
-    //             {
-    //                 source_property_name: `[ '#deg_base:{ (${bn} < 0) * (${bn} + 360) + (${bn} > -1) * ${bn} }' ]`,
-    //                 target_property_name: bindingName,
-    //             },
-    //         ]);
-    //     }
+        return cutToIndex;
+    },
 
-    //     return bindingName;
-    // },
+    find: (arg, [str, findStr]) => {
+        // Binding name
+        const markString = Random.bindingName();
+        const cutToIndex = Random.bindingName();
+        const cutString = Random.bindingName();
+        const isNotIncludes = Random.bindingName();
+        const returnBinding = Random.bindingName();
 
-    // cos: (arg, [deg]) => {
-    //     if (BindingCompiler.isNumber(deg))
-    //         return `${(Math.cos((Math.PI * +deg) / 180) * 1000).toFixed(0)}`;
-    //     else return BindingCompiler.checkAndBuild(`sin(90 - ${deg})`, arg);
-    // },
+        // Special value
+        const startMark = "__START__";
+        const endMark = "__END__";
 
-    // tan: (arg, [deg]) => {
-    //     if (BindingCompiler.isNumber(deg))
-    //         return `${(Math.tan((Math.PI * +deg) / 180) * 1000).toFixed(0)}`;
-    //     else {
-    //         const bindingName: any = Random.bindingName();
-    //         const cos: any = Random.bindingName();
+        arg.addBindings([
+            {
+                source_property_name: [` '${startMark}{${str}}${endMark}' `],
+                target_property_name: markString
+            },
+            {
+                source_property_name: `((${str} - ${findStr}) = ${str})`,
+                target_property_name: isNotIncludes
+            },
+            {
+                source_property_name: [` '${startMark}{ '%.{ 0 + ${cutToIndex} }s' * ${str} }{ ${findStr} }' `],
+                target_property_name: cutString
+            },
+            {
+                source_property_name: `(${cutToIndex} + (${markString} = (${markString} - ${cutString})))`,
+                target_property_name: cutToIndex
+            },
+            {
+                source_property_name: `((not ${isNotIncludes}) * ${cutToIndex} + (${isNotIncludes} * -1))`,
+                target_property_name: returnBinding
+            }
+        ]);
 
-    //         arg.addBindings([
-    //             {
-    //                 source_property_name: `[ cos(${deg}) ]`,
-    //                 target_property_name: cos,
-    //             },
-    //             {
-    //                 source_property_name: `[ (${cos} == 0) * -1 + (${cos} != 0) * (sin(${deg}) * 1000 / ${cos}) ]`,
-    //                 target_property_name: bindingName,
-    //             },
-    //         ]);
-
-    //         return bindingName;
-    //     }
-    // },
-
-    // cot: (arg, [deg]) => {
-    //     if (BindingCompiler.isNumber(deg))
-    //         return `${((1 / Math.tan((Math.PI * +deg) / 180)) * 1000).toFixed(
-    //             0
-    //         )}`;
-    //     else {
-    //         const bindingName: any = Random.bindingName();
-    //         const sin: any = Random.bindingName();
-
-    //         arg.addBindings([
-    //             {
-    //                 source_property_name: `[ sin(${deg}) ]`,
-    //                 target_property_name: sin,
-    //             },
-    //             {
-    //                 source_property_name: `[ (${sin} == 0) * -1 + (${sin} != 0) * (cos(${deg}) * 1000 / ${sin}) ]`,
-    //                 target_property_name: bindingName,
-    //             },
-    //         ]);
-
-    //         return bindingName;
-    //     }
-    // },
+        return returnBinding;
+    },
 };
 
 export type BindingFunctionsCallback<T = UI | OverrideInterface | ModificationBindingsInterface> = (
