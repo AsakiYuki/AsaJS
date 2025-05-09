@@ -23,7 +23,7 @@ export class BindingCompiler {
      * @returns The compiled binding as a string.
      */
     static compile(propetyName: string, arg: UI | OverrideInterface) {
-        return this.build(propetyName, arg).replaceAll("\\n", "\n");
+        return this.build(propetyName, arg).replace(/__BREAK_LINE__/g, "\n");
     }
 
     /**
@@ -325,7 +325,7 @@ export class BindingCompiler {
 
                 token = "";
             } else if (char === "\n" && isString) {
-                token += "\\n";
+                token += "__BREAK_LINE__";
             } else if (char === "{" && isString) {
                 openFormatCount++;
                 token += "{";
@@ -338,7 +338,6 @@ export class BindingCompiler {
         }
 
         if (token !== "") tokens.push(token);
-
         return tokens;
     }
 
@@ -405,9 +404,10 @@ export class BindingCompiler {
         if (funcObj[func.name]) {
             str = <string>funcObj[func.name](
                 arg,
-                func.params.map(token =>
-                    this.isStringPattern(token) ? this.build(`(${token})`, arg) : token
-                )
+                func.params.map(token => {
+                    token = token.replace(/__BREAK_LINE__/g, "\n");
+                    return this.isStringPattern(token) ? this.build(`(${token})`, arg) : token
+                })
             );
         } else {
             Log.error(`${CurrentLine()} binding function '${func.name}' does not exist!`);

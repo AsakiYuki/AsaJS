@@ -293,17 +293,13 @@ export const funcObj: BindingFunctionObject = {
         const fixString = Random.bindingName();
         const cutString = Random.bindingName();
 
-        // Special value
-        const startMark = "__START__";
-        const endMark = "__END__";
-
         arg.addBindings([
             {
-                source_property_name: [` '${startMark}{ ${str} }${endMark}' `],
+                source_property_name: `['__START__{ ${str} }__END__']`,
                 target_property_name: fixString
             },
             {
-                source_property_name: [` '${startMark}{  '%.{ 0 + ${cutToIndex} }s' * ${str}  }${endMark}' `],
+                source_property_name: `['__START__{  '%.{ 0 + ${cutToIndex} }s' * ${str}  }__END__']`,
                 target_property_name: cutString
             },
             {
@@ -323,13 +319,9 @@ export const funcObj: BindingFunctionObject = {
         const isNotIncludes = Random.bindingName();
         const returnBinding = Random.bindingName();
 
-        // Special value
-        const startMark = "__START__";
-        const endMark = "__END__";
-
         arg.addBindings([
             {
-                source_property_name: [` '${startMark}{${str}}${endMark}' `],
+                source_property_name: `['__START__{${str}}']`,
                 target_property_name: markString
             },
             {
@@ -337,7 +329,7 @@ export const funcObj: BindingFunctionObject = {
                 target_property_name: isNotIncludes
             },
             {
-                source_property_name: [` '${startMark}{ '%.{ 0 + ${cutToIndex} }s' * ${str} }' + ${findStr} `],
+                source_property_name: `['__START__{ '%.{ 0 + ${cutToIndex} }s' * ${str} }' + ${findStr}]`,
                 target_property_name: cutString
             },
             {
