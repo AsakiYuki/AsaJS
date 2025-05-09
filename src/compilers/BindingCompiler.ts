@@ -353,7 +353,10 @@ export class BindingCompiler {
             if (this.isStringCode(token))
                 return BindingCompiler.build(token.slice(1, token.length - 1), arg);
             else return `'${token}'`;
-        });
+        }).filter(token => !["'{}'", ')'].includes(token));
+
+        console.log(tokens);
+
         return tokens.length > 1 ? `(${tokens.join(" + ")})` : tokens[0] || "''";
     }
 
