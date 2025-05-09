@@ -39,7 +39,12 @@ export class BindingCompiler {
         let build = "(";
 
         for (let index = 0; index < tokens.length; index++) {
-            const token = tokens[index];
+            let token = tokens[index];
+
+            if (this.isScientificNotation(token)) {
+                const [left, right] = token.split("e");
+                token = "" + (+left * Math.pow(10, +right));
+            }
 
             if (token === "!") build += "not ";
             else {
@@ -511,7 +516,7 @@ export class BindingCompiler {
             else
                 tokens.push(
                     ...(token.match(
-                        /-?\d+\.\d+|-\d+|\d+|[#$]?\w+|[><=!]?=|(&&|\|\|)|[\[\]()+\-*\/=><!,&%|?:]/gm
+                        /-?(\d+(\.|e)\d+|\d+)|[#$]?\w+|[><=!]?=|(&&|\|\|)|[\[\]()+\-*\/=><!,&%|?:]/gm
                     ) ?? [])
                 );
         }
@@ -583,7 +588,16 @@ export class BindingCompiler {
      * @returns True if the token represents a negative number, otherwise false.
      */
     static isNegativeNumber(token: string) {
-        return /^-\d+\.\d+$|^-\d+$/.test(token);
+        return /^-(\d+\.\d+|\d+)$/.test(token);
+    }
+
+    /**
+     * Checks if the token is a scientific notation number.
+     * @param token - The token to check.
+     * @returns - True if the token represents a scientific notation number, otherwise false.
+     */
+    static isScientificNotation(token: string) {
+        return /^-?(\d+(\.|e)\d+)$/.test(token);
     }
 
     /**
@@ -663,6 +677,6 @@ export class BindingCompiler {
      * @returns True if the value is a number, otherwise false.
      */
     static isNumber(value: string) {
-        return !Number.isNaN(+value);
+        return /^(\d+|\d+\.\d+|-\d+|-\d+\.\d+)$/.test(value);
     }
 }
