@@ -37,12 +37,12 @@ export class Animation {
 
         if (!(identifier && !config.compiler.UI.obfuscateName))
             identifier = {
-                name: Random.getName(),
+                name: Random.getAnimationName(),
                 namespace: Random.getNamespace(),
             };
         else {
-            if (!identifier.name) identifier.name = Random.getName();
-            if (!identifier.namespace) identifier.namespace = Random.getName();
+            if (!identifier.name) identifier.name = Random.getAnimationName();
+            if (!identifier.namespace) identifier.namespace = Random.getAnimationName();
         }
 
         this.buildAnimation(animation, identifier);
@@ -119,7 +119,7 @@ export class Animation {
      */
     private generateIdentifier() {
         return {
-            name: Random.getName(),
+            name: Random.getAnimationName(),
             namespace: Random.getNamespace(),
         };
     }
@@ -141,7 +141,7 @@ export class Animation {
      * @private
      * @static
      */
-    private static apply() {}
+    private static apply() { }
 
     /**
      * A static property initialized to an empty string, likely intended to hold arguments or be overridden in the future.
@@ -158,7 +158,7 @@ export class Animation {
      * @private
      * @static
      */
-    private static bind() {}
+    private static bind() { }
 
     /**
      * A static method that seems to serve as a placeholder, but has no functionality as of now.
@@ -166,7 +166,7 @@ export class Animation {
      * @private
      * @static
      */
-    private static call() {}
+    private static call() { }
 
     /**
      * A static property initialized to an empty string, likely intended to hold caller information or be overridden in the future.
@@ -201,5 +201,5 @@ export class Animation {
      * @private
      * @static
      */
-    private static toString() {}
+    private static toString() { }
 }

@@ -3,57 +3,40 @@ import { Class } from "./Class";
 import { Configs } from "../compilers/Config";
 import { Binding } from "../types/values/Binding";
 
-/**
- * A utility class that provides random string and UUID generation functions.
- * This class includes methods for generating names, namespaces, and UUIDs for use in various applications.
- */
 export class Random extends Class {
-    /**
-     * A cached array of namespaces that can be used in random generation.
-     * @private
-     */
     private static namespaces?: Array<string>;
 
-    /**
-     * Generates a random string of a specified length using base-32 characters.
-     * The string is composed of random numbers from 0 to 31, which are then converted to base-32 representation.
-     *
-     * @param length The length of the random string to generate. Default is defined in the configuration.
-     * @returns A random string of the specified length.
-     */
-    static getName(length: number = Configs.getConfig().compiler.UI.namespaceLength) {
-        const randomStringArray: Array<string> = Array.from({ length }, v =>
-            Math.floor(Math.random() * 32).toString(32)
-        );
-        return randomStringArray.join("");
+    private static isObfuscate?: boolean;
+    private static uniqueKey = Random.genString(5, 16).toUpperCase();
+    private static counter = { element: 0, animation: 0, binding: 0 };
+
+    private static genString(length: number, base: number = 32) {
+        return Array.from({ length }, v => Math.floor(Math.random() * base).toString(base)).join("");
     }
 
-    /**
-     * Generates a random namespace string by picking a random namespace from the cached list.
-     * If the namespace list has not been generated, it is populated with random strings first.
-     *
-     * @param length The length of the random namespace to generate. Default is defined in the configuration.
-     * @returns A random namespace string.
-     */
-    static getNamespace(length: number = Configs.getConfig().compiler.UI.namespaceLength) {
-        if (Random.namespaces === undefined)
-            Random.namespaces = Array.from(
-                { length: Configs.getConfig().compiler.UI.namespaceAmount },
-                () => Random.getName(length)
-            );
-        const randomIndex = Math.floor(
-            Math.random() * Configs.getConfig().compiler.UI.namespaceAmount
-        );
+    static getName(length: number = Configs.getConfig().compiler.UI.nameLength) {
+        if (Random.isObfuscate ?? Configs.getConfig().compiler.UI.obfuscateName) return Random.genString(length);
+        const counter = ++Random.counter.element;
+        return `${Random.uniqueKey}_ELEMENT_${counter.toString(16).toUpperCase()}`;
+    }
+
+    static getAnimationName(length: number = Configs.getConfig().compiler.UI.nameLength) {
+        if (Random.isObfuscate ?? Configs.getConfig().compiler.UI.obfuscateName) return Random.genString(length);
+        const counter = ++Random.counter.animation;
+        return `${Random.uniqueKey}_ANIMATION_${counter.toString(16).toUpperCase()}`;
+    }
+
+    static getNamespace() {
+        if (!Random.namespaces) {
+            Random.namespaces = Random.isObfuscate ?
+                Array.from({ length: Configs.getConfig().compiler.UI.namespaceAmount }, () => Random.genString(Configs.getConfig().compiler.UI.namespaceLength)) :
+                Array.from({ length: Configs.getConfig().compiler.UI.namespaceAmount }, ($, index) => `${Random.uniqueKey}_NAMESPACE_${(index + 1).toString(16).toUpperCase()}`);
+        }
+
+        const randomIndex = Math.floor(Math.random() * Random.namespaces.length);
         return Random.namespaces[randomIndex];
     }
 
-    /**
-     * Generates a random UUID (Universally Unique Identifier).
-     * The UUID is a standard 128-bit identifier represented as a string in the format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`,
-     * where each `x` is a random hexadecimal digit.
-     *
-     * @returns A randomly generated UUID string.
-     */
     static getUUID(): UUID {
         return <UUID>(
             "$$$$$$$$-$$$$-$$$$-$$$$-$$$$$$$$$$$$".replaceAll(/\$/g, () =>
@@ -63,6 +46,8 @@ export class Random extends Class {
     }
 
     static bindingName(): Binding {
-        return `#${Random.getName()}`;
+        if (Random.isObfuscate ?? Configs.getConfig().compiler.UI.obfuscateName) return `#${Random.getName()}`;
+        const counter = ++Random.counter.binding;
+        return `#${Random.uniqueKey}_BINDING_${counter.toString(16).toUpperCase()}`;
     }
 }
