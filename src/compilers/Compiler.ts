@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { Manifest } from "./generator/Manifest";
 import { UIBuilder } from "./generator/UIBuilder";
 import { ResourcePacks, Minecraft, ResourcePack } from "./Installer";
@@ -50,19 +50,19 @@ process.on("beforeExit", () => {
     const installPath = installer.getInstallPath();
 
     config.installer.autoInstall =
-        config.installer.autoInstall && fs.pathExistsSync(installer.installPath);
+        config.installer.autoInstall && fs.existsSync(installer.installPath);
 
     const buildPath = config.installer.autoInstall ? installPath : ".build";
 
     // Clean up temporary build directories
     UIBuilder.delete(buildPath);
-    if (fs.pathExistsSync(".build")) fs.removeSync(".build");
-    if (fs.pathExistsSync(".minecraft")) fs.unlinkSync(".minecraft");
+    if (fs.existsSync(".build")) fs.rmSync(".build", { recursive: true });
+    if (fs.existsSync(".minecraft")) fs.unlinkSync(".minecraft");
 
     // Create necessary directories if they do not exist
-    if (!fs.pathExistsSync(`.bedrock`)) fs.mkdirpSync(".bedrock");
-    if (!fs.pathExistsSync(`${buildPath}`)) fs.mkdirSync(`${buildPath}`);
-    if (!fs.pathExistsSync(`${buildPath}/@`)) fs.mkdirSync(`${buildPath}/@`);
+    if (!fs.existsSync(`.bedrock`)) fs.mkdirSync(".bedrock");
+    if (!fs.existsSync(`${buildPath}`)) fs.mkdirSync(`${buildPath}`);
+    if (!fs.existsSync(`${buildPath}/@`)) fs.mkdirSync(`${buildPath}/@`);
 
     try {
         console.log("---------- COMPILING ----------");
@@ -77,7 +77,7 @@ process.on("beforeExit", () => {
         }
 
         // Copy bedrock resources to build path
-        fs.copySync(".bedrock", buildPath);
+        fs.cpSync(".bedrock", buildPath, { recursive: true });
         console.timeLog("COMPILER", "Copy bedrock resources completed!");
         console.log();
 
@@ -177,4 +177,4 @@ process.on("beforeExit", () => {
     }
 });
 
-export {};
+export { };
