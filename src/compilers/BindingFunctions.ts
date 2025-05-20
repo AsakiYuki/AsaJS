@@ -287,63 +287,89 @@ export const funcObj: BindingFunctionObject = {
         return bindingName;
     },
 
-    length: (arg, [str]) => {
-        // Binding name
-        const cutToIndex = Random.bindingName();
-        const fixString = Random.bindingName();
-        const cutString = Random.bindingName();
+    // length: (arg, [str]) => {
+    //     // Binding name
+    //     const cutToIndex = Random.bindingName();
 
-        arg.addBindings([
-            {
-                source_property_name: `['__START__{ ${str} }__END__']`,
-                target_property_name: fixString
-            },
-            {
-                source_property_name: `['__START__{  '%.{ 0 + ${cutToIndex} }s' * ${str}  }__END__']`,
-                target_property_name: cutString
-            },
-            {
-                source_property_name: `(${cutToIndex} + (not (${fixString} = ${cutString})))`,
-                target_property_name: cutToIndex
-            }
-        ]);
+    //     const fixString = Random.bindingName();
+    //     const fixString2 = Random.bindingName();
 
-        return cutToIndex;
-    },
+    //     const cutString = Random.bindingName();
+    //     const cutString2 = Random.bindingName();
 
-    find: (arg, [str, findStr]) => {
-        // Binding name
-        const markString = Random.bindingName();
-        const cutToIndex = Random.bindingName();
-        const cutString = Random.bindingName();
-        const isNotIncludes = Random.bindingName();
-        const returnBinding = Random.bindingName();
+    //     const $1 = Random.bindingName();
+    //     const $2 = Random.bindingName();
 
-        arg.addBindings([
-            {
-                source_property_name: `['__START__{${str}}']`,
-                target_property_name: markString
-            },
-            {
-                source_property_name: `((${str} - ${findStr}) = ${str})`,
-                target_property_name: isNotIncludes
-            },
-            {
-                source_property_name: `['__START__{ '%.{ 0 + ${cutToIndex} }s' * ${str} }' + ${findStr}]`,
-                target_property_name: cutString
-            },
-            {
-                source_property_name: `(${cutToIndex} + (${markString} = (${markString} - ${cutString})))`,
-                target_property_name: cutToIndex
-            },
-            {
-                source_property_name: `((not ${isNotIncludes}) * ${cutToIndex} + (${isNotIncludes} * -1))`,
-                target_property_name: returnBinding
-            }
-        ]);
+    //     arg.addBindings([
+    //         {
+    //             source_property_name: `['\u200b{ ${str} }']`,
+    //             target_property_name: fixString
+    //         },
+    //         {
+    //             source_property_name: `['\u200b{ ${str} }\u200b']`,
+    //             target_property_name: fixString2
+    //         },
 
-        return returnBinding;
-    },
+    //         {
+    //             source_property_name: `['\u200b{  '%.{ 0 + ${cutToIndex} }s' * ${str} }']`,
+    //             target_property_name: cutString
+    //         },
+    //         {
+    //             source_property_name: `['\u200b{  '%.{ 2 + ${cutToIndex} }s' * ('{ ${str} }\u200b') }']`,
+    //             target_property_name: cutString2
+    //         },
+
+    //         {
+    //             source_property_name: `(not (${fixString} = ${cutString}))`,
+    //             target_property_name: $1
+    //         },
+    //         {
+    //             source_property_name: `(${fixString2} = ${cutString2})`,
+    //             target_property_name: $2
+    //         },
+
+    //         {
+    //             source_property_name: `(${cutToIndex} + ${$1} - ${$2})`,
+    //             target_property_name: cutToIndex
+    //         }
+    //     ]);
+
+    //     return <any>`('Debugger: ' + ${cutToIndex}) + ' ' + ${cutString} + ' ' +${cutString2}`;
+    // },
+
+    // find: (arg, [str, findStr]) => {
+    //     // Binding name
+    //     const markString = Random.bindingName();
+    //     const cutToIndex = Random.bindingName();
+    //     const cutString = Random.bindingName();
+    //     const isNotIncludes = Random.bindingName();
+    //     const returnBinding = Random.bindingName();
+
+    //     arg.addBindings([
+    //         {
+    //             source_property_name: `['__START__{${str}}']`,
+    //             target_property_name: markString
+    //         },
+    //         {
+    //             source_property_name: `((${str} - ${findStr}) = ${str})`,
+    //             target_property_name: isNotIncludes
+    //         },
+    //         {
+    //             source_property_name: `['__START__{ '%.{ 0 + ${cutToIndex} }s' * ${str} }' + ${findStr}]`,
+    //             target_property_name: cutString
+    //         },
+    //         {
+    //             source_property_name: `(${cutToIndex} + (${markString} = (${markString} - ${cutString})))`,
+    //             target_property_name: cutToIndex
+    //         },
+    //         {
+    //             source_property_name: `((not ${isNotIncludes}) * ${cutToIndex} + (${isNotIncludes} * -1))`,
+    //             target_property_name: returnBinding
+    //         }
+    //     ]);
+
+    //     return returnBinding;
+    // },
 };
 
 export type BindingFunctionsCallback<T = UI | OverrideInterface | ModificationBindingsInterface> = (
