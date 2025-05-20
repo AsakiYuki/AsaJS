@@ -15,7 +15,7 @@
         "jsonc-parser": "^3.3.1"
     },
     "name": "jsonui-scripting",
-    "version": "2.2.14",
+    "version": "2.2.15",
     "description": "Make your Minecraft JsonUI with ScriptingAPI",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
