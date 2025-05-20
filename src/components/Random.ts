@@ -10,7 +10,7 @@ export class Random extends Class {
     private static uniqueKey = Random.genString(5, 16).toUpperCase();
     private static counter = { element: 0, animation: 0, binding: 0 };
 
-    private static genString(length: number, base: number = 32) {
+    static genString(length: number, base: number = 32) {
         return Array.from({ length }, v => Math.floor(Math.random() * base).toString(base)).join("");
     }
 

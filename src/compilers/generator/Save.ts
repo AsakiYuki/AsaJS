@@ -123,6 +123,6 @@ export class Save extends Class {
      * @static
      */
     static getBuildID() {
-        return Save.createJson("buildID", () => [Random.getName()])[0];
+        return Save.createJson("buildID", () => [Random.genString(16)])[0];
     }
 }
