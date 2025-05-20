@@ -191,11 +191,11 @@ export class ResourcePacks {
         )
             ? fs.readJsonSync(this.globalResoucePacksPath, "utf-8")
             : [];
-        globalResourcePacks.push({
+
+        fs.writeJsonSync(this.globalResoucePacksPath, [{
             pack_id: uuid,
             version,
-        });
-        fs.writeJsonSync(this.globalResoucePacksPath, globalResourcePacks, "utf-8");
+        }, ...globalResourcePacks], "utf-8");
     }
 
     /**
