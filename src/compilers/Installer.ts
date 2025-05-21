@@ -143,7 +143,7 @@ export class ResourcePacks {
             } else if (process.env.HOME) {
                 this.gamePath = `${process.env.HOME}/.local/share/mcpelauncher`;
                 if (!fs.existsSync(this.gamePath))
-                    this.gamePath = `${process.env.HOME}/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher/`
+                    this.gamePath = `${process.env.HOME}/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher`
             } else {
                 this.gamePath = "";
             }
