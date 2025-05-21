@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { Class } from "../components/Class";
 import { jsonFilePath, WritePreComment } from "./PreCompile";
 import { Obj } from "./reader/Object";
@@ -57,6 +57,6 @@ export class Encoder extends Class {
     }
 
     static readCode(path: string) {
-        return fs.readJsonSync(path, "utf-8");
+        return JSON.parse(fs.readFileSync(path, "utf-8"));
     }
 }

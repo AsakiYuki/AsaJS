@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import AdmZip from "adm-zip";
 import { SearchFiles } from "./generator/SearchFiles";
 

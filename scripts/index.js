@@ -1,4 +1,4 @@
-const fs = require("fs-extra");
+const fs = require("fs");
 function searchFilePaths(path = "", isStart = true) {
     const importArr = [];
     for (const folder of fs.readdirSync(`./src/${path}`)) {

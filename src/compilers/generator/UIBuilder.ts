@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { parse } from "jsonc-parser";
 import { JsonBuilder } from "./JsonBuilder";
 import { SearchFiles } from "./SearchFiles";
@@ -24,7 +24,7 @@ export class UIBuilder {
         try {
             fs.unlinkSync(installPath);
         } catch (error) {
-            if (fs.pathExistsSync(installPath)) fs.removeSync(installPath);
+            if (fs.existsSync(installPath)) fs.rmSync(installPath, { recursive: true });
         }
     }
 

@@ -1,4 +1,4 @@
-import fs, { writeJSON } from "fs-extra";
+import fs from "fs";
 import { parse } from "jsonc-parser";
 import { Class } from "../../components/Class";
 import { Random } from "../../components/Random";

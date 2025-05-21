@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { SearchFiles } from "../generator/SearchFiles";
 import { spawnSync, execSync } from "child_process";
 import { Log } from "../generator/Log";

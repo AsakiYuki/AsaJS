@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { Class } from "../../components/Class";
 import { localizeText } from "../../components/LocalizeText";
 
@@ -14,7 +14,7 @@ export class LangBuilder extends Class {
                 text += `\n${key}=${langContent[key]}`;
             }
 
-            if (fs.pathExistsSync(`.bedrock/texts/${langFile}.lang`)) {
+            if (fs.existsSync(`.bedrock/texts/${langFile}.lang`)) {
                 const content = fs.readFileSync(`.bedrock/texts/${langFile}.lang`, "utf-8");
                 fs.writeFileSync(
                     `${buildPath}/texts/${langFile}.lang`,

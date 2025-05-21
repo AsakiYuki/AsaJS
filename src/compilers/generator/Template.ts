@@ -1,6 +1,6 @@
 import { config, env, globalVariables, gitignore } from "../../template";
 import { GenerateDir } from "./GenerateDir";
-import fs from "fs-extra";
+import fs from "fs";
 
 export function firstRun() {
     // Template Object

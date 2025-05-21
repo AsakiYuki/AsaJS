@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 
 /**
  * Creates the necessary directories (folders) in the specified path before placing files in them.
