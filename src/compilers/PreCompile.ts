@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import { Configs } from "./Config";
 
 if (!fs.existsSync("comment.txt")) {
@@ -44,7 +44,7 @@ export function WritePreComment(data: any) {
 export const jsonFilePath: string[] = [];
 export function UIWriteJson(file: string, data: any, options?: fs.WriteFileOptions) {
     if (Configs.getConfig().compiler.encodeJson) {
-        fs.writeJsonSync(file, data, options);
+        fs.writeFileSync(file, JSON.stringify(data), options);
     } else {
         fs.writeFileSync(file, WritePreComment(data), options);
     }

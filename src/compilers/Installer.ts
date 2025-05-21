@@ -1,8 +1,7 @@
-import fs from "fs-extra";
+import fs, { existsSync } from "fs";
 import { SemverString, UUID, Version } from "./../types/objects/Manifest";
 import { Save } from "./generator/Save";
 import { UIBuilder } from "./generator/UIBuilder";
-import { UIWriteJson } from "./PreCompile";
 import { Configs } from "./Config";
 
 /**
@@ -143,6 +142,8 @@ export class ResourcePacks {
                 this.gamePath = `${process.env.LOCALAPPDATA}/Packages/${data.installGame}/LocalState`;
             } else if (process.env.HOME) {
                 this.gamePath = `${process.env.HOME}/.local/share/mcpelauncher`;
+                if (!fs.existsSync(this.gamePath))
+                    this.gamePath = `${process.env.HOME}/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher/`
             } else {
                 this.gamePath = "";
             }
@@ -164,7 +165,7 @@ export class ResourcePacks {
         const globalResourcePacks: Array<GlobalResourcePacks> = fs.existsSync(
             this.globalResoucePacksPath
         )
-            ? fs.readJsonSync(this.globalResoucePacksPath, "utf-8")
+            ? JSON.parse(fs.readFileSync(this.globalResoucePacksPath, "utf-8"))
             : [];
         const versionIsArray = Array.isArray(version);
         if (versionIsArray) version = <SemverString>JSON.stringify(version);
@@ -189,13 +190,13 @@ export class ResourcePacks {
         const globalResourcePacks: Array<GlobalResourcePacks> = fs.existsSync(
             this.globalResoucePacksPath
         )
-            ? fs.readJsonSync(this.globalResoucePacksPath, "utf-8")
+            ? JSON.parse(fs.readFileSync(this.globalResoucePacksPath, "utf-8"))
             : [];
 
-        fs.writeJsonSync(this.globalResoucePacksPath, [{
+        fs.writeFileSync(this.globalResoucePacksPath, JSON.stringify([{
             pack_id: uuid,
             version,
-        }, ...globalResourcePacks], "utf-8");
+        }, ...globalResourcePacks]), "utf-8");
     }
 
     /**
@@ -208,7 +209,7 @@ export class ResourcePacks {
         const globalResourcePacks: Array<GlobalResourcePacks> = fs.existsSync(
             this.globalResoucePacksPath
         )
-            ? fs.readJsonSync(this.globalResoucePacksPath, "utf-8")
+            ? JSON.parse(fs.readFileSync(this.globalResoucePacksPath, "utf-8"))
             : [];
         const versionIsArray = Array.isArray(version);
         if (versionIsArray) version = <SemverString>JSON.stringify(version);
@@ -223,7 +224,7 @@ export class ResourcePacks {
                 break;
             }
         }
-        fs.writeJsonSync(this.globalResoucePacksPath, globalResourcePacks);
+        fs.writeFileSync(this.globalResoucePacksPath, JSON.stringify(globalResourcePacks));
     }
 
     /**
@@ -242,6 +243,6 @@ export class ResourcePacks {
      */
     packLink() {
         UIBuilder.delete(".minecraft");
-        fs.createSymlinkSync(this.getInstallPath(), ".minecraft", "junction");
+        fs.symlinkSync(this.getInstallPath(), ".minecraft", "junction");
     }
 }
