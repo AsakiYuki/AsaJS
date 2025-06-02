@@ -146,7 +146,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             name ||= Random.getName();
 
             this.controls.push({
-                [`${name}${element.getPath()}`]: properties || {},
+                [`${name}@${element.getPath()}`]: properties || {},
             });
 
             callback?.(this, name);

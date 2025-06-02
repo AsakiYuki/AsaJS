@@ -28,7 +28,7 @@ export class Random extends Class {
 
     static getNamespace() {
         if (!Random.namespaces) {
-            Random.namespaces = Random.isObfuscate ?
+            Random.namespaces = (Random.isObfuscate ?? Configs.getConfig().compiler.UI.obfuscateName) ?
                 Array.from({ length: Configs.getConfig().compiler.UI.namespaceAmount }, () => Random.genString(Configs.getConfig().compiler.UI.namespaceLength)) :
                 Array.from({ length: Configs.getConfig().compiler.UI.namespaceAmount }, ($, index) => `${Random.uniqueKey}_NAMESPACE_${(index + 1).toString(16).toUpperCase()}`);
         }
