@@ -19,7 +19,7 @@ type ExtractUIType<T> = T extends UI<infer U> ? U : never;
 
 export interface OverrideInterface {
     setProperties(properties: PropertiesType[Types]): OverrideInterface;
-    addChild<T extends UI<any>>(
+    addChild<T extends string | UI<any>>(
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         name?: string | null,
@@ -45,29 +45,29 @@ export interface ModificationControlsInterface<K extends string = string> {
     moveFront(childName: K | K[]): ModificationControlsInterface;
     moveAfter(childName: K | K[]): ModificationControlsInterface;
     moveBefore(childName: K | K[]): ModificationControlsInterface;
-    replace<T extends UI<any>>(
+    replace<T extends string | UI<any>>(
+    childName: K,
+        element: T,
+        properties?: PropertiesType[ExtractUIType<typeof element>],
+        elementName?: string
+    ): ModificationControlsInterface;
+    insertBack<T extends string | UI<any>>(
+        element: T,
+        properties?: PropertiesType[ExtractUIType<typeof element>],
+        elementName?: string
+    ): ModificationControlsInterface;
+    insertFront<T extends string | UI<any>>(
+        element: T,
+        properties?: PropertiesType[ExtractUIType<typeof element>],
+        elementName?: string
+    ): ModificationControlsInterface;
+    insertAfter<T extends string | UI<any>>(
         childName: K,
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
     ): ModificationControlsInterface;
-    insertBack<T extends UI<any>>(
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertFront<T extends UI<any>>(
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertAfter<T extends UI<any>>(
-        childName: K,
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertBefore<T extends UI<any>>(
+    insertBefore<T extends string | UI<any>>(
         childName: K,
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
@@ -146,7 +146,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             name ||= Random.getName();
 
             this.controls.push({
-                [`${name}${element.getPath()}`]: properties || {},
+                [`${name}${typeof element === "string"? element : element.getPath()}`]: properties || {},
             });
 
             callback?.(this, name);
@@ -270,7 +270,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.replace.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${ui.getPath()}`]: ReadProperties(
+                        [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
                             properties || {}
                         ),
                     },
@@ -281,7 +281,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.insertAfter.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${ui.getPath()}`]: ReadProperties(
+                        [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
                             properties || {}
                         ),
                     },
@@ -292,7 +292,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.insertBefore.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${ui.getPath()}`]: ReadProperties(
+                        [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
                             properties || {}
                         ),
                     },
@@ -302,7 +302,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
 
             insertBack: (ui, properties, elementName) => {
                 this.modifyControls.insertBack.push({
-                    [`${elementName || Random.getName()}@${ui.getPath()}`]: ReadProperties(
+                    [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
                         properties || {}
                     ),
                 });
@@ -310,7 +310,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             },
             insertFront: (ui, properties, elementName) => {
                 this.modifyControls.insertFront.push({
-                    [`${elementName || Random.getName()}@${ui.getPath()}`]: ReadProperties(
+                    [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
                         properties || {}
                     ),
                 });
@@ -445,7 +445,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         return code;
     }
 
-    addChild<T extends UI<any>>(
+    addChild<T extends string | UI<any>>(
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
