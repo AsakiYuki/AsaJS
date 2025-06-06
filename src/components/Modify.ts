@@ -20,15 +20,15 @@ type ExtractUIType<T> = T extends UI<infer U> ? U : never;
 export interface OverrideInterface {
     setProperties(properties: PropertiesType[Types]): OverrideInterface;
     addChild<T extends string | UI<any>>(
-        element: T,
+        element?: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         name?: string | null,
         callback?: UIChildNameCallback
     ): OverrideInterface;
     addBindings(
-        binding: BindingInterface | Binding | Var | Array<BindingInterface | Binding | Var>
+        binding?: BindingInterface | Binding | Var | Array<BindingInterface | Binding | Var>
     ): OverrideInterface;
-    addVariables(variables: VariablesInterface): OverrideInterface;
+    addVariables(variables?: VariablesInterface): OverrideInterface;
     searchBinding(bindingName: BindingName, controlName: string): any;
 }
 
@@ -142,6 +142,10 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         },
 
         addChild: (element, properties, name, callback) => {
+            if (!element) {
+                this.controls ||= [];
+                return this.override;
+            }
             if (!this.controls) this.controls = [];
             name ||= Random.getName();
 
@@ -155,6 +159,10 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         },
 
         addBindings: bindings => {
+            if (!bindings) {
+                this.bindings ||= [];
+                return this.override;
+            }
             if (Array.isArray(bindings))
                 for (const binding of bindings) this.override.addBindings(binding);
             else (this.bindings ||= []).push(ReadBinding(<any>bindings, this.override));
@@ -164,13 +172,14 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         addVariables: variables => {
             this.variables ||= {};
 
-            Obj.forEach(variables, (key, value) => {
-                (<any>this.variables)[key] = {
-                    ...Obj.map(value, (k, v) => {
-                        return { key: k, value: ReadValue(v) };
-                    }),
-                };
-            });
+            if (variables)
+                Obj.forEach(variables, (key, value) => {
+                    (<any>this.variables)[key] = {
+                        ...Obj.map(value, (k, v) => {
+                            return { key: k, value: ReadValue(v) };
+                        }),
+                    };
+                });
 
             return this.override;
         },
@@ -347,6 +356,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                     ...v,
                 });
             });
+
+        if (this.variables && Object.keys(this.variables).length === 0)
+            code.variables ||= [];
 
         {
             if (this.modifyBindings) {
