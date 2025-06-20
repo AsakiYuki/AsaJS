@@ -7,27 +7,12 @@ import { Vector2, Vector3, Vector4 } from "../values/Vector";
  * Interface representing the main structure of an animation.
  */
 export interface AnimationInterface {
-    /**
-     * The starting value of the animation, which can be a single float or a vector (2D, 3D, or 4D).
-     */
     from: Float | Vector2 | Vector3 | Vector4;
-
-    /**
-     * The type of the animation (e.g., linear, ease-in, etc.).
-     */
     type: AnimationTypes;
-
-    /**
-     * Optional flag to define if the animation should loop.
-     * @default false
-     */
     loop?: boolean;
-
+    smartCycle?: boolean;
     durationPerKeyFrame?: number;
-
-    /**
-     * An array of keyframes, where each keyframe can either be an AnimationKey object or a float.
-     */
+    defaultEase?: EasingTypes;
     keyFrames: Array<AnimationKey | Float>;
 }
 
