@@ -1,10 +1,6 @@
 # JsonUI Scripting
 
-<img align="right" width="125px" src="resources/logo_no_bg.png"/>
-
-<p><b>JsonUI Scripting</b> is an open-source library that uses the JavaScript programming language to build a JsonUI pack with class structures that make it easy to manipulate and edit the UI of <b>Minecraft: Bedrock Edition.</b></p>
-
-<p>This library also includes a built-in <b>Binding compiler</b>, enabling the use of operators and functions that JsonUI lacks, making binding code more convenient and easier to code!</p>
+A framework specifically designed for creating UI resource packs using JavaScript/TypeScript for Minecraft: Bedrock Edition, packed with many useful utilities!
 
 # Installation
 
@@ -26,10 +22,10 @@ npm install jsonui-scripting
 const { UI, Vanilla, Anchor } = require("jsonui-scripting");
 
 const label = UI.label({
-	text: "Hello World!",
-	anchor: Anchor.TopMiddle,
-	y: 15,
-	layer: 50,
+    text: "Hello World!",
+    anchor: Anchor.TopMiddle,
+    y: 15,
+    layer: 50,
 });
 
 Vanilla.start.startScreenContent().addChild(label);
