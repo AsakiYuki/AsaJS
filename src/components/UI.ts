@@ -532,7 +532,7 @@ export class UI<T extends Types = Types.Any> {
         }
 
         if (typeof element === "string") {
-            this.controls.push({ [`${name}@${element}`]: properties || {} });
+            this.controls.push({ [`${name}@${element}`]: properties ? ReadProperties(<Properties>properties) : {} });
         } else if (element instanceof UI) {
             {
                 if (element?.getPath() === this.getPath()) {
@@ -540,7 +540,7 @@ export class UI<T extends Types = Types.Any> {
                 }
 
                 this.controls.push({
-                    [`${name}@${element?.getPath()}`]: properties || {},
+                    [`${name}@${element?.getPath()}`]: properties ? ReadProperties(<Properties>properties) : {},
                 });
             }
         }

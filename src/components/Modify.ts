@@ -46,7 +46,7 @@ export interface ModificationControlsInterface<K extends string = string> {
     moveAfter(childName: K | K[]): ModificationControlsInterface;
     moveBefore(childName: K | K[]): ModificationControlsInterface;
     replace<T extends string | UI<any>>(
-    childName: K,
+        childName: K,
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
@@ -150,7 +150,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             name ||= Random.getName();
 
             this.controls.push({
-                [`${name}${typeof element === "string"? element : element.getPath()}`]: properties || {},
+                [`${name}${typeof element === "string" ? element : element.getPath()}`]: properties ? ReadProperties(properties) : {},
             });
 
             callback?.(this, name);
@@ -279,7 +279,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.replace.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
+                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
                             properties || {}
                         ),
                     },
@@ -290,7 +290,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.insertAfter.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
+                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
                             properties || {}
                         ),
                     },
@@ -301,7 +301,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.insertBefore.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
+                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
                             properties || {}
                         ),
                     },
@@ -311,7 +311,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
 
             insertBack: (ui, properties, elementName) => {
                 this.modifyControls.insertBack.push({
-                    [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
+                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
                         properties || {}
                     ),
                 });
@@ -319,7 +319,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             },
             insertFront: (ui, properties, elementName) => {
                 this.modifyControls.insertFront.push({
-                    [`${elementName || Random.getName()}@${typeof ui === "string"? ui : ui.getPath()}`]: ReadProperties(
+                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
                         properties || {}
                     ),
                 });
