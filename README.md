@@ -16,19 +16,53 @@ npm install jsonui-scripting
 
 # How to use
 
-<p>The syntax is very simple. If you just want to display the text "Hello World" on the main screen, here is the code for that:</p>
+<p>The syntax is very simple. If you just want to add a button to hide start screen, here is the code for that:</p>
 
 ```javascript
-const { UI, Vanilla, Anchor } = require("jsonui-scripting");
+import { Anchor, BindingName, UI, Vanilla } from "jsonui-scripting";
 
-const label = UI.label({
-    text: "Hello World!",
-    anchor: Anchor.TopMiddle,
-    y: 15,
-    layer: 50,
+// Game start screen content
+const vanillaStartScreenContent = Vanilla.start.startScreenContent();
+
+// A custom start screen
+const ourStartScreenContent = UI.panel({ size: "100%" }).addChild(vanillaStartScreenContent);
+
+// Toggle for hide start screen
+const ourToggle = UI.extend(Vanilla.commonToggles.lightTextToggle(), {
+    w: 84,
+    h: 28,
+    $button_text: "Hide Screen",
+    $toggle_name: "hide_start_screen",
+    $toggle_view_binding_name: "hide_start_screen_state",
 });
 
-Vanilla.start.startScreenContent().addChild(label);
+// Add toggle to start screen content
+ourStartScreenContent.addChild(ourToggle, {
+    anchor: Anchor.TopLeft,
+    x: 5,
+    y: 5,
+});
+
+vanillaStartScreenContent.override.addBindings([
+    {
+        binding_name: BindingName.ScreenNeedsRebuild,
+        binding_name_override: "#bind_0",
+    },
+    {
+        source_control_name: "hide_start_screen_state",
+        source_property_name: "#toggle_state",
+        target_property_name: "#bind_1",
+    },
+    {
+        source_property_name: "[!#bind_0 && !#bind_1]",
+        target_property_name: "#visible",
+    },
+]);
+
+// Modify start screen content
+Vanilla.start.startScreen({
+    $screen_content: ourStartScreenContent.getPath(),
+});
 ```
 
 <p>And you just need to run the code you wrote, and here is the result:</p>
