@@ -43,8 +43,12 @@ export function WritePreComment(data: any) {
 
 export const jsonFilePath: string[] = [];
 export function UIWriteJson(file: string, data: any, options?: fs.WriteFileOptions) {
+    const writeData = JSON.stringify(data);
+
+    if (writeData == "{}") return;
+
     if (Configs.getConfig().compiler.encodeJson) {
-        fs.writeFileSync(file, JSON.stringify(data), options);
+        fs.writeFileSync(file, writeData, options);
     } else {
         fs.writeFileSync(file, WritePreComment(data), options);
     }

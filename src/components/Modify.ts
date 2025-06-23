@@ -1,9 +1,13 @@
 import { JsonBuilder } from "../compilers/generator/JsonBuilder";
+import { Log } from "../compilers/generator/Log";
+import { CurrentLine } from "../compilers/reader/CurrentLine";
 import { Obj } from "../compilers/reader/Object";
 import { ReadBinding } from "../compilers/reader/ReadBinding";
 import { ReadProperties, ReadValue } from "../compilers/reader/ReadProperties";
 import { ChildElement } from "../types/components/ChildIdentifier";
+import { Identifier } from "../types/components/Identifier";
 import { UIChildNameCallback } from "../types/components/NameCallback";
+import { ExtendInterface } from "../types/components/UIInterface";
 import { BindingName } from "../types/enums/BindingName";
 import { Types } from "../types/enums/Types";
 import { BindingInterface } from "../types/objects/BindingInterface";
@@ -15,7 +19,7 @@ import { Var } from "../types/values/Variable";
 import { Random } from "./Random";
 import { UI } from "./UI";
 
-type ExtractUIType<T> = T extends UI<infer U> ? U : never;
+type ExtractUIType<T> = T extends UI<infer U> ? U : T extends Modify<infer U> ? U : never;
 
 export interface OverrideInterface {
     setProperties(properties: PropertiesType[Types]): OverrideInterface;
@@ -45,29 +49,29 @@ export interface ModificationControlsInterface<K extends string = string> {
     moveFront(childName: K | K[]): ModificationControlsInterface;
     moveAfter(childName: K | K[]): ModificationControlsInterface;
     moveBefore(childName: K | K[]): ModificationControlsInterface;
-    replace<T extends string | UI<any>>(
+    replace<T extends string | UI<any> | Modify<any, any>>(
         childName: K,
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
     ): ModificationControlsInterface;
-    insertBack<T extends string | UI<any>>(
+    insertBack<T extends string | UI<any> | Modify<any, any>>(
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
     ): ModificationControlsInterface;
-    insertFront<T extends string | UI<any>>(
+    insertFront<T extends string | UI<any> | Modify<any, any>>(
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
     ): ModificationControlsInterface;
-    insertAfter<T extends string | UI<any>>(
+    insertAfter<T extends string | UI<any> | Modify<any, any>>(
         childName: K,
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
     ): ModificationControlsInterface;
-    insertBefore<T extends string | UI<any>>(
+    insertBefore<T extends string | UI<any> | Modify<any, any>>(
         childName: K,
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
@@ -100,21 +104,17 @@ export interface ModificationControls {
  * @class Modify
  */
 export class Modify<T extends Types = Types.Any, K extends string = string> {
-    /** Holds the properties for the modification. */
     private properties: Properties = {};
-    /** Holds the controls for the modification. */
     private controls?: Array<ChildElement>;
-    /** Holds the bindings for the modification. */
     private bindings?: Array<BindingInterface>;
-    /** Holds the variables for the modification. */
     private variables?: VariablesInterface;
 
-    /** Holds the modification bindings. */
-    private modifyBindings?: Array<BindingInterface>;
-    /** Holds the bindings to be removed. */
-    private removeModifyBindings?: Array<BindingInterface>;
+    private isValidPath: boolean;
+    name: string = "";
+    namespace: string = "";
 
-    /** Contains control modifications like move, replace, remove, etc. */
+    private modifyBindings?: Array<BindingInterface>;
+    private removeModifyBindings?: Array<BindingInterface>;
     private modifyControls: ModificationControls = {
         remove: [],
         replace: [],
@@ -128,10 +128,6 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         moveFront: [],
     };
 
-    /**
-     * Provides methods for overriding properties, controls, bindings, and variables.
-     * These methods allow you to modify the Minecraft UI element in different ways.
-     */
     override: OverrideInterface = {
         setProperties: (properties: PropertiesType[T]) => {
             this.properties = {
@@ -150,7 +146,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             name ||= Random.getName();
 
             this.controls.push({
-                [`${name}${typeof element === "string" ? element : element.getPath()}`]: properties ? ReadProperties(properties) : {},
+                [`${name}${typeof element === "string" ? element : element.getPath()}`]: properties
+                    ? ReadProperties(properties)
+                    : {},
             });
 
             callback?.(this, name);
@@ -184,12 +182,6 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
             return this.override;
         },
 
-        /**
-         * Override properties for the Modify UI Element.
-         *
-         * @param {Properties} properties - The properties to set for the UI element.
-         * @returns {OverrideInterface} The override interface to allow method chaining.
-         */
         searchBinding: (
             bindingName: Binding,
             controlName?: string,
@@ -222,10 +214,6 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         },
     };
 
-    /**
-     * Provides methods to modify bindings and controls.
-     * These methods allow you to add, remove, or manipulate bindings and controls dynamically.
-     */
     modify: ModificationInterface<K> = {
         bindings: {
             remove: bindings => {
@@ -279,9 +267,8 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.replace.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
-                            properties || {}
-                        ),
+                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
+                            }`]: ReadProperties(properties || {}),
                     },
                 ]);
                 return this.modify.controls;
@@ -290,9 +277,8 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.insertAfter.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
-                            properties || {}
-                        ),
+                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
+                            }`]: ReadProperties(properties || {}),
                     },
                 ]);
                 return this.modify.controls;
@@ -301,9 +287,8 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 this.modifyControls.insertBefore.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
-                            properties || {}
-                        ),
+                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
+                            }`]: ReadProperties(properties || {}),
                     },
                 ]);
                 return this.modify.controls;
@@ -311,37 +296,48 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
 
             insertBack: (ui, properties, elementName) => {
                 this.modifyControls.insertBack.push({
-                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
-                        properties || {}
-                    ),
+                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
+                        }`]: ReadProperties(properties || {}),
                 });
                 return this.modify.controls;
             },
             insertFront: (ui, properties, elementName) => {
                 this.modifyControls.insertFront.push({
-                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()}`]: ReadProperties(
-                        properties || {}
-                    ),
+                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
+                        }`]: ReadProperties(properties || {}),
                 });
                 return this.modify.controls;
             },
         },
     };
 
-    /**
-     * Constructor for the Modify class, optionally accepting properties to initialize.
-     *
-     * @param {Properties} [properties] - Optional properties to initialize the Modify object with.
-     */
-    private constructor(properties?: Properties) {
+    private constructor(properties?: Properties, identifier?: Identifier) {
         if (properties) this.override.setProperties(properties);
+
+        if (identifier && identifier.name?.match(/\w+/g)?.length === 1 && identifier.namespace) this.isValidPath = true;
+        else this.isValidPath = false;
+
+        this.name = identifier?.name || "";
+        this.namespace = identifier?.namespace || "";
     }
 
-    /**
-     * Compiles the current modifications into a JSON UI code.
-     *
-     * @returns {any} The compiled JSON code representing the UI element modifications.
-     */
+    getPath() {
+        if (this.isValidPath) return `${this.namespace}.${this.name}`;
+        else {
+            Log.error(`${CurrentLine()} Cannot get path for this Modify element`);
+            return ""
+        };
+    }
+
+    getElement() {
+        return `@${this.getPath()}`;
+    }
+
+    extend(identifier?: ExtendInterface, properties?: PropertiesType[ExtractUIType<typeof this>]) {
+        if (this.isValidPath) Log.error(`${CurrentLine()} Cannot extend this Modify element`);
+        return UI.extend(this, properties, identifier)
+    }
+
     getUI() {
         const code: any = ReadProperties(this.properties);
         const modifications: Array<any> = [];
@@ -357,8 +353,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 });
             });
 
-        if (this.variables && Object.keys(this.variables).length === 0)
-            code.variables ||= [];
+        if (this.variables && Object.keys(this.variables).length === 0) code.variables ||= [];
 
         {
             if (this.modifyBindings) {
@@ -454,10 +449,10 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
 
         if (modifications.length > 0) code["modifications"] = modifications;
 
-        return code;
+        return Object.keys(code).length > 0 ? code : undefined;
     }
 
-    addChild<T extends string | UI<any>>(
+    addChild<T extends string | UI<any> | Modify<any, any>>(
         element: T,
         properties?: PropertiesType[ExtractUIType<typeof element>],
         elementName?: string
@@ -466,26 +461,31 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         return this;
     }
 
-    /**
-     * Registers a Modify UI element with the specified file and element path.
-     * Optionally accepts properties for initialization.
-     *
-     * @param {string} filePath - The path of the file to register the UI element in.
-     * @param {string} elementPath - The path of the UI element to register.
-     * @param {Properties} [properties] - Optional properties to initialize the Modify object with.
-     * @returns {Modify} The registered Modify object.
-     */
     static register<T extends Types = Types.Any, K extends string = string>(
         filePath: string,
         elementPath: string,
         properties?: Properties
     ) {
+        return this.registerWithNamespace<T, K>(filePath, elementPath, "", properties);
+    }
+
+    static registerWithNamespace<T extends Types = Types.Any, K extends string = string>(
+        filePath: string,
+        elementPath: string,
+        namespace: string,
+        properties?: Properties
+    ) {
         const modify = JsonBuilder.getModify(filePath, elementPath);
         modify?.override?.setProperties(properties || {});
-        return <Modify<T, K>>(
-            (modify ||
-                JsonBuilder.registerModify(filePath, elementPath, new Modify<T, K>(properties)))
-        );
+        return <Modify<T, K>>(modify ||
+            JsonBuilder.registerModify(
+                filePath,
+                elementPath,
+                new Modify<T, K>(properties, {
+                    name: elementPath,
+                    namespace,
+                })
+            ));
     }
 
     private static apply() { }

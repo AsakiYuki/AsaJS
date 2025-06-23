@@ -1,3 +1,4 @@
+import { Modify } from "../../components/Modify";
 import { UI } from "../../components/UI";
 import { Types } from "../enums/Types";
 import { Properties } from "../objects/properties/Properties";
@@ -5,7 +6,7 @@ import { Identifier } from "./Identifier";
 
 export interface UIInterface extends StaticUIInterface {
     type?: Types;
-    extends?: string | Identifier | UI;
+    extends?: string | Identifier | UI | Modify;
 }
 
 export interface StaticUIInterface extends ExtendInterface {

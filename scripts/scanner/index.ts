@@ -212,8 +212,8 @@ interface ScanCode {
                 }<T extends Types = Types.${`_${type}`.replaceAll(/_\w/g, v =>
                     v.slice(1).toUpperCase()
                 )}>(properties?: PropertiesType[T]) {
-        return Modify.register<T${childs?.length ? `, ${childs.map(v => `"${v}"`).join(" | ")}` : ""
-                }>("${file}", "${element}", <any>properties)
+        return Modify.registerWithNamespace<T${childs?.length ? `, ${childs.map(v => `"${v}"`).join(" | ")}` : ""
+                }>("${file}", "${element}", "${namespace}", <any>properties)
     }\n`;
 
             SpaceElement.push({ name: element, file });
