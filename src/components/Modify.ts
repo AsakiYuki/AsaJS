@@ -324,7 +324,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
     getPath() {
         if (this.isValidPath) return `${this.namespace}.${this.name}`;
         else {
-            Log.error(`${CurrentLine()} Cannot get path for this Modify element`);
+            Log.error(`${CurrentLine()} Cannot use this element for extend or addChild!`);
             return ""
         };
     }
@@ -334,7 +334,6 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
     }
 
     extend(identifier?: ExtendInterface, properties?: PropertiesType[ExtractUIType<typeof this>]) {
-        if (this.isValidPath) Log.error(`${CurrentLine()} Cannot extend this Modify element`);
         return UI.extend(this, properties, identifier)
     }
 
