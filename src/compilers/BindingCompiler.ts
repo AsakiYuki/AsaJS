@@ -9,30 +9,15 @@ import { CurrentLine } from "./reader/CurrentLine";
 export interface BindingFunctionObject {
     [key: string]: (arg: UI | OverrideInterface, params: Array<string>) => Binding;
 }
-
-/**
- * The `BindingCompiler` class provides methods to compile and build bindings for UI properties or overrides.
- * It processes strings and handles operators, functions, and various token types to generate bindings.
- */
 export class BindingCompiler {
-    /**
-     * Compiles a property binding string.
-     *
-     * @param propertyName - The property name to compile.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The compiled binding as a string.
-     */
-    static compile(propetyName: string, arg: UI | OverrideInterface) {
-        return this.build(propetyName, arg).replace(/__BREAK_LINE__/g, "\n");
+    static compile(propertyName: string | string[], arg: UI | OverrideInterface) {
+        return this.build(this.getCompilePart(propertyName), arg).replace(/__BREAK_LINE__/g, "\n");
     }
 
-    /**
-     * Builds a binding expression from tokens.
-     *
-     * @param propertyName - The property name for the binding.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The built binding expression.
-     */
+    static getCompilePart(propertyName: string | string[]) {
+        return Array.isArray(propertyName) ? propertyName[0] : propertyName.slice(1, propertyName.length - 1)
+    }
+
     static build(propertyName: string, arg: UI | OverrideInterface) {
         const tokens = this.lexer(propertyName, arg);
 
@@ -63,13 +48,6 @@ export class BindingCompiler {
         return build;
     }
 
-    /**
-     * Creates a new property binding and returns the generated binding name.
-     *
-     * @param token - The token representing the binding.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The generated binding name.
-     */
     static buildNewPropertyBag(token: string, arg: UI | OverrideInterface) {
         const bindingName: any = `#${Random.getName()}`;
         arg.setProperties({
@@ -80,26 +58,12 @@ export class BindingCompiler {
         return bindingName;
     }
 
-    /**
-     * Checks if a binding exists, and builds the binding expression accordingly.
-     *
-     * @param token - The token to check for binding.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The built binding expression or a new binding name if no binding exists.
-     */
     static checkAndBuild(token: string, arg: UI | OverrideInterface) {
         return this.isHasBinding(token)
             ? this.build(token, arg)
             : this.buildNewPropertyBag(token, arg);
     }
 
-    /**
-     * Compiles special operators like ternary and logical operators.
-     *
-     * @param tokens - The tokens to process.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The processed tokens with special operators compiled.
-     */
     static compileSpecialOperator(tokens: Array<string>, arg: UI | OverrideInterface) {
         let firstTokens: Array<string> = [];
 
@@ -286,13 +250,6 @@ export class BindingCompiler {
         return firstTokens;
     }
 
-    /**
-     * Lexes the given property name into individual tokens.
-     *
-     * @param propertyName - The property name to tokenize.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns An array of tokens extracted from the property name.
-     */
     static lexer(propertyName: string, arg: UI | OverrideInterface) {
         const getTokens = this.compileSpecialOperator(
             this.readTokens(this.getTokens(this.splitString(propertyName))).map(token => {
@@ -310,12 +267,6 @@ export class BindingCompiler {
         return getTokens;
     }
 
-    /**
-     * Splits the property name string into tokens, handling string literals and special characters.
-     *
-     * @param propertyName - The property name to split.
-     * @returns An array of tokens split from the string.
-     */
     static splitString(propertyName: string) {
         const tokens: Array<string> = [];
         let token = "",
@@ -346,28 +297,17 @@ export class BindingCompiler {
         return tokens;
     }
 
-    /**
-     * Handles string tokens by processing embedded code and concatenating parts.
-     *
-     * @param token - The string token to handle.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The processed string token, potentially including embedded bindings.
-     */
     static stringHandler(token: string, arg: UI | OverrideInterface) {
-        const tokens = this.getStringTokens(token.slice(1, token.length - 1)).map(token => {
-            if (this.isStringCode(token))
-                return BindingCompiler.build(token.slice(1, token.length - 1), arg);
-            else return `'${token}'`;
-        }).filter(token => !["'{}'", ')'].includes(token));
+        const tokens = this.getStringTokens(token.slice(1, token.length - 1))
+            .map(token => {
+                if (this.isStringCode(token))
+                    return BindingCompiler.build(token.slice(1, token.length - 1), arg);
+                else return `'${token}'`;
+            })
+            .filter(token => !["'{}'", ")"].includes(token));
         return tokens.length > 1 ? `(${tokens.join(" + ")})` : tokens[0] || "''";
     }
 
-    /**
-     * Extracts individual tokens from a string literal, handling nested expressions.
-     *
-     * @param token - The string literal token to tokenize.
-     * @returns An array of tokens extracted from the string.
-     */
     static getStringTokens(token: string) {
         const tokens: Array<string> = [];
         let bracketsCount = 0,
@@ -394,13 +334,6 @@ export class BindingCompiler {
         return tokens;
     }
 
-    /**
-     * Handles function tokens and processes their arguments.
-     *
-     * @param token - The function token to handle.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The processed function as a string.
-     */
     static functionHandler(token: string, arg: UI | OverrideInterface) {
         const func = this.readFunctionFromToken(this.getTokens(this.splitString(token)), arg);
 
@@ -411,7 +344,7 @@ export class BindingCompiler {
                 arg,
                 func.params.map(token => {
                     token = token.replace(/__BREAK_LINE__/g, "\n");
-                    return this.isStringPattern(token) ? this.build(`(${token})`, arg) : token
+                    return this.isStringPattern(token) ? this.build(`(${token})`, arg) : token;
                 })
             );
         } else {
@@ -422,13 +355,6 @@ export class BindingCompiler {
         return str;
     }
 
-    /**
-     * Reads the function name and parameters from the tokenized function string.
-     *
-     * @param tokens - The tokens to parse.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns An object containing the function name and its parameters.
-     */
     static readFunctionFromToken(tokens: Array<string>, arg: UI | OverrideInterface) {
         const name = tokens[0];
         tokens = tokens.slice(2, tokens.length - 1);
@@ -461,12 +387,6 @@ export class BindingCompiler {
         };
     }
 
-    /**
-     * Reads and processes an array of string tokens into meaningful expressions.
-     *
-     * @param strTokens - The array of tokens to process.
-     * @returns An array of processed tokens.
-     */
     static readTokens(strTokens: Array<string>) {
         const tokens: Array<string> = [];
         let strToken = "";
@@ -503,12 +423,6 @@ export class BindingCompiler {
         return tokens;
     }
 
-    /**
-     * Tokenizes a string of tokens, handling specific patterns like numbers, operators, and bindings.
-     *
-     * @param strTokens - The string tokens to tokenize.
-     * @returns An array of individual tokens.
-     */
     static getTokens(strTokens: Array<string>) {
         const tokens: Array<string> = [];
         for (const token of strTokens) {
@@ -523,13 +437,6 @@ export class BindingCompiler {
         return tokens;
     }
 
-    /**
-     * Creates a new binding based on the token and returns the generated name.
-     *
-     * @param token - The token representing the binding.
-     * @param arg - The UI or override interface argument used for context.
-     * @returns The generated binding name.
-     */
     static buildNewBinding(token: string, arg: UI | OverrideInterface) {
         const rndName: `#${string}` = `#${Random.getName()}`;
 
@@ -551,131 +458,81 @@ export class BindingCompiler {
         return rndName;
     }
 
-    /**
-     * Checks if the token is a string literal.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is a string literal, otherwise false.
-     */
+    static findSourceBindings(token: string, sourceControlsName: string, lastResourceBindings?: any) {
+        const reSourceBindings: Record<string, string> = lastResourceBindings || {};
+        const newTokens: string[] = [];
+
+        this.getTokens(this.splitString(token)).forEach(token => {
+            if (this.isBindingOrVariable(token)) {
+                newTokens.push(
+                    reSourceBindings[`${token}:${sourceControlsName}`] ||= <string>Random.bindingName()
+                );
+            } else if (this.isString(token)) {
+                newTokens.push(this.getStringTokens(token).map(token => {
+                    if (this.isStringCode(token)) {
+                        const sourceBindings = this.findSourceBindings(token.slice(1, token.length - 1), sourceControlsName, reSourceBindings);
+                        for (const key in sourceBindings.reSourceBindings) reSourceBindings[key] = sourceBindings.reSourceBindings[key];
+                        return `{${sourceBindings.newTokens.join("")}}`;
+                    } else return token;
+                }).join(""));
+            } else newTokens.push(token);
+        })
+
+        return { reSourceBindings, newTokens };
+    }
+
+    static isCanCompile(token: string | string[]) {
+        return Array.isArray(token) || (token.startsWith("[") && token.endsWith("]"));
+    }
+
     static isString(token: string) {
         return /^'.+'$/.test(token) || token === "''";
     }
 
-    /**
-     * Checks if the token is a string code block.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is a string code block, otherwise false.
-     */
     static isStringCode(token: string) {
         return /^{.+}$/.test(token);
     }
 
-    /**
-     * Checks if the token is a string pattern with embedded expressions.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is a string pattern, otherwise false.
-     */
     static isStringPattern(token: string) {
         return this.isString(token) && /\{.+\}/.test(token);
     }
 
-    /**
-     * Checks if the token is a negative number.
-     *
-     * @param token - The token to check.
-     * @returns True if the token represents a negative number, otherwise false.
-     */
     static isNegativeNumber(token: string) {
         return /^-((\d+\.)?\d+)$/.test(token);
     }
 
-    /**
-     * Checks if the token is a scientific notation number.
-     * @param token - The token to check.
-     * @returns - True if the token represents a scientific notation number, otherwise false.
-     */
     static isScientificNotation(token: string) {
         return /^-?((\d+\.)?\d+)(e-?\d+)$/.test(token);
     }
 
-    /**
-     * Checks if the token is a function.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is a function, otherwise false.
-     */
     static isFunction(token: string) {
         return /^\w+\(.*\)$/.test(token);
     }
 
-    /**
-     * Checks if the token is an array.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is an array, otherwise false.
-     */
     static isArray(token: string) {
         return /^\[.*\]$/.test(token);
     }
 
-    /**
-     * Checks if the token is a code block.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is a code block, otherwise false.
-     */
     static isCodeBlock(token: string) {
         return /^\(.+\)$/.test(token);
     }
 
-    /**
-     * Checks if the token could be a function name.
-     *
-     * @param token - The token to check.
-     * @returns True if the token could be a function name, otherwise false.
-     */
     static maybeFunctionName(token: string) {
         return /^\w+$/.test(token);
     }
 
-    /**
-     * Checks if the token represents a binding or variable.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is a binding or variable, otherwise false.
-     */
     static isBindingOrVariable(token: string) {
         return /^[#$]\w+$/.test(token);
     }
 
-    /**
-     * Checks if the token is an operator.
-     *
-     * @param token - The token to check.
-     * @returns True if the token is an operator, otherwise false.
-     */
     static isOperator(token: string) {
         return /^[+\-*\/%><=!&|]$|^[><=!]=$/.test(token);
     }
 
-    /**
-     * Checks if the token is a valid binding.
-     *
-     * @param token - The token to check.
-     * @returns True if the token represents a binding, otherwise false.
-     */
     static isHasBinding(token: string) {
         return /#\w+/.test(token);
     }
 
-    /**
-     * Checks if the value is a number.
-     *
-     * @param value - The value to check.
-     * @returns True if the value is a number, otherwise false.
-     */
     static isNumber(value: string) {
         return /^(\d+|\d+\.\d+|-\d+|-\d+\.\d+)$/.test(value);
     }

@@ -34,6 +34,7 @@ export interface OverrideInterface {
     ): OverrideInterface;
     addVariables(variables?: VariablesInterface): OverrideInterface;
     searchBinding(bindingName: BindingName, controlName: string): any;
+    sourceBindings: Record<string, string>
 }
 
 export interface ModificationBindingsInterface {
@@ -129,6 +130,8 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
     };
 
     override: OverrideInterface = {
+        sourceBindings: {},
+
         setProperties: (properties: PropertiesType[T]) => {
             this.properties = {
                 ...this.properties,
@@ -447,6 +450,18 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
         }
 
         if (modifications.length > 0) code["modifications"] = modifications;
+
+        for (const bindingKey in this.override.sourceBindings) {
+            const targetBinding = this.override.sourceBindings[bindingKey];
+            const [sourceBinding, sourceControl] = bindingKey.split(":");
+
+            code.bindings.push({
+                binding_type: "view",
+                source_control_name: sourceControl,
+                source_property_name: sourceBinding,
+                target_property_name: targetBinding,
+            });
+        }
 
         return Object.keys(code).length > 0 ? code : undefined;
     }

@@ -61,6 +61,7 @@ export class UI<T extends Types = Types.Any> {
     name?: string;
     namespace?: string;
     extends?: string;
+    sourceBindings: Record<string, string> = {};
     private type?: Types;
     private controls?: Array<ChildElement>;
     private bindings?: Array<BindingInterface>;
@@ -400,6 +401,18 @@ export class UI<T extends Types = Types.Any> {
 
         for (const key of ["type", "controls", "bindings", "button_mappings", "anims"])
             if ((<any>this)[key]) code[key] = (<any>this)[key];
+
+        for (const bindingKey in this.sourceBindings) {
+            const targetBinding = this.sourceBindings[bindingKey];
+            const [sourceBinding, sourceControl] = bindingKey.split(":");
+
+            code.bindings.push({
+                binding_type: "view",
+                source_control_name: sourceControl,
+                source_property_name: sourceBinding,
+                target_property_name: targetBinding,
+            });
+        }
 
         if (this.variables)
             Obj.forEach(this.variables, (k, v) => {
