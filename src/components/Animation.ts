@@ -3,38 +3,20 @@ import { Identifier } from "../types/components/Identifier";
 import { AnimationTypes } from "../types/enums/AnimTypes";
 import { AnimationInterface } from "../types/objects/Animation";
 import { AnimationKeyFrame } from "./AnimationKeyFrame";
+import { Class } from "./Class";
 import { Random } from "./Random";
 
-/**
- * Represents an animation, which includes a series of keyframes, type, and loop behavior.
- * Provides methods to build the animation and access keyframes.
- *
- * @class Animation
- */
-export class Animation {
+export class Animation extends Class {
     private keyFrames: Array<string> = [];
     private buildKey: number = 0;
     private config = Configs.getConfig();
 
-    /**
-     * Registers a new animation with an optional identifier.
-     *
-     * @param {AnimationInterface} animation - The animation data to be registered.
-     * @param {Identifier} [identifier] - The optional identifier for the animation.
-     * @returns {Animation} - The newly created animation instance.
-     */
     static register(animation: AnimationInterface, identifier?: Identifier): Animation {
         return new Animation(animation, identifier);
     }
 
-    /**
-     * Creates an instance of the Animation class, initializing keyframes and setting up the animation.
-     *
-     * @param {AnimationInterface} animation - The animation data including the keyframes, type, and other settings.
-     * @param {Identifier} [identifier] - The optional identifier for the animation.
-     * @constructor
-     */
     constructor(animation: AnimationInterface, private identifier?: Identifier) {
+        super()
         if (!(identifier && !this.config.compiler.UI.obfuscateName))
             identifier = {
                 name: Random.getAnimationName(),
@@ -48,24 +30,11 @@ export class Animation {
         this.buildAnimation(animation, identifier);
     }
 
-    /**
-     * Retrieves the key index for a given keyframe index, ensuring the index is within valid bounds.
-     *
-     * @param {number} index - The index of the keyframe.
-     * @returns {string} - The formatted key for the given index.
-     */
     getKeyIndex(index: number): string {
         let i = index < 0 ? 0 : Math.min(index, this.keyFrames.length);
         return `@${this.keyFrames[index]}`;
     }
 
-    /**
-     * Builds the animation by processing the keyframes and creating animation keyframes.
-     *
-     * @param {AnimationInterface} animation - The animation data, including from, keyframes, loop, and type.
-     * @param {Identifier} identifier - The identifier for the animation, including name and namespace.
-     * @private
-     */
     private buildAnimation(
         { from, keyFrames, loop, type, durationPerKeyFrame = 1, smartCycle, defaultEase }: AnimationInterface,
         identifier: Identifier
@@ -128,12 +97,6 @@ export class Animation {
         });
     }
 
-    /**
-     * Generates a new identifier with random name and namespace.
-     *
-     * @returns {Identifier} - A newly generated identifier with random name and namespace.
-     * @private
-     */
     private generateIdentifier() {
         if (this.config.compiler.UI.obfuscateName) return {
             name: Random.getAnimationName(),
@@ -145,82 +108,7 @@ export class Animation {
         };
     }
 
-    /**
-     * Retrieves the frame key by the provided identifier in a formatted string.
-     *
-     * @param {Identifier} identifier - The identifier containing the namespace and name.
-     * @returns {string} - The formatted key string based on the identifier.
-     * @private
-     */
     private getFrameKeyByIdentifier(identifier: Identifier) {
         return `@${identifier.namespace}.${identifier.name}`;
     }
-
-    /**
-     * A static method that seems to serve as a placeholder, but has no functionality as of now.
-     *
-     * @private
-     * @static
-     */
-    private static apply() { }
-
-    /**
-     * A static property initialized to an empty string, likely intended to hold arguments or be overridden in the future.
-     *
-     * @private
-     * @static
-     * @type {string}
-     */
-    private static arguments = "";
-
-    /**
-     * A static method that seems to serve as a placeholder, but has no functionality as of now.
-     *
-     * @private
-     * @static
-     */
-    private static bind() { }
-
-    /**
-     * A static method that seems to serve as a placeholder, but has no functionality as of now.
-     *
-     * @private
-     * @static
-     */
-    private static call() { }
-
-    /**
-     * A static property initialized to an empty string, likely intended to hold caller information or be overridden in the future.
-     *
-     * @private
-     * @static
-     * @type {string}
-     */
-    private static caller = "";
-
-    /**
-     * A static property initialized to an empty string, likely intended to hold length-related data or be overridden in the future.
-     *
-     * @private
-     * @static
-     * @type {string}
-     */
-    private static length = "";
-
-    /**
-     * A static property initialized to an empty string, likely intended to hold a name or be overridden in the future.
-     *
-     * @private
-     * @static
-     * @type {string}
-     */
-    private static name = "";
-
-    /**
-     * A static method that seems to serve as a placeholder, but has no functionality as of now.
-     *
-     * @private
-     * @static
-     */
-    private static toString() { }
 }

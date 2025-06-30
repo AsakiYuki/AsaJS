@@ -21,11 +21,11 @@ export enum Types {
     TooltipTrigger = "tooltip_trigger",
 
     // Special
+    Any = "Any",
     Factory = "Any",
     LabelCycler = "Any",
     ImageCycler = "Any",
     GridPageIndicator = "Any",
     CarouselLabel = "Any",
     ScrollTrack = "Any",
-    Any = "Any",
 }

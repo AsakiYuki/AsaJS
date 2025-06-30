@@ -1,10 +1,5 @@
 import { UUID } from "crypto";
-import {
-	ManifestInterface,
-	SemverString,
-	Type,
-	Version,
-} from "../../types/objects/Manifest";
+import { ManifestInterface, SemverString, Type, Version } from "../../types/objects/Manifest";
 import { Save } from "./Save";
 
 interface ManifestHeader {
@@ -22,31 +17,10 @@ interface ManifestMetadata {
 	generatedWith?: object;
 }
 
-/**
- * Represents a manifest object.
- *
- * @class Manifest
- */
 export class Manifest {
-	/**
-	 * The manifest data.
-	 *
-	 * @type {ManifestInterface}
-	 */
 	manifest: ManifestInterface;
 
-	/**
-	 * Creates an instance of a Manifest.
-	 *
-	 * @param {ManifestHeader} header - The header for the manifest.
-	 * @param {Type} [type=Type.Resources] - The type of the module (defaults to `Type.Resources`).
-	 * @param {ManifestMetadata} [metadata] - Optional metadata for the manifest.
-	 */
-	constructor(
-		header: ManifestHeader,
-		type: Type = Type.Resources,
-		metadata?: ManifestMetadata
-	) {
+	constructor(header: ManifestHeader, type: Type = Type.Resources, metadata?: ManifestMetadata) {
 		const uuid = Save.uuid();
 
 		this.manifest = {
@@ -74,11 +48,6 @@ export class Manifest {
 		};
 	}
 
-	/**
-	 * Converts the manifest to a JSON string.
-	 *
-	 * @returns {string} The manifest as a formatted JSON string.
-	 */
 	buildJson() {
 		return JSON.stringify(this.manifest, null, 4);
 	}

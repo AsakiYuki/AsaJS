@@ -12,14 +12,8 @@ import { UIWriteJson } from "./PreCompile";
 import { localizeText } from "../components/LocalizeText";
 import { LangBuilder } from "./generator/LangBuilder";
 
-// Retrieve the configuration settings
 const config = Configs.getConfig();
 
-/**
- * Installs the resource pack using the provided configuration and paths.
- * The installer uses either the Minecraft Preview or Stable version based on the config settings.
- * It also installs to either the development or production environment based on the config.
- */
 export const installer = new ResourcePacks({
     installGame: config.installer.previewVersion ? Minecraft.Preview : Minecraft.Stable,
     installFolder: config.installer.developEvironment
@@ -27,13 +21,6 @@ export const installer = new ResourcePacks({
         : ResourcePack.Production,
 });
 
-/**
- * Builds the manifest file for the resource pack and writes it to the specified installation path.
- *
- * @param {string} installPath - The directory path where the manifest file will be saved.
- *
- * @returns {void} - This function does not return any value.
- */
 function manifestBuild(installPath: string): void {
     const { name, description, uuid, version, baseGameVersion } = config.manifest;
     const manifest = new Manifest({ name, description, uuid, version });

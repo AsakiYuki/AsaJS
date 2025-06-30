@@ -16,10 +16,11 @@ import { Properties } from "../types/objects/properties/Properties";
 import { VariablesInterface } from "../types/objects/Variables";
 import { Binding } from "../types/values/Binding";
 import { Var } from "../types/values/Variable";
+import { Class } from "./Class";
 import { Random } from "./Random";
 import { UI } from "./UI";
 
-type ExtractUIType<T> = T extends UI<infer U> ? U : T extends Modify<infer U> ? U : never;
+export type ExtractUIType<T> = T extends UI<infer U> ? U : T extends Modify<infer U> ? U : never;
 
 export interface OverrideInterface {
     setProperties(properties: PropertiesType[Types]): OverrideInterface;
@@ -104,7 +105,7 @@ export interface ModificationControls {
  *
  * @class Modify
  */
-export class Modify<T extends Types = Types.Any, K extends string = string> {
+export class Modify<T extends Types = Types.Any, K extends string = string> extends Class {
     private properties: Properties = {};
     private controls?: Array<ChildElement>;
     private bindings?: Array<BindingInterface>;
@@ -315,8 +316,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
     };
 
     private constructor(properties?: Properties, identifier?: Identifier) {
-        if (properties) this.override.setProperties(properties);
+        super()
 
+        if (properties) this.override.setProperties(properties);
         if (identifier && identifier.name?.match(/\w+/g)?.length === 1 && identifier.namespace) this.isValidPath = true;
         else this.isValidPath = false;
 
@@ -501,13 +503,4 @@ export class Modify<T extends Types = Types.Any, K extends string = string> {
                 })
             ));
     }
-
-    private static apply() { }
-    private static arguments = "";
-    private static bind() { }
-    private static call() { }
-    private static caller = "";
-    private static length = "";
-    private static name = "";
-    private static toString() { }
 }
