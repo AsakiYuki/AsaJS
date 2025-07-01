@@ -1,8 +1,8 @@
-import { OverrideInterface } from "../../components/Modify";
 import { UI } from "../../components/UI";
 import { BindingName } from "../../types/enums/BindingName";
 import { BindingType } from "../../types/enums/BindingType";
 import { BindingInterface } from "../../types/objects/BindingInterface";
+import { OverrideInterface } from "../../types/objects/Modify";
 import { Var } from "../../types/values/Variable";
 import { BindingCompiler } from "../BindingCompiler";
 import { Log } from "../generator/Log";
@@ -29,10 +29,18 @@ export function ReadBinding(
                     const srcControlName = <string>bindingObject.source_control_name;
 
                     delete bindingObject.source_control_name;
-                    const newBindings = BindingCompiler.findSourceBindings(BindingCompiler.getCompilePart(srcBin), srcControlName, arg.sourceBindings);
-                    for (const key in newBindings.reSourceBindings) arg.sourceBindings[key] = newBindings.reSourceBindings[key];
+                    const newBindings = BindingCompiler.findSourceBindings(
+                        BindingCompiler.getCompilePart(srcBin),
+                        srcControlName,
+                        arg.sourceBindings
+                    );
+                    for (const key in newBindings.reSourceBindings)
+                        arg.sourceBindings[key] = newBindings.reSourceBindings[key];
 
-                    bindingObject.source_property_name = BindingCompiler.compile(`[${newBindings.newTokens.join("")}]`, arg);
+                    bindingObject.source_property_name = BindingCompiler.compile(
+                        `[${newBindings.newTokens.join("")}]`,
+                        arg
+                    );
                 } else bindingObject.source_property_name = BindingCompiler.compile(srcBin, arg);
             }
 

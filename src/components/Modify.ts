@@ -6,105 +6,23 @@ import { ReadBinding } from "../compilers/reader/ReadBinding";
 import { ReadProperties, ReadValue } from "../compilers/reader/ReadProperties";
 import { ChildElement } from "../types/components/ChildIdentifier";
 import { Identifier } from "../types/components/Identifier";
-import { UIChildNameCallback } from "../types/components/NameCallback";
 import { ExtendInterface } from "../types/components/UIInterface";
-import { BindingName } from "../types/enums/BindingName";
 import { Types } from "../types/enums/Types";
 import { BindingInterface } from "../types/objects/BindingInterface";
 import { PropertiesType } from "../types/objects/elements/PropertiesType";
+import {
+    ModificationControls,
+    OverrideInterface,
+    ModificationInterface,
+    ExtractUIType,
+} from "../types/objects/Modify";
 import { Properties } from "../types/objects/properties/Properties";
 import { VariablesInterface } from "../types/objects/Variables";
 import { Binding } from "../types/values/Binding";
-import { Var } from "../types/values/Variable";
 import { Class } from "./Class";
 import { Random } from "./Random";
 import { UI } from "./UI";
 
-export type ExtractUIType<T> = T extends UI<infer U> ? U : T extends Modify<infer U> ? U : never;
-
-export interface OverrideInterface {
-    setProperties(properties: PropertiesType[Types]): OverrideInterface;
-    addChild<T extends string | UI<any>>(
-        element?: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        name?: string | null,
-        callback?: UIChildNameCallback
-    ): OverrideInterface;
-    addBindings(
-        binding?: BindingInterface | Binding | Var | Array<BindingInterface | Binding | Var>
-    ): OverrideInterface;
-    addVariables(variables?: VariablesInterface): OverrideInterface;
-    searchBinding(bindingName: BindingName, controlName: string): any;
-    sourceBindings: Record<string, string>;
-}
-
-export interface ModificationBindingsInterface {
-    remove(binding: BindingInterface | BindingInterface[]): ModificationBindingsInterface;
-    addBindings(
-        binding: BindingInterface | Binding | Var | Array<BindingInterface | Binding | Var>
-    ): ModificationBindingsInterface;
-}
-
-export interface ModificationControlsInterface<K extends string = string> {
-    remove(childName: K | K[]): ModificationControlsInterface;
-    moveBack(childName: K | K[]): ModificationControlsInterface;
-    moveFront(childName: K | K[]): ModificationControlsInterface;
-    moveAfter(childName: K | K[]): ModificationControlsInterface;
-    moveBefore(childName: K | K[]): ModificationControlsInterface;
-    replace<T extends string | UI<any> | Modify<any, any>>(
-        childName: K,
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertBack<T extends string | UI<any> | Modify<any, any>>(
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertFront<T extends string | UI<any> | Modify<any, any>>(
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertAfter<T extends string | UI<any> | Modify<any, any>>(
-        childName: K,
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-    insertBefore<T extends string | UI<any> | Modify<any, any>>(
-        childName: K,
-        element: T,
-        properties?: PropertiesType[ExtractUIType<typeof element>],
-        elementName?: string
-    ): ModificationControlsInterface;
-}
-
-export interface ModificationInterface<T extends string = string> {
-    bindings: ModificationBindingsInterface;
-    controls: ModificationControlsInterface<T>;
-}
-
-export interface ModificationControls {
-    remove: Array<string>;
-    replace: Array<[string, ChildElement]>;
-    insertBack: Array<ChildElement>;
-    insertFront: Array<ChildElement>;
-    insertAfter: Array<[string, ChildElement]>;
-    insertBefore: Array<[string, ChildElement]>;
-    moveBack: Array<string>;
-    moveFront: Array<string>;
-    moveAfter: Array<string>;
-    moveBefore: Array<string>;
-}
-
-/**
- * Represents a class used to modify the properties, controls, bindings, and variables of a Minecraft UI element.
- * This class provides various methods to manipulate UI elements dynamically and compile them into JSON format.
- *
- * @class Modify
- */
 export class Modify<T extends Types = Types.Any, K extends string = string> extends Class {
     private properties: Properties = {};
     private controls?: Array<ChildElement>;

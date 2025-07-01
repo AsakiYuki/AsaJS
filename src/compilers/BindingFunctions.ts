@@ -1,7 +1,7 @@
 import { Class } from "../components/Class";
-import { ModificationBindingsInterface, OverrideInterface } from "../components/Modify";
 import { Random } from "../components/Random";
 import { UI } from "../components/UI";
+import { OverrideInterface, ModificationBindingsInterface } from "../types/objects/Modify";
 import { Binding } from "../types/values/Binding";
 import { BindingCompiler, BindingFunctionObject } from "./BindingCompiler";
 import { Log } from "./generator/Log";

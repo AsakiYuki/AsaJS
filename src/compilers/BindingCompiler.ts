@@ -1,6 +1,6 @@
-import { OverrideInterface } from "../components/Modify";
 import { Random } from "../components/Random";
 import { UI } from "../components/UI";
+import { OverrideInterface } from "../types/objects/Modify";
 import { Binding } from "../types/values/Binding";
 import { funcObj } from "./BindingFunctions";
 import { Log } from "./generator/Log";
@@ -15,7 +15,9 @@ export class BindingCompiler {
     }
 
     static getCompilePart(propertyName: string | string[]) {
-        return Array.isArray(propertyName) ? propertyName[0] : propertyName.slice(1, propertyName.length - 1)
+        return Array.isArray(propertyName)
+            ? propertyName[0]
+            : propertyName.slice(1, propertyName.length - 1);
     }
 
     static build(propertyName: string, arg: UI | OverrideInterface) {
@@ -458,25 +460,40 @@ export class BindingCompiler {
         return rndName;
     }
 
-    static findSourceBindings(token: string, sourceControlsName: string, lastResourceBindings?: any) {
+    static findSourceBindings(
+        token: string,
+        sourceControlsName: string,
+        lastResourceBindings?: any
+    ) {
         const reSourceBindings: Record<string, string> = lastResourceBindings || {};
         const newTokens: string[] = [];
 
         this.getTokens(this.splitString(token)).forEach(token => {
             if (this.isBindingOrVariable(token)) {
                 newTokens.push(
-                    reSourceBindings[`${token}:${sourceControlsName}`] ||= <string>Random.bindingName()
+                    (reSourceBindings[`${token}:${sourceControlsName}`] ||= <string>(
+                        Random.bindingName()
+                    ))
                 );
             } else if (this.isString(token)) {
-                newTokens.push(this.getStringTokens(token).map(token => {
-                    if (this.isStringCode(token)) {
-                        const sourceBindings = this.findSourceBindings(token.slice(1, token.length - 1), sourceControlsName, reSourceBindings);
-                        for (const key in sourceBindings.reSourceBindings) reSourceBindings[key] = sourceBindings.reSourceBindings[key];
-                        return `{${sourceBindings.newTokens.join("")}}`;
-                    } else return token;
-                }).join(""));
+                newTokens.push(
+                    this.getStringTokens(token)
+                        .map(token => {
+                            if (this.isStringCode(token)) {
+                                const sourceBindings = this.findSourceBindings(
+                                    token.slice(1, token.length - 1),
+                                    sourceControlsName,
+                                    reSourceBindings
+                                );
+                                for (const key in sourceBindings.reSourceBindings)
+                                    reSourceBindings[key] = sourceBindings.reSourceBindings[key];
+                                return `{${sourceBindings.newTokens.join("")}}`;
+                            } else return token;
+                        })
+                        .join("")
+                );
             } else newTokens.push(token);
-        })
+        });
 
         return { reSourceBindings, newTokens };
     }

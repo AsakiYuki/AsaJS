@@ -16,7 +16,7 @@ export interface BindingInterface {
     binding_collection_prefix?: Var | Str;
     binding_condition?: Var | BindingCondition;
     source_control_name?: Var | Str;
-    source_property_name?: Str | [Str];
+    source_property_name?: string | [string];
     target_property_name?: Var | BindingName | Binding;
     resolve_sibling_scope?: Var | Bool;
 }

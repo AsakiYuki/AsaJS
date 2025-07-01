@@ -1,7 +1,6 @@
 import fs from "fs";
 import { Manifest } from "./generator/Manifest";
 import { UIBuilder } from "./generator/UIBuilder";
-import { ResourcePacks, Minecraft, ResourcePack } from "./Installer";
 import { Configs } from "./Config";
 import { CompressPack } from "./Compress";
 import { SoundHandler as Sounds } from "./generator/Sounds";
@@ -11,6 +10,8 @@ import { Encoder } from "./Encoder";
 import { UIWriteJson } from "./PreCompile";
 import { localizeText } from "../components/LocalizeText";
 import { LangBuilder } from "./generator/LangBuilder";
+import { Minecraft, ResourcePack } from "../types/objects/Installer";
+import { ResourcePacks } from "./Installer";
 
 const config = Configs.getConfig();
 
@@ -164,4 +165,4 @@ process.on("beforeExit", () => {
     }
 });
 
-export { };
+export {};
