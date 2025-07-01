@@ -51,7 +51,7 @@ export class BindingCompiler {
     }
 
     static buildNewPropertyBag(token: string, arg: UI | OverrideInterface) {
-        const bindingName: any = `#${Random.getName()}`;
+        const bindingName: any = Random.bindingName();
         arg.setProperties({
             property_bag: {
                 [bindingName]: BindingCompiler.build(token, arg),
@@ -96,7 +96,7 @@ export class BindingCompiler {
 
             thirdTokens.push(...tokens.slice(endIndex + 1));
 
-            const generateBindingName = `#${Random.getName()}`;
+            const generateBindingName = <`#${string}`>Random.bindingName();
             const firstBinding = this.checkAndBuild(firstTokens.join(""), arg);
             const secondBinding = `${generateBindingName}true`;
             const thirdBinding = `${generateBindingName}false`;
@@ -440,7 +440,7 @@ export class BindingCompiler {
     }
 
     static buildNewBinding(token: string, arg: UI | OverrideInterface) {
-        const rndName: `#${string}` = `#${Random.getName()}`;
+        const rndName = <`#${string}`>Random.bindingName();
 
         if (this.isHasBinding(token)) {
             if (this.isBindingOrVariable(token)) return token;
