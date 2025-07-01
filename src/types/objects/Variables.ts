@@ -1,5 +1,1 @@
-export interface VariablesInterface {
-    [key: `$${string}` | `(${string})`]: {
-        [key: `$${string}`]: any;
-    };
-}
+export type VariablesInterface = Record<string, Record<string, any>>;

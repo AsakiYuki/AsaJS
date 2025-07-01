@@ -1,7 +1,2 @@
-export interface BindingPropertyBag {
-    [key: `#${string}`]: string | number | boolean;
-}
-
-export interface PropertyBag {
-    [key: string]: string | number | boolean;
-}
+export type BindingPropertyBag = Record<`#${string}`, string | number | boolean>;
+export type PropertyBag = Record<string, string | number | boolean>;

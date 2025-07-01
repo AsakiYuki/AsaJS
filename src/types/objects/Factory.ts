@@ -1,5 +1,3 @@
 import { Any } from "../values/Any";
 
-export interface Factory {
-    [key: string]: Any
-}
+export type Factory = Record<string, Any>;
