@@ -35,7 +35,7 @@ export interface OverrideInterface {
     ): OverrideInterface;
     addVariables(variables?: VariablesInterface): OverrideInterface;
     searchBinding(bindingName: BindingName, controlName: string): any;
-    sourceBindings: Record<string, string>
+    sourceBindings: Record<string, string>;
 }
 
 export interface ModificationBindingsInterface {
@@ -150,9 +150,13 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
             name ||= Random.getName();
 
             this.controls.push({
-                [`${name}${typeof element === "string" ? element : element.getPath()}`]: properties
-                    ? ReadProperties(properties)
-                    : {},
+                [`${name}@${
+                    typeof element === "string"
+                        ? element.startsWith("@")
+                            ? element.slice(1)
+                            : element
+                        : element.getPath()
+                }`]: properties ? ReadProperties(properties) : {},
             });
 
             callback?.(this, name);
@@ -271,8 +275,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
                 this.modifyControls.replace.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
-                            }`]: ReadProperties(properties || {}),
+                        [`${elementName || Random.getName()}@${
+                            typeof ui === "string" ? ui : ui.getPath()
+                        }`]: ReadProperties(properties || {}),
                     },
                 ]);
                 return this.modify.controls;
@@ -281,8 +286,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
                 this.modifyControls.insertAfter.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
-                            }`]: ReadProperties(properties || {}),
+                        [`${elementName || Random.getName()}@${
+                            typeof ui === "string" ? ui : ui.getPath()
+                        }`]: ReadProperties(properties || {}),
                     },
                 ]);
                 return this.modify.controls;
@@ -291,8 +297,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
                 this.modifyControls.insertBefore.push([
                     childName,
                     {
-                        [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
-                            }`]: ReadProperties(properties || {}),
+                        [`${elementName || Random.getName()}@${
+                            typeof ui === "string" ? ui : ui.getPath()
+                        }`]: ReadProperties(properties || {}),
                     },
                 ]);
                 return this.modify.controls;
@@ -300,15 +307,17 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
 
             insertBack: (ui, properties, elementName) => {
                 this.modifyControls.insertBack.push({
-                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
-                        }`]: ReadProperties(properties || {}),
+                    [`${elementName || Random.getName()}@${
+                        typeof ui === "string" ? ui : ui.getPath()
+                    }`]: ReadProperties(properties || {}),
                 });
                 return this.modify.controls;
             },
             insertFront: (ui, properties, elementName) => {
                 this.modifyControls.insertFront.push({
-                    [`${elementName || Random.getName()}@${typeof ui === "string" ? ui : ui.getPath()
-                        }`]: ReadProperties(properties || {}),
+                    [`${elementName || Random.getName()}@${
+                        typeof ui === "string" ? ui : ui.getPath()
+                    }`]: ReadProperties(properties || {}),
                 });
                 return this.modify.controls;
             },
@@ -316,10 +325,11 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
     };
 
     private constructor(properties?: Properties, identifier?: Identifier) {
-        super()
+        super();
 
         if (properties) this.override.setProperties(properties);
-        if (identifier && identifier.name?.match(/\w+/g)?.length === 1 && identifier.namespace) this.isValidPath = true;
+        if (identifier && identifier.name?.match(/\w+/g)?.length === 1 && identifier.namespace)
+            this.isValidPath = true;
         else this.isValidPath = false;
 
         this.name = identifier?.name || "";
@@ -330,8 +340,8 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
         if (this.isValidPath) return `${this.namespace}.${this.name}`;
         else {
             Log.error(`${CurrentLine()} Cannot use this element for extend or addChild!`);
-            return ""
-        };
+            return "";
+        }
     }
 
     getElement() {
@@ -339,7 +349,7 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
     }
 
     extend(identifier?: ExtendInterface, properties?: PropertiesType[ExtractUIType<typeof this>]) {
-        return UI.extend(this, properties, identifier)
+        return UI.extend(this, properties, identifier);
     }
 
     getUI() {
