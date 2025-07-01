@@ -47,14 +47,17 @@ export class ResourcePacks {
         if (config.installer.installPath && config.installer.customPath) {
             this.gamePath = config.installer.installPath;
         } else {
-            if (process.env.LOCALAPPDATA) {
-                this.gamePath = `${process.env.LOCALAPPDATA}/Packages/${data.installGame}/LocalState`;
-            } else if (process.env.HOME) {
-                this.gamePath = `${process.env.HOME}/.local/share/mcpelauncher`;
-                if (!fs.existsSync(this.gamePath))
-                    this.gamePath = `${process.env.HOME}/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher`;
-            } else {
-                this.gamePath = "";
+            switch (process.platform) {
+                case "win32":
+                    this.gamePath = `${process.env.LOCALAPPDATA}/Packages/${data.installGame}/LocalState`;
+                    break;
+                case "linux":
+                    this.gamePath = `${process.env.HOME}/.local/share/mcpelauncher`;
+                    if (!fs.existsSync(this.gamePath))
+                        this.gamePath = `${process.env.HOME}/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher`;
+                    break;
+                default:
+                    this.gamePath = "";
             }
         }
 
