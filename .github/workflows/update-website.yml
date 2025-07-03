@@ -23,7 +23,7 @@ jobs:
 
                   cd src/jsui-docs
                   git fetch origin
-                  git checkout origin/docs
+                  git checkout origin/main
                   cd ../../
 
                   git config user.name "Asaki Yuki"
