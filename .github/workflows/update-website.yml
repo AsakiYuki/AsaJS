@@ -19,8 +19,12 @@ jobs:
 
             - name: Update docs
               run: |
-                  git submodule set-branch --branch docs src/jsui-docs || true
-                  git submodule update --remote --checkout src/jsui-docs
+                  git submodule update --init --recursive
+
+                  cd src/jsui-docs
+                  git fetch origin
+                  git checkout docs
+                  cd ../../
 
                   git config user.name "Asaki Yuki"
                   git config user.email "vantrong2007vn@gmail.com"
