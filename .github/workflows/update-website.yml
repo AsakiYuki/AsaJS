@@ -21,7 +21,7 @@ jobs:
               run: |
                   cd src/jsui-docs
                   git config pull.rebase false
-                  git pull origin HEAD
+                  git pull origin docs
                   cd ../../
 
                   git config user.name "Asaki Yuki"
