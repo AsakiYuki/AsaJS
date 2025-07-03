@@ -20,6 +20,7 @@ jobs:
             - name: Update docs
               run: |
                   cd src/jsui-docs
+                  git config pull.rebase false
                   git pull origin HEAD
                   cd ../../
 
