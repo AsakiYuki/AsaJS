@@ -1,0 +1,123 @@
+# Getting Started!
+
+This is the official guide to getting started with JsonUI Scripting.
+
+## System requirements
+
+Before you get started, make sure you have:
+
+-   [Node.js](https://nodejs.org/) installed
+-   Windows or Linux
+
+## Installation
+
+Install the core package using npm:
+
+```sh
+npm install jsonui-scripting
+```
+
+> Tip: It's recommended to use a `src` directory to organize your project.
+
+In your `package.json`, you can optionally add these scripts for development and production builds:
+
+```json
+{
+	"scripts": {
+		"dev": "node --watch src/app.js",
+		"build": "node src/app.js"
+	}
+}
+```
+
+### Project Structure
+
+Create a `src` directory and a main entry file inside it:
+
+```sh
+mkdir src
+touch src/app.js
+```
+
+### Sample Usage (src/app.js)
+
+```javascript
+import { Anchor, BindingName, UI, Vanilla } from "jsonui-scripting"
+
+// Game start screen content
+const vanillaStartScreenContent = Vanilla.start.startScreenContent()
+
+// A custom start screen
+const ourStartScreenContent = UI.panel({ size: "100%" }).addChild(vanillaStartScreenContent)
+
+// Toggle for hide start screen
+const ourToggle = UI.extend(Vanilla.commonToggles.lightTextToggle(), {
+	w: 84,
+	h: 28,
+	$button_text: "Hide Screen",
+	$toggle_name: "hide_start_screen",
+	$toggle_view_binding_name: "hide_start_screen_state",
+})
+
+// Add toggle to start screen content
+ourStartScreenContent.addChild(ourToggle, {
+	anchor: Anchor.TopLeft,
+	x: 5,
+	y: 5,
+})
+
+vanillaStartScreenContent.override.addBindings([
+	{
+		binding_name: BindingName.ScreenNeedsRebuild,
+		binding_name_override: "#bind_0",
+	},
+	{
+		source_control_name: "hide_start_screen_state",
+		source_property_name: "#toggle_state",
+		target_property_name: "#bind_1",
+	},
+	{
+		source_property_name: "[!#bind_0 && !#bind_1]",
+		target_property_name: "#visible",
+	},
+])
+
+// Modify start screen content
+Vanilla.start.startScreen({
+	$screen_content: ourStartScreenContent.getPath(),
+})
+```
+
+> Tip: You can find the [Bedrock Samples repository](https://github.com/Mojang/bedrock-samples/tree/main/resource_pack/ui) for vanilla Minecraft UI paths.
+
+## Building the Project
+
+To compile the DSL and generate a resource pack:
+
+```sh
+npm run build
+```
+
+For live rebuilding during development:
+
+```sh
+npm run dev
+```
+
+### Output
+
+The build process generates a full **JsonUI-compatible resource pack**, stored in:
+
+-   `.build` - compiled output
+-   `.minecraft` - symbolic link for automatic installation (if configured)
+
+## Example Projects
+
+Want to see JsonUI Scripting in action? Here are some example projects to help you get started quickly:
+
+-   [Live Wallpaper Generator](https://github.com/AsakiYuki/mc-livewallpaper-generator) - Generate live wallpapers for your favorite UI Resource Packs.
+-   [ItemID Viewer](https://github.com/AsakiYuki/minecraft-item-id-viewer) - A tool to view Item IDs as text in **Minecraft: Bedrock Edition** (This package updates automatically with each version, but users must update it manually [here](/download/minecraft-item-id-viewer)).
+
+## Next: Defining Elements
+
+[Defining Elements](/jsonui/defining-elements): Learn how to define and structure elements using JsonUI Scripting.

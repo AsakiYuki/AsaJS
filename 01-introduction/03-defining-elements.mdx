@@ -1,0 +1,57 @@
+# Defining Elements
+
+This section covers how to define and structure elements using JsonUI Scripting.
+
+## How It Works
+
+JsonUI Scripting takes an **object-oriented programming (OOP)** approach to defining UI. Instead of writing raw JSON, you use JavaScript/TypeScript APIs to build UI structures that are easier to reuse and reason about.
+
+Here’s a comparison between standard JSON-UI and JsonUI Scripting:
+
+### JsonUI Scripting
+
+```javascript
+import { UI } from "jsonui-scripting"
+
+UI.panel({
+	size: "100%",
+})
+```
+
+### JSON-UI
+
+```json
+{
+	"a_panel": {
+		"type": "panel",
+		"size": ["100%", "100%"]
+	},
+	"namespace": "jsonui"
+}
+```
+
+JsonUI Scripting automatically compiles your code into valid JsonUI format, making it compatible with Minecraft: Bedrock Edition. It also adds the benefit of abstraction, composition, and logic — features you can’t achieve directly with static JSON.
+
+## Supported Element Types
+
+JsonUI Scripting supports all standard JsonUI element types, which means anything you could build with JsonUI, you can build here — but with cleaner syntax and logic support.
+
+-   **Containers**: `panel`, `stack_panel`, `collection_panel`, `grid`
+-   **Text/Media**: `label`, `image`
+-   **Inputs**: `input_panel`, `button`, `toggle`, `dropdown`, `slider`, `slider_box`, `edit_box`
+-   **Scrolling**: `scroll_view`, `scrollbar_track`, `scrollbar_box`
+-   **Interactive**: `screen`, `custom`
+-   **Screens**: `screen`
+
+You can use any of these element types as building blocks for your UI.
+
+## Why Use JsonUI Scripting?
+
+-   Write UI in **JavaScript** with logic, reusability, and structure
+-   Avoid copy-pasting JSON blocks manually
+-   Use variables, conditions, and binding expressions natively
+-   Easier to **scale and maintain** large UI projects
+
+## Next: Modify Elements
+
+[Modify Elements](/jsonui/modify-elements): Learn how to modify and extend Minecraft UI using JsonUI Scripting.

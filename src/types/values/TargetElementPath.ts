@@ -1,1 +1,0 @@
-export type TargetElementPath = `@${string}.${string}`;

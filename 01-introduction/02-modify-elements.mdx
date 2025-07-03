@@ -1,0 +1,81 @@
+# Modify Elements
+
+JsonUI Scripting allows you to modify or override existing UI elements in Minecraft: Bedrock Edition — whether it's the vanilla UI or custom UIs like [NekoUI](https://discord.gg/K4ktq5pQZK), [Ty-el UI](https://mcpedl.com/the-ty-els-ui-pack/), or [BetMC UI](https://discord.com/invite/6ZVDWUJUcU).
+
+## How to Modify Elements
+
+To modify Elements, you need to import the following modules:
+
+-   Vanilla: for built-in Minecraft UI Elements (e.g. start screen)
+-   Modify: for external/custom packs (e.g. [NekoUI](https://discord.gg/K4ktq5pQZK), [Ty-el UI](https://mcpedl.com/the-ty-els-ui-pack/), [BetMC UI](https://discord.com/invite/6ZVDWUJUcU))
+
+You can find modifiable UI paths for vanilla Minecraft from the [Bedrock Samples repository](https://github.com/Mojang/bedrock-samples/tree/main/resource_pack/ui).
+
+## Examples
+
+### Add a Text to the Vanilla Start Screen
+
+```javascript
+import { Vanilla, UI } from "jsonui-scripting"
+
+// Create a new text label
+const text = UI.label({
+	text: "Hello, world!",
+	layer: 10,
+	shadow: true,
+})
+
+// Add it to the start screen
+Vanilla.start.startScreenContent().addChild(text)
+```
+
+### Custom Background for NekoUI
+
+```javascript
+import { Modify, UI } from "jsonui-scripting"
+
+// Modify a specific UI file in NekoUI
+const nekoUI_BG = Modify.register(".hans_common_files/.hans_animated_background.json", "bg_anim")
+
+// Remove the default background
+nekoUI_BG.modify.controls.remove("bg_anim_b")
+
+// Create a new custom background
+const customBG = UI.panel({ size: "100%" }).addChild(
+	UI.image({
+		size: "100%",
+		fill: true,
+		texture: "path/to/your/image.png",
+	})
+)
+
+// Add the custom background
+nekoUI_BG.addChild(customBG)
+```
+
+> This only works if the user has [NekoUI](https://discord.gg/K4ktq5pQZK) installed.
+
+## Override UI Elements
+
+You can also override an entire screen or container using `.override`.
+
+Example: Override Vanilla Start Screen
+
+```javascript
+import { Vanilla, UI } from "jsonui-scripting"
+
+const text = UI.label({
+	text: "Hello, world!",
+	layer: 10,
+	shadow: true,
+})
+
+// Completely override the start screen
+Vanilla.start.startScreenContent().override.addChild(text)
+```
+
+## Tips
+
+-   Always check the UI hierarchy in the target UI pack to know what you’re modifying.
+-   Use `.override` carefully — it replaces the original content.
+-   If you’re modifying external packs, be sure the pack is actually installed and active in Minecraft.

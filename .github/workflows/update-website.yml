@@ -1,0 +1,33 @@
+name: Update Website
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    update-website:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Clone website repo
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{secrets.REPO}}
+                  token: ${{secrets.TOKEN}}
+                  submodules: true
+
+            - name: Update docs
+              run: |
+                  git submodule update --init --recursive
+
+                  cd src/jsui-docs
+                  git fetch origin
+                  git checkout origin/main
+                  cd ../../
+
+                  git config user.name "Asaki Yuki"
+                  git config user.email "vantrong2007vn@gmail.com"
+                  git add .
+                  git commit -m "🔄 Auto-update docs submodule" || echo "No changes"
+                  git push
