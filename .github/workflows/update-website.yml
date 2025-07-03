@@ -19,10 +19,8 @@ jobs:
 
             - name: Update docs
               run: |
-                  git submodule update --init --recursive
-
                   cd src/jsui-docs
-                  git checkout docs
+                  git pull origin HEAD
                   cd ../../
 
                   git config user.name "Asaki Yuki"
