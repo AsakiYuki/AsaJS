@@ -19,8 +19,6 @@ jobs:
 
             - name: Update docs
               run: |
-                  git submodule update --init --recursive
-
                   cd src/jsui-docs
                   git checkout docs
                   cd ../../
