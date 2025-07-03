@@ -22,8 +22,9 @@ jobs:
                   git submodule update --init --recursive
 
                   cd src/jsui-docs
-                  git fetch origin
-                  git checkout docs
+                  git fetch origin docs
+                  git checkout origin/docs
+                  git switch -c docs
                   cd ../../
 
                   git config user.name "Asaki Yuki"
