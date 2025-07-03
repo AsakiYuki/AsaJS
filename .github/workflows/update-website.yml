@@ -3,7 +3,7 @@ name: Update Website
 on:
     push:
         branches:
-            - main
+            - docs
 
 jobs:
     update-website:
