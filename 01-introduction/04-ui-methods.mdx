@@ -12,9 +12,17 @@ The override methods is in new instanced UI and new instanced Modify.override
 -   Action: add new properties to UI element
 -   Ex:
 ```JavaScript
-import { UI, Vanilla } from "jsonui-scripting";
+import { UI, Vanilla, Anchor } from "jsonui-scripting";
 
 const ui = UI.panel({
 	size: [16, 16],
-})
+});
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"type": "panel",
+		"size": [ 16, 16 ]
+	}
+}
 ```
