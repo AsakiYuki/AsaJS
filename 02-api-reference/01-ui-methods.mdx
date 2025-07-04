@@ -12,7 +12,7 @@ The override methods is in new instanced UI and new instanced Modify.override
 -   Action: set or add new properties to UI element
 -   Ex:
 ```JavaScript
-import { UI, Modify, Anchor } from "jsonui-scripting";
+import { UI, Modify, Anchor, BindingType, BindingName } from "jsonui-scripting";
 
 const ui = UI.panel({
 	size: [16, 16],
@@ -81,5 +81,32 @@ nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
 ```json
 {
 	"bg_anim": { "controls": [] }
+}
+```
+
+### .addBindings:
+-   Param: bindings object or array contain bindings object(s)
+-   Action: add new bindings to element.
+-   Ex:
+```JavaScript
+ui.addBindings({
+	binding_type: BindingType.View,
+	source_control_name: "test_toggle",
+	source_property_name: BindingName.ToggleState,
+	target_property_name: BindingName.Visible,
+});
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"bindings": [
+			{
+				"binding_type": "view",
+				"source_control_name": "test_toggle",
+				"source_property_name": "#toggle_state",
+				"target_property_name": "#visible",
+			}
+		]
+	}
 }
 ```
