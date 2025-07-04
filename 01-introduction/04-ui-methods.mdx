@@ -8,8 +8,8 @@ The override methods is in new instanced UI and new instanced Modify.override
 
 ### setProperties:
 
--   Param: properties
--   Action: add new properties to UI element
+-   Param: (properties)
+-   Action: set or add new properties to UI element
 -   Ex:
 ```JavaScript
 import { UI, Modify, Anchor } from "jsonui-scripting";
@@ -50,6 +50,36 @@ nekoUI_BG.override.setProperties({
 ```
 
 ### addChild:
--   Gemeric: T extends string or UI
--   Param: 
-*   element: T
+-   Gemeric: T extends string or UI,
+-   Param: (element?: T, properties?, name?, callback?),
+-   Action: Add new child controls to element.
+-   Ex:
+```
+ui.addChild(UI.image, {
+	texture: "textures/ui/White",
+}, "test");
+
+nekoUI_BG.addChild(); // Use to override all controls by a empty array
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"controls": [
+			{
+				"test@d5dhririrb28db2.2526_ELEMENT_1": {
+					"texture": "textures/ui/White"
+				}
+			}
+		]
+	},
+	"2526_ELEMENT_1": {
+		"type": "image'
+	},
+	"namespace": "d5dhririrb28db2"
+}
+```
+```
+{
+	"bg_anim": { "controls": [] }
+}
+```
