@@ -5,11 +5,11 @@ contributors:
     - W.DevEndd
 ---
 
-# UI Methods
+# UI Methods (UI/Modify):
 
 JsonUI-Scripting have many methods to complete UI.
 
-## Override Methods
+## Override Methods (UI/Modify.override):
 
 The override methods is in new instanced UI and new instanced Modify.override
 
@@ -144,12 +144,29 @@ ui.addVariables({
 }
 ```
 
-## Modify Methods
+## Modify Methods (Modify.modify):
 
 Modify methods is modify the UI element but not override origin properties of this element.
 
-### Modifications Controls
+### .modify.controls:
 
 The modify methods which use to modify child controls in UI element but no override oringin `controls` property.
 
 -   .insertFront/.insertBack: Likes .addChild, but it's modify new child control to element at front/back.
+Ex:
+```JavaScript
+nekoUI_BG.modify.insertFront(UI.panel());
+```
+```json
+{
+	"bg_anim": {
+		"modifications": [
+			{
+				"
+			{
+				"test@d5dhririrb28db2.2526_ELEMENT_1": {
+					"texture": "textures/ui/White"
+				}
+			}
+		]
+	},
