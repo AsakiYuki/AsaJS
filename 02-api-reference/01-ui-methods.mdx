@@ -117,3 +117,28 @@ ui.addBindings({
 	}
 }
 ```
+### .addVariables:
+-   Param: variables?
+-   Action: add variables to element.
+-   Ex:
+```
+ui.addVariables({
+	"$varrr": {
+		"$example_var_1": false,
+		"$example_var_2": 20,
+	},
+});
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"variables": [
+			{
+				"required": "$varrr",
+				"$example_var_1": false,
+				"$example_var_2": 20
+			}
+		]
+	}
+}
+```
