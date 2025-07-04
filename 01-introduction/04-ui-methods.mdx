@@ -22,7 +22,11 @@ ui.setProperties({
 	anchor: Anchor.TopRight,
 });
 
-const 
+const nekoUI_BG = Modify.register(".hans_common_files/.hans_animated_background.json", "bg_anim");
+
+nekoUI_BG.override.setProperties({
+	layer: -999,
+}),
 ```
 ```json
 {
@@ -36,3 +40,9 @@ const
 	"namespace": "d5dhririrb28db2"
 }
 ```
+```.hans_common_files/.hans_animated_background.json
+{
+	"bg_anim": {
+		"layer": -999
+	}
+}
