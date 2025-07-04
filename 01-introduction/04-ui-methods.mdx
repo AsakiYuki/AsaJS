@@ -17,12 +17,19 @@ import { UI, Vanilla, Anchor } from "jsonui-scripting";
 const ui = UI.panel({
 	size: [16, 16],
 });
+ui.setProperties({
+	layer: 5,
+	anchor: Anchor.TopRight,
+});
 ```
 ```json
 {
 	"7272_ELEMENT_12": {
 		"type": "panel",
-		"size": [ 16, 16 ]
+		"size": [ 16, 16 ],
+		"layer": 5,
+		"anchor_from": "top_right",
+		"anchor_to": "top_right"
 	},
 	"namespace": "d5dhririrb28db2"
 }
