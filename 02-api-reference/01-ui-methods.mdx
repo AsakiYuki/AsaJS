@@ -166,9 +166,39 @@ nekoUI_BG.modify.insertFront(UI.panel());
 				"array_name": "controls",
 				"value": [
 					{
-						"test@d5dhririrb28db2.2526_ELEMENT_1": {
-							"texture": "textures/ui/White"
-						}
+						"test@d5dhririrb28db2.2526_ELEMENT_1": {}
+					}
+				]
+			}
+		]
+	}
+}
+```
+-   .replace/insertBefore/insertAfter: Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
+Ex:
+```JavaScript
+nekoUI_BG.modify.controls.replace("old_control", UI.panel(), {}, "new_control");
+nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
+```
+```json
+{
+	"bg_anim": {
+		"modifications": [
+			{
+				"operation": "replace",
+				"control_name": "old_control",
+				"value": [
+					{
+						"new_control@d5dhririrb28db2.2526_ELEMENT_1": {}
+					}
+				]
+			},
+			{
+				"operation": "insert_before",
+				"control_name": "new_control",
+				"value": [
+					{
+						"2g2usuen2jeiei@d5dhririrb28db2.2526_ELEMENT_2": {}
 					}
 				]
 			}
