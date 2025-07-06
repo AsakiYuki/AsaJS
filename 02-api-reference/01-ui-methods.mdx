@@ -207,6 +207,7 @@ nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
 }
 ```
 -   .moveBack/.moveFront/.moveBefore/.moveAffter/.remove: From child name, it move back/front/before/after or remove the child element have that name.
+
 Ex:
 ```JavaScript
 nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
@@ -217,6 +218,7 @@ nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
 The method to modify the bindings property, there have:
 -   .addBindings: But not override origin property.
 -   .remove: Too hard to use:(
+
 Ex:
 ```JavaScript
 nekoUI_BG.modify.bindings.addBindings({
@@ -233,6 +235,7 @@ Include:
 -   .getFullPath
 -   .getPath
 -   .getUI
+
 Ex:
 ```JavaScript
 import { UI, Modify, Anchor } from "jsonui-scripting";
