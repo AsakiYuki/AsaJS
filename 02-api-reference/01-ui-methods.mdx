@@ -174,7 +174,7 @@ nekoUI_BG.modify.insertFront(UI.panel());
 	}
 }
 ```
--   .replace/insertBefore/insertAfter: Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
+-   .replace/.insertBefore/.insertAfter: Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
 Ex:
 ```JavaScript
 nekoUI_BG.modify.controls.replace("old_control", UI.panel(), {}, "new_control");
@@ -205,4 +205,10 @@ nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
 		]
 	}
 }
+```
+-   .moveBack/.moveFront/.moveBefore/.moveAffter/.remove: From child name, it move back/front/before/after or remove the child element have that name.
+Ex:
+```JavaScript
+nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
+// ...
 ```
