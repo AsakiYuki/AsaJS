@@ -13,7 +13,7 @@
         "jsonc-parser": "^3.3.1"
     },
     "name": "asajs",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "description": "Make your Minecraft JsonUI with ScriptingAPI",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
