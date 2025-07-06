@@ -1,4 +1,4 @@
-# JsonUI Scripting
+# AsaJS
 
 A framework specifically designed for creating UI resource packs using JavaScript/TypeScript for Minecraft: Bedrock Edition, packed with many useful utilities!
 
@@ -6,20 +6,20 @@ A framework specifically designed for creating UI resource packs using JavaScrip
 
 <p>To install it into your project, you need to have <b>Node.js</b> pre-installed to use it!</p>
 
-<p>You also need to create a project and use the following command to start using <b>JsonUI Scripting</b>:</p>
+<p>You also need to create a project and use the following command to start using <b>AsaJS</b>:</p>
 
 ```batch
-npm install jsonui-scripting
+npm install asajs
 ```
 
-<p>That command will add the JsonUI Scripting library to your project, and you can start using it.</p>
+<p>That command will add the AsaJS library to your project, and you can start using it.</p>
 
 # How to use
 
 <p>The syntax is very simple. If you just want to add a button to hide start screen, here is the code for that:</p>
 
 ```javascript
-import { Anchor, BindingName, UI, Vanilla } from "jsonui-scripting";
+import { Anchor, BindingName, UI, Vanilla } from "asajs";
 
 // Game start screen content
 const vanillaStartScreenContent = Vanilla.start.startScreenContent();

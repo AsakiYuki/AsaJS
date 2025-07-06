@@ -12,7 +12,7 @@
         "adm-zip": "^0.5.16",
         "jsonc-parser": "^3.3.1"
     },
-    "name": "jsonui-scripting",
+    "name": "asajs",
     "version": "3.0.2",
     "description": "Make your Minecraft JsonUI with ScriptingAPI",
     "main": "./dist/cjs/index.js",
