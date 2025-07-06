@@ -1,0 +1,271 @@
+---
+title: "UI Methods"
+description: "The basic methods to override, modify the UI"
+contributors:
+    - W.DevEndd
+---
+
+# UI Methods (UI/Modify):
+
+JsonUI-Scripting have many methods to complete UI.
+
+## Override Methods (UI/Modify.override):
+
+The override methods is in new instanced UI and new instanced Modify.override
+
+### .setProperties:
+
+-   Param: (properties)
+-   Action: set or add new properties to UI element
+-   Ex:
+```JavaScript
+import { UI, Modify, Anchor, BindingType, BindingName } from "jsonui-scripting";
+
+const ui = UI.panel({
+	size: [16, 16],
+});
+ui.setProperties({
+	layer: 5,
+	anchor: Anchor.TopRight,
+});
+
+const nekoUI_BG = Modify.register(".hans_common_files/.hans_animated_background.json", "bg_anim");
+
+nekoUI_BG.override.setProperties({
+	layer: -999,
+}),
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"type": "panel",
+		"size": [ 16, 16 ],
+		"layer": 5,
+		"anchor_from": "top_right",
+		"anchor_to": "top_right"
+	},
+	"namespace": "d5dhririrb28db2"
+}
+```
+```jsonc
+// .hans_common_files/.hans_animated_background.json
+{
+	"bg_anim": {
+		"layer": -999
+	}
+}
+```
+
+### .addChild:
+-   Gemeric: T extends string or UI,
+-   Param: (element?: T, properties?, name?, callback?),
+-   Action: Add new child controls to element.
+-   Ex:
+```JavaScript
+ui.addChild(UI.image, {
+	texture: "textures/ui/White",
+}, "test");
+
+nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"controls": [
+			{
+				"test@d5dhririrb28db2.2526_ELEMENT_1": {
+					"texture": "textures/ui/White"
+				}
+			}
+		]
+	},
+	"2526_ELEMENT_1": {
+		"type": "image"
+	},
+	"namespace": "d5dhririrb28db2"
+}
+```
+```json
+{
+	"bg_anim": { "controls": [] }
+}
+```
+
+### .addBindings:
+-   Param: bindings object or array contain bindings object(s)
+-   Action: add new bindings to element.
+-   Ex:
+```JavaScript
+ui.addBindings({
+	binding_type: BindingType.View,
+	source_control_name: "test_toggle",
+	source_property_name: BindingName.ToggleState,
+	target_property_name: BindingName.Visible,
+});
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"bindings": [
+			{
+				"binding_type": "view",
+				"source_control_name": "test_toggle",
+				"source_property_name": "#toggle_state",
+				"target_property_name": "#visible"
+			}
+		]
+	}
+}
+```
+-   Learn more in [Bindings](/jsonui/binding)
+### .addVariables:
+-   Param: variables?
+-   Action: add variables to element.
+-   Ex:
+```JavaScript
+ui.addVariables({
+	"$varrr": {
+		"$example_var_1": false,
+		"$example_var_2": 20,
+	},
+});
+```
+```json
+{
+	"7272_ELEMENT_12": {
+		"variables": [
+			{
+				"required": "$varrr",
+				"$example_var_1": false,
+				"$example_var_2": 20
+			}
+		]
+	}
+}
+```
+
+## Modify Methods (Modify.modify):
+
+Modify methods is modify the UI element but not override origin properties of this element.
+
+### .modify.controls:
+
+The modify methods which use to modify child controls in UI element but no override oringin `controls` property.
+
+-   .insertFront/.insertBack: Likes .addChild, but it's modify new child control to element at front/back.
+
+Ex:
+
+```JavaScript
+nekoUI_BG.modify.insertFront(UI.panel());
+```
+```json
+{
+	"bg_anim": {
+		"modifications": [
+			{
+				"operation": "insert_front",
+				"array_name": "controls",
+				"value": [
+					{
+						"test@d5dhririrb28db2.2526_ELEMENT_1": {}
+					}
+				]
+			}
+		]
+	}
+}
+```
+-   .replace/.insertBefore/.insertAfter: Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
+
+Ex:
+
+```JavaScript
+nekoUI_BG.modify.controls.replace("old_control", UI.panel(), {}, "new_control");
+nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
+```
+```json
+{
+	"bg_anim": {
+		"modifications": [
+			{
+				"operation": "replace",
+				"control_name": "old_control",
+				"value": [
+					{
+						"new_control@d5dhririrb28db2.2526_ELEMENT_1": {}
+					}
+				]
+			},
+			{
+				"operation": "insert_before",
+				"control_name": "new_control",
+				"value": [
+					{
+						"2g2usuen2jeiei@d5dhririrb28db2.2526_ELEMENT_2": {}
+					}
+				]
+			}
+		]
+	}
+}
+```
+-   .moveBack/.moveFront/.moveBefore/.moveAffter/.remove: From child name, it move back/front/before/after or remove the child element have that name.
+
+Ex:
+
+```JavaScript
+nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
+// ...
+```
+
+### .modify.bindings:
+The method to modify the bindings property, there have:
+-   .addBindings: But not override origin property.
+-   .remove: Too hard to use:(
+
+Ex:
+
+```JavaScript
+nekoUI_BG.modify.bindings.addBindings({
+	// Bindings
+});
+```
+
+### modify.variables:
+Nope! Ấkiyuki so lazy to add it ;-;
+
+## Advamced Methods
+Include:
+-   .getElement
+-   .getFullPath
+-   .getPath
+-   .getUI
+
+Ex:
+
+```JavaScript
+import { UI, Modify, Anchor } from "jsonui-scripting";
+
+const ui = UI.panel({
+    anchor: Anchor.Center,
+    w: 100,
+});
+
+console.log("element:", ui.getElement());
+console.log("full path:", ui.getFullPath());
+console.log("path:", ui.getPath());
+console.log("ui:", ui.getUI());
+```
+Output:
+```zsh
+element: @27B7D_NAMESPACE_1.27B7D_ELEMENT_1
+full path: 27B7D_ELEMENT_1
+path: 27B7D_NAMESPACE_1.27B7D_ELEMENT_1
+ui: {
+  size: [ 100, 0 ],
+  anchor_from: 'center',
+  anchor_to: 'center',
+  type: 'panel'
+}
+```
