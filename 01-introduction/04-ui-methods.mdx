@@ -12,7 +12,8 @@ The override methods is in new instanced UI and new instanced Modify.override
 
 ### setProperties
 
--   Param: properties: [Properties](/jsonui/properties)
+-   Params:
+    -   properties: [Properties](/jsonui/properties)
 -   Set properties to UI element
 
 Example:
@@ -57,10 +58,10 @@ nekoUI_BG.override.setProperties({
 }
 ```
 
-### addChild
+### addChild()
 
--   Generic: string | [UI](/jsonui/ui),
--   Param: element?: string | [UI](/jsonui/ui), properties?: [Properties](/jsonui/properties), name?: string, callback?: (args: [UI](/jsonui/ui), name: string) => void,
+-   Params:
+    -   element?: string | [UI](/jsonui/ui), properties?: [Properties](/jsonui/properties), name?: string, callback?: (args: [UI](/jsonui/ui), name: string) => void,
 -   Add a child to element.
 
 Example:
@@ -99,7 +100,8 @@ nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
 
 ### addBindings
 
--   Param: [BindingInterface](/jsonui/binding-interface) | [BindingInterface](/jsonui/binding-interface)[]
+-   Params
+    -   bindings: [BindingInterface](/jsonui/binding-interface) | [BindingInterface](/jsonui/binding-interface)[]
 -   Add bindings to element.
 
 Example:
@@ -132,7 +134,8 @@ ui.addBindings({
 
 ### addVariables
 
--   Param: object
+-   Params:
+    -   variables: object
 -   Add variables to element.
 
 Example:
