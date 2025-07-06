@@ -4,7 +4,7 @@ export const env = `const env = {};
 module.exports = { env };`;
 
 // Global variables
-export const globalVariables = `const {} = require("jsonui-scripting");
+export const globalVariables = `const {} = require("asajs");
 
 const global_variables = {};
 
@@ -13,7 +13,7 @@ module.exports = { global_variables };`;
 // Config
 export const config = `/**
  * Configuration object for the JsonUI Scripting build process.
- * @type {import('jsonui-scripting').Config}
+ * @type {import('asajs').Config}
  */
 const config = {
     compiler: {
