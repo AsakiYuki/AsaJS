@@ -5,15 +5,15 @@ contributors:
     - W.DevEndd
 ---
 
-# UI Methods (UI/Modify):
+# UI Methods (UI/Modify)
 
 JsonUI-Scripting have many methods to complete UI.
 
-## Override Methods (UI/Modify.override):
+## Override Methods (UI/Modify.override)
 
 The override methods is in new instanced UI and new instanced Modify.override
 
-### .setProperties:
+### .setProperties
 
 -   Param: (properties)
 -   Action: set or add new properties to UI element
@@ -56,7 +56,7 @@ nekoUI_BG.override.setProperties({
 }
 ```
 
-### .addChild:
+### .addChild
 -   Gemeric: T extends string or UI,
 -   Param: (element?: T, properties?, name?, callback?),
 -   Action: Add new child controls to element.
@@ -91,7 +91,7 @@ nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
 }
 ```
 
-### .addBindings:
+### .addBindings
 -   Param: bindings object or array contain bindings object(s)
 -   Action: add new bindings to element.
 -   Ex:
@@ -118,7 +118,7 @@ ui.addBindings({
 }
 ```
 -   Learn more in [Bindings](/jsonui/binding)
-### .addVariables:
+### .addVariables
 -   Param: variables?
 -   Action: add variables to element.
 -   Ex:
@@ -144,11 +144,11 @@ ui.addVariables({
 }
 ```
 
-## Modify Methods (Modify.modify):
+## Modify Methods (Modify.modify)
 
 Modify methods is modify the UI element but not override origin properties of this element.
 
-### .modify.controls:
+### .modify.controls
 
 The modify methods which use to modify child controls in UI element but no override oringin `controls` property.
 
@@ -219,7 +219,7 @@ nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
 // ...
 ```
 
-### .modify.bindings:
+### .modify.bindings
 The method to modify the bindings property, there have:
 -   .addBindings: But not override origin property.
 -   .remove: Too hard to use:(
@@ -232,10 +232,10 @@ nekoUI_BG.modify.bindings.addBindings({
 });
 ```
 
-### modify.variables:
+### modify.variables
 Nope! Ấkiyuki so lazy to add it ;-;
 
-## Advamced Methods
+## Advanced Methods
 Include:
 -   .getElement
 -   .getFullPath
