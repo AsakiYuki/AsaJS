@@ -212,3 +212,50 @@ Ex:
 nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
 // ...
 ```
+
+### .modify.bindings:
+The method to modify the bindings property, there have:
+-   .addBindings: But not override origin property.
+-   .remove: Too hard to use:(
+Ex:
+```JavaScript
+nekoUI_BG.modify.bindings.addBindings({
+	// Bindings
+});
+```
+
+### modify.variables:
+Nope! Ấkiyuki so lazy to add it ;-;
+
+## Advamced Methods
+Include:
+-   .getElement
+-   .getFullPath
+-   .getPath
+-   .getUI
+Ex:
+```JavaScript
+import { UI, Modify, Anchor } from "jsonui-scripting";
+
+const ui = UI.panel({
+    anchor: Anchor.Center,
+    w: 100,
+});
+
+console.log("element: ", ui.getElement());
+console.log("full path: ", ui.getFullPath());
+console.log("path: ", ui.getPath());
+console.log("ui: ", ui.getUI());
+```
+Output:
+```zsh
+element:  @BD1FA_NAMESPACE_1.BD1FA_ELEMENT_1
+full path:  BD1FA_ELEMENT_1
+path:  BD1FA_NAMESPACE_1.BD1FA_ELEMENT_1
+ui:  {
+  size: [ 100, 0 ],
+  anchor_from: 'center',
+  anchor_to: 'center',
+  type: 'panel'
+}
+```
