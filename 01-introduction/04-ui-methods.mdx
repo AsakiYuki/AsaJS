@@ -1,23 +1,22 @@
 ---
 title: "UI Methods"
-description: "The basic methods to override, modify the UI"
+description: "Some basic methods to modity Vanilla/Custom UI element"
 contributors:
-    - W.DevEndd
+    - Wd-Endd
+	- AsakiYuki
 ---
 
-# UI Methods (UI/Modify):
-
-JsonUI-Scripting have many methods to complete UI.
-
-## Override Methods (UI/Modify.override):
+## Override Methods
 
 The override methods is in new instanced UI and new instanced Modify.override
 
-### .setProperties:
+### setProperties
 
--   Param: (properties)
--   Action: set or add new properties to UI element
--   Ex:
+-   Param: properties: [Properties](/jsonui/properties)
+-   Set properties to UI element
+
+Example:
+
 ```JavaScript
 import { UI, Modify, Anchor, BindingType, BindingName } from "jsonui-scripting";
 
@@ -35,11 +34,12 @@ nekoUI_BG.override.setProperties({
 	layer: -999,
 }),
 ```
+
 ```json
 {
 	"7272_ELEMENT_12": {
 		"type": "panel",
-		"size": [ 16, 16 ],
+		"size": [16, 16],
 		"layer": 5,
 		"anchor_from": "top_right",
 		"anchor_to": "top_right"
@@ -47,6 +47,7 @@ nekoUI_BG.override.setProperties({
 	"namespace": "d5dhririrb28db2"
 }
 ```
+
 ```jsonc
 // .hans_common_files/.hans_animated_background.json
 {
@@ -56,11 +57,14 @@ nekoUI_BG.override.setProperties({
 }
 ```
 
-### .addChild:
--   Gemeric: T extends string or UI,
--   Param: (element?: T, properties?, name?, callback?),
--   Action: Add new child controls to element.
--   Ex:
+### addChild
+
+-   Generic: string | [UI](/jsonui/ui),
+-   Param: element?: string | [UI](/jsonui/ui), properties?: [Properties](/jsonui/properties), name?: string, callback?: (args: [UI](/jsonui/ui), name: string) => void,
+-   Add a child to element.
+
+Example:
+
 ```JavaScript
 ui.addChild(UI.image, {
 	texture: "textures/ui/White",
@@ -68,6 +72,7 @@ ui.addChild(UI.image, {
 
 nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
 ```
+
 ```json
 {
 	"7272_ELEMENT_12": {
@@ -85,16 +90,20 @@ nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
 	"namespace": "d5dhririrb28db2"
 }
 ```
+
 ```json
 {
 	"bg_anim": { "controls": [] }
 }
 ```
 
-### .addBindings:
--   Param: bindings object or array contain bindings object(s)
--   Action: add new bindings to element.
--   Ex:
+### addBindings
+
+-   Param: [BindingInterface](/jsonui/binding-interface) | [BindingInterface](/jsonui/binding-interface)[]
+-   Add bindings to element.
+
+Example:
+
 ```JavaScript
 ui.addBindings({
 	binding_type: BindingType.View,
@@ -103,6 +112,7 @@ ui.addBindings({
 	target_property_name: BindingName.Visible,
 });
 ```
+
 ```json
 {
 	"7272_ELEMENT_12": {
@@ -117,48 +127,56 @@ ui.addBindings({
 	}
 }
 ```
+
 -   Learn more in [Bindings](/jsonui/binding)
-### .addVariables:
--   Param: variables?
--   Action: add variables to element.
--   Ex:
+
+### addVariables
+
+-   Param: Record<string, Record<string, any>>
+-   Add variables to element.
+
+Example:
+
 ```JavaScript
 ui.addVariables({
-	"$varrr": {
-		"$example_var_1": false,
-		"$example_var_2": 20,
+	"$condition_variables": {
+		"$example_variables_1": false,
+		"$example_variables_2": 20,
 	},
 });
 ```
+
 ```json
 {
 	"7272_ELEMENT_12": {
 		"variables": [
 			{
-				"required": "$varrr",
-				"$example_var_1": false,
-				"$example_var_2": 20
+				"required": "$condition_variables",
+				"$example_variables_1": false,
+				"$example_variables_2": 20
 			}
 		]
 	}
 }
 ```
 
-## Modify Methods (Modify.modify):
+## Modify Methods
 
 Modify methods is modify the UI element but not override origin properties of this element.
 
-### .modify.controls:
+### Controls
 
 The modify methods which use to modify child controls in UI element but no override oringin `controls` property.
 
--   .insertFront/.insertBack: Likes .addChild, but it's modify new child control to element at front/back.
+-   `insertFront`/`insertBack`
+-   Likes `addChild` , it modify new child control to element at **front/back**.
 
-Ex:
+Example:
 
 ```JavaScript
 nekoUI_BG.modify.insertFront(UI.panel());
 ```
+
 ```json
 {
 	"bg_anim": {
@@ -176,14 +194,17 @@ nekoUI_BG.modify.insertFront(UI.panel());
 	}
 }
 ```
--   .replace/.insertBefore/.insertAfter: Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
 
-Ex:
+-   `replace`/`insertBefore`/`insertAfter`
+-   Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
+
+Example:
 
 ```JavaScript
 nekoUI_BG.modify.controls.replace("old_control", UI.panel(), {}, "new_control");
 nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
 ```
+
 ```json
 {
 	"bg_anim": {
@@ -210,21 +231,25 @@ nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
 	}
 }
 ```
--   .moveBack/.moveFront/.moveBefore/.moveAffter/.remove: From child name, it move back/front/before/after or remove the child element have that name.
 
-Ex:
+-   `moveBack`/`moveFront`/`moveBefore`/`moveAffter`/`remove`
+-   By child name, it move **back/front/before/after** or **remove** the child element have that name.
+
+Example:
 
 ```JavaScript
 nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
 // ...
 ```
 
-### .modify.bindings:
-The method to modify the bindings property, there have:
--   .addBindings: But not override origin property.
--   .remove: Too hard to use:(
+### Bindings
 
-Ex:
+The method to modify the bindings property, there have:
+
+-   `addBindings`: But not override origin property.
+-   `remove`: Not recommended to use, if you know what you do.
+
+Example:
 
 ```JavaScript
 nekoUI_BG.modify.bindings.addBindings({
@@ -232,17 +257,16 @@ nekoUI_BG.modify.bindings.addBindings({
 });
 ```
 
-### modify.variables:
-Nope! Ấkiyuki so lazy to add it ;-;
+### Variables
 
-## Advamced Methods
-Include:
--   .getElement
--   .getFullPath
--   .getPath
--   .getUI
+Currently this features is not available.
 
-Ex:
+## Advanced
+
+-   `getElement`, `getFullPath`, `getPath`, `getUI`
+-   For debugger
+
+Example:
 
 ```JavaScript
 import { UI, Modify, Anchor } from "jsonui-scripting";
@@ -257,8 +281,10 @@ console.log("full path:", ui.getFullPath());
 console.log("path:", ui.getPath());
 console.log("ui:", ui.getUI());
 ```
+
 Output:
-```zsh
+
+```
 element: @27B7D_NAMESPACE_1.27B7D_ELEMENT_1
 full path: 27B7D_ELEMENT_1
 path: 27B7D_NAMESPACE_1.27B7D_ELEMENT_1
