@@ -153,7 +153,9 @@ Modify methods is modify the UI element but not override origin properties of th
 The modify methods which use to modify child controls in UI element but no override oringin `controls` property.
 
 -   .insertFront/.insertBack: Likes .addChild, but it's modify new child control to element at front/back.
+
 Ex:
+
 ```JavaScript
 nekoUI_BG.modify.insertFront(UI.panel());
 ```
@@ -175,7 +177,9 @@ nekoUI_BG.modify.insertFront(UI.panel());
 }
 ```
 -   .replace/.insertBefore/.insertAfter: Starting from child name, it will replace/prepend/postpend by a new element but it not override the original property.
+
 Ex:
+
 ```JavaScript
 nekoUI_BG.modify.controls.replace("old_control", UI.panel(), {}, "new_control");
 nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
@@ -209,6 +213,7 @@ nekoUI_BG.modify.controls.insertBefore("new_control", UI.image());
 -   .moveBack/.moveFront/.moveBefore/.moveAffter/.remove: From child name, it move back/front/before/after or remove the child element have that name.
 
 Ex:
+
 ```JavaScript
 nekoUI_BG.modify.controls.remove("so_tired...", /* not thing here! */);
 // ...
@@ -220,6 +225,7 @@ The method to modify the bindings property, there have:
 -   .remove: Too hard to use:(
 
 Ex:
+
 ```JavaScript
 nekoUI_BG.modify.bindings.addBindings({
 	// Bindings
@@ -237,6 +243,7 @@ Include:
 -   .getUI
 
 Ex:
+
 ```JavaScript
 import { UI, Modify, Anchor } from "jsonui-scripting";
 
