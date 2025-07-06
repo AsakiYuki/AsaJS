@@ -1,20 +1,20 @@
 ---
 title: "Defining Elements"
-description: "Learn how to define and structure elements using JsonUI Scripting."
+description: "Learn how to define and structure elements using AsaJS."
 contributors:
     - AsakiYuki
 ---
 
 ## How It Works
 
-JsonUI Scripting takes an **object-oriented programming (OOP)** approach to defining UI. Instead of writing raw JSON, you use JavaScript/TypeScript APIs to build UI structures that are easier to reuse and reason about.
+AsaJS takes an **object-oriented programming (OOP)** approach to defining UI. Instead of writing raw JSON, you use JavaScript/TypeScript APIs to build UI structures that are easier to reuse and reason about.
 
-Here’s a comparison between standard JSON-UI and JsonUI Scripting:
+Here’s a comparison between standard JSON-UI and AsaJS:
 
-### JsonUI Scripting
+### AsaJS
 
 ```javascript
-import { UI } from "jsonui-scripting"
+import { UI } from "asajs"
 
 UI.panel({
 	size: "100%",
@@ -33,11 +33,11 @@ UI.panel({
 }
 ```
 
-JsonUI Scripting automatically compiles your code into valid JsonUI format, making it compatible with Minecraft: Bedrock Edition. It also adds the benefit of abstraction, composition, and logic — features you can’t achieve directly with static JSON.
+AsaJS automatically compiles your code into valid JsonUI format, making it compatible with Minecraft: Bedrock Edition. It also adds the benefit of abstraction, composition, and logic — features you can’t achieve directly with static JSON.
 
 ## Supported Element Types
 
-JsonUI Scripting supports all standard JsonUI element types, which means anything you could build with JsonUI, you can build here — but with cleaner syntax and logic support.
+AsaJS supports all standard JsonUI element types, which means anything you could build with JsonUI, you can build here — but with cleaner syntax and logic support.
 
 -   **Containers**: `panel`, `stack_panel`, `collection_panel`, `grid`
 -   **Text/Media**: `label`, `image`
@@ -48,7 +48,7 @@ JsonUI Scripting supports all standard JsonUI element types, which means anythin
 
 You can use any of these element types as building blocks for your UI.
 
-## Why Use JsonUI Scripting?
+## Why Use AsaJS?
 
 -   Write UI in **JavaScript** with logic, reusability, and structure
 -   Avoid copy-pasting JSON blocks manually
@@ -57,4 +57,4 @@ You can use any of these element types as building blocks for your UI.
 
 ## Next: Modify Elements
 
-[Modify Elements](/jsonui/modify-elements): Learn how to modify and extend Minecraft UI using JsonUI Scripting.
+[Modify Elements](/jsonui/modify-elements): Learn how to modify and extend Minecraft UI using AsaJS.

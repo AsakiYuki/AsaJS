@@ -1,6 +1,6 @@
 ---
 title: "Modify Elements"
-description: "JsonUI Scripting allows you to modify or override existing UI elements in Minecraft: Bedrock Edition — whether it's the vanilla UI or custom UIs like NekoUI, Ty-el UI, or BetMC UI"
+description: "AsaJS allows you to modify or override existing UI elements in Minecraft: Bedrock Edition — whether it's the vanilla UI or custom UIs like NekoUI, Ty-el UI, or BetMC UI"
 contributors:
     - AsakiYuki
 ---
@@ -19,7 +19,7 @@ You can find modifiable UI paths for vanilla Minecraft from the [Bedrock Samples
 ### Add a Text to the Vanilla Start Screen
 
 ```javascript
-import { Vanilla, UI } from "jsonui-scripting"
+import { Vanilla, UI } from "asajs"
 
 // Create a new text label
 const text = UI.label({
@@ -35,7 +35,7 @@ Vanilla.start.startScreenContent().addChild(text)
 ### Custom Background for NekoUI
 
 ```javascript
-import { Modify, UI } from "jsonui-scripting"
+import { Modify, UI } from "asajs"
 
 // Modify a specific UI file in NekoUI
 const nekoUI_BG = Modify.register(".hans_common_files/.hans_animated_background.json", "bg_anim")
@@ -60,12 +60,12 @@ nekoUI_BG.addChild(customBG)
 
 ## Override UI Elements
 
-You can also override an entire screen or container using `.override`.
+You can also override an entire screen or container using `override`.
 
 Example: Override Vanilla Start Screen
 
 ```javascript
-import { Vanilla, UI } from "jsonui-scripting"
+import { Vanilla, UI } from "asajs"
 
 const text = UI.label({
 	text: "Hello, world!",
