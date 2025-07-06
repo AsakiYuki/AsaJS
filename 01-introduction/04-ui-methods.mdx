@@ -64,15 +64,19 @@ nekoUI_BG.override.setProperties({
     -   element?: string | [UI](/jsonui/ui)
     -   properties?: [Properties](/jsonui/properties)
     -   name?: string
-    -   callback?: (args: [UI](/jsonui/ui), name: string) => void,
+    -   callback?: (args: [UI](/jsonui/ui), name: string) => void
 -   Add a child to element.
 
 Example:
 
 ```JavaScript
-ui.addChild(UI.image, {
-	texture: "textures/ui/White",
-}, "test");
+ui.addChild(
+	UI.image(),
+	{
+		texture: "textures/ui/White",
+	},
+	"test"
+);
 
 nekoUI_BG.override.addChild(); // Use to override all controls by a empty array
 ```
