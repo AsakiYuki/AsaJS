@@ -12,7 +12,7 @@ module.exports = { global_variables };`;
 
 // Config
 export const config = `/**
- * Configuration object for the JsonUI Scripting build process.
+ * Configuration object for the AsaJS build process.
  * @type {import('asajs').Config}
  */
 const config = {
@@ -36,8 +36,8 @@ const config = {
         installPath: "/your/minecraft/data/path",
     },
     manifest: {
-        name: "JsonUI Scripting",
-        description: "Build with JsonUI Scripting <3",
+        name: "AsaJS",
+        description: "Build with AsaJS <3",
     },
 };
 

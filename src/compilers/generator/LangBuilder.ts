@@ -8,7 +8,7 @@ export class LangBuilder extends Class {
 
         for (const langFile in localizeText) {
             const langContent: Record<string, string> = localizeText[langFile];
-            let text = "## The entire text below is built entirely using JSONUI SCRIPTING!";
+            let text = "## The entire text below is built entirely using AsaJS!";
 
             for (const key in langContent) {
                 text += `\n${key}=${langContent[key]}`;

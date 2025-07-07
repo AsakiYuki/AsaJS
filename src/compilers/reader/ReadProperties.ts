@@ -17,7 +17,7 @@ export function ReadValue(value: any, callback?: (type: string) => any) {
         }
     } else if (value instanceof Animation) return value.getKeyIndex(0);
     else if (value instanceof LocalizeText) return value.get();
-    else if (value instanceof UI || value instanceof Modify) return value.getPath()
+    else if (value instanceof UI || value instanceof Modify) return value.getPath();
 
     return value;
 }
@@ -36,8 +36,8 @@ export function ReadProperties(properties: Properties) {
     } else if (
         properties.min_size !== undefined &&
         !Array.isArray(properties.min_size) &&
-        typeof properties.min_size === "string" &&
-        !properties.min_size.startsWith("$")
+        ((typeof properties.min_size === "string" && !properties.min_size.startsWith("$")) ||
+            typeof properties.min_size === "number")
     )
         (<any>properties.min_size) = [properties.min_size, properties.min_size];
 
@@ -48,8 +48,8 @@ export function ReadProperties(properties: Properties) {
     } else if (
         properties.max_size !== undefined &&
         !Array.isArray(properties.max_size) &&
-        typeof properties.max_size === "string" &&
-        !properties.max_size.startsWith("$")
+        ((typeof properties.max_size === "string" && !properties.max_size.startsWith("$")) ||
+            typeof properties.max_size === "number")
     )
         (<any>properties.max_size) = [properties.max_size, properties.max_size];
 
@@ -60,8 +60,8 @@ export function ReadProperties(properties: Properties) {
     } else if (
         properties.size !== undefined &&
         !Array.isArray(properties.size) &&
-        typeof properties.size === "string" &&
-        !properties.size.startsWith("$")
+        ((typeof properties.size === "string" && !properties.size.startsWith("$")) ||
+            typeof properties.size === "number")
     )
         (<any>properties.size) = [properties.size, properties.size];
 

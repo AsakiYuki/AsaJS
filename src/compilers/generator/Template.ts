@@ -7,8 +7,8 @@ export function firstRun() {
     const template: { [file: string]: string } = {
         ".gitignore": gitignore,
         "asakiyuki.config.cjs": config
-            .replace("{packname}", "JsonUI Scripting")
-            .replace("{packdescription}", "Build with JsonUI Scripting <3")
+            .replace("{packname}", "AsaJS")
+            .replace("{packdescription}", "Build with AsaJS <3")
             .replace("{autoinstall}", "true")
             .replace("{development}", "true")
             .replace("{preview}", "false"),

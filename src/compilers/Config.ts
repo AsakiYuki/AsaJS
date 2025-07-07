@@ -27,8 +27,8 @@ const defaultConfig: Config = {
         installPath: undefined,
     },
     manifest: {
-        name: "JsonUI Scripting",
-        description: "Build with JsonUI Scripting <3",
+        name: "AsaJS",
+        description: "Build with AsaJS <3",
         uuid: Save.uuid()[0],
         version: [1, 0, 0],
         baseGameVersion: [1, 21, 80],
@@ -152,14 +152,14 @@ export class Configs {
     }
 
     // Static helper methods not directly related to config loading/handling.
-    private static apply() { }
+    private static apply() {}
     private static arguments = "";
-    private static bind() { }
-    private static call() { }
+    private static bind() {}
+    private static call() {}
     private static caller = "";
     private static length = "";
     private static name = "";
-    private static toString() { }
+    private static toString() {}
 }
 
 /**
