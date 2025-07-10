@@ -7,8 +7,10 @@ import { ReadProperties, ReadValue } from "../compilers/reader/ReadProperties";
 import { ChildElement } from "../types/components/ChildIdentifier";
 import { Identifier } from "../types/components/Identifier";
 import { ExtendInterface } from "../types/components/UIInterface";
+import { MappingType } from "../types/enums/MappingTypes";
 import { Types } from "../types/enums/Types";
 import { BindingInterface } from "../types/objects/BindingInterface";
+import { ButtonMapping } from "../types/objects/ButtonMapping";
 import { PropertiesType } from "../types/objects/elements/PropertiesType";
 import {
     ModificationControls,
@@ -27,7 +29,9 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
     private properties: Properties = {};
     private controls?: Array<ChildElement>;
     private bindings?: Array<BindingInterface>;
+    private button_mappings?: Array<ButtonMapping>;
     private variables?: VariablesInterface;
+    private anims?: Array<string>;
 
     private isValidPath: boolean;
     name: string = "";
@@ -93,6 +97,18 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
             return this.override;
         },
 
+        addMapping: (mapping) => {
+            this.button_mappings ||= [];
+            if (!mapping) return this.override;
+            if (Array.isArray(mapping)) mapping.forEach(v => this.override.addMapping(v));
+            else {
+                mapping.mapping_type ||= MappingType.Global;
+                this.button_mappings.push(mapping);
+            }
+
+            return this.override;
+        },
+
         addVariables: variables => {
             this.variables ||= {};
 
@@ -108,6 +124,13 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
             return this.override;
         },
 
+        addAnimation: (animation, startIndex) => {
+            this.anims ||= [];
+
+            if (animation) this.anims.push(animation.getKeyIndex(startIndex || 0));
+            return this.override;
+        },
+    
         searchBinding: (
             bindingName: Binding,
             controlName?: string,

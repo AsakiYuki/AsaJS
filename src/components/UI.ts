@@ -382,9 +382,19 @@ export class UI<T extends Types = Types.Any> {
         return this;
     }
 
+    addMapping(mapping: Array<ButtonMapping> | ButtonMapping) {
+        if (Array.isArray(mapping)) mapping.forEach(v => this.addMapping(v));
+        else {
+            mapping.mapping_type ||= MappingType.Global;
+            (this.button_mappings ||= []).push(mapping);
+        }
+
+        return this;
+    }
+
     addVariables(variables: VariablesInterface) {
         this.variables ||= {};
-
+        
         Obj.forEach(variables, (key, value) => {
             (<any>this.variables)[key] = {
                 ...Obj.map(value, (k, v) => {
@@ -393,6 +403,11 @@ export class UI<T extends Types = Types.Any> {
             };
         });
 
+        return this;
+    }
+
+    addAnimation(animation: Animation, startIndex?: number) {
+        (this.anims ||= []).push(animation.getKeyIndex(startIndex || 0));
         return this;
     }
 
@@ -443,21 +458,6 @@ export class UI<T extends Types = Types.Any> {
             extends: this,
             properties: <Properties>properties,
         });
-    }
-
-    addAnimation(animation: Animation, startIndex?: number) {
-        (this.anims ||= []).push(animation.getKeyIndex(startIndex || 0));
-        return this;
-    }
-
-    addMapping(mapping: Array<ButtonMapping> | ButtonMapping) {
-        if (Array.isArray(mapping)) mapping.forEach(v => this.addMapping(v));
-        else {
-            mapping.mapping_type ||= MappingType.Global;
-            (this.button_mappings ||= []).push(mapping);
-        }
-
-        return this;
     }
 
     private static apply() { }
