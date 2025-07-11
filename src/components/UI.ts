@@ -341,12 +341,14 @@ export class UI<T extends Types = Types.Any> {
     }
 
     addChild<K extends Types = Types.Any, T extends string | Identifier | UI | Modify = any>(
-        element: T,
+        element?: T,
         properties?: PropertiesType[ExtractUIType<typeof element, K>] | null | 0,
         name?: string | null | 0,
         callback?: UIChildNameCallback
     ) {
-        if (!this.controls) this.controls = [];
+        this.controls ||= [];
+        if (!element) return this;
+
         name ||= Random.getName();
 
         if (this.isDuplicate(name)) {
@@ -376,38 +378,44 @@ export class UI<T extends Types = Types.Any> {
         return this;
     }
 
-    addBindings(bindings: Array<BindingInterface> | BindingInterface) {
+    addBindings(bindings?: Array<BindingInterface> | BindingInterface) {
+        this.bindings ||= [];
+        if (!bindings) return this;
         if (Array.isArray(bindings)) for (const binding of bindings) this.addBindings(binding);
-        else (this.bindings ||= []).push(ReadBinding(<any>bindings, <any>this));
+        else this.bindings.push(ReadBinding(<any>bindings, <any>this));
         return this;
     }
 
-    addMapping(mapping: Array<ButtonMapping> | ButtonMapping) {
+    addMapping(mapping?: Array<ButtonMapping> | ButtonMapping) {
+        this.button_mappings ||= [];
+        if (!mapping) return this;
         if (Array.isArray(mapping)) mapping.forEach(v => this.addMapping(v));
         else {
             mapping.mapping_type ||= MappingType.Global;
-            (this.button_mappings ||= []).push(mapping);
+            this.button_mappings.push(mapping);
         }
 
         return this;
     }
 
-    addVariables(variables: VariablesInterface) {
+    addVariables(variables?: VariablesInterface) {
         this.variables ||= {};
-        
-        Obj.forEach(variables, (key, value) => {
-            (<any>this.variables)[key] = {
-                ...Obj.map(value, (k, v) => {
-                    return { key: k, value: ReadValue(v) };
-                }),
-            };
-        });
+
+        if (variables)
+            Obj.forEach(variables, (key, value) => {
+                (<any>this.variables)[key] = {
+                    ...Obj.map(value, (k, v) => {
+                        return { key: k, value: ReadValue(v) };
+                    }),
+                };
+            });
 
         return this;
     }
 
-    addAnimation(animation: Animation, startIndex?: number) {
-        (this.anims ||= []).push(animation.getKeyIndex(startIndex || 0));
+    addAnimation(animation?: Animation, startIndex?: number) {
+        this.anims ||= [];
+        if (animation) this.anims.push(animation.getKeyIndex(startIndex || 0));
         return this;
     }
 
@@ -429,9 +437,10 @@ export class UI<T extends Types = Types.Any> {
             });
         }
 
-        if (this.variables)
+        if (this.variables) code.variables ||= [];
+        if (this.variables && Object(this.variables).length !== 0)
             Obj.forEach(this.variables, (k, v) => {
-                (code.variables ||= []).push({
+                code.variables.push({
                     requires: k,
                     ...v,
                 });

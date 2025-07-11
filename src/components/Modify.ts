@@ -296,19 +296,17 @@ export class Modify<T extends Types = Types.Any, K extends string = string> exte
     getUI() {
         const code: any = ReadProperties(this.properties);
         const modifications: Array<any> = [];
-
-        for (const key of ["type", "controls", "bindings", "button_mappings"])
+        for (const key of ["type", "controls", "bindings", "button_mappings", "anims"])
             if ((<any>this)[key]) code[key] = (<any>this)[key];
 
-        if (this.variables)
+        if (this.variables) code.variables;
+        if (this.variables && Object(this.variables).length !== 0)
             Obj.forEach(this.variables, (k, v) => {
-                (code.variables ||= []).push({
+                code.variables.push({
                     requires: k,
                     ...v,
                 });
             });
-
-        if (this.variables && Object.keys(this.variables).length === 0) code.variables ||= [];
 
         {
             if (this.modifyBindings) {
