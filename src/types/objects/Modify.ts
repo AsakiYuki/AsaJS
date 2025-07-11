@@ -1,3 +1,4 @@
+import { Animation } from "../../components/Animation";
 import { Modify } from "../../components/Modify";
 import { UI } from "../../components/UI";
 import { ChildElement } from "../components/ChildIdentifier";
@@ -7,6 +8,7 @@ import { Types } from "../enums/Types";
 import { Binding } from "../values/Binding";
 import { Var } from "../values/Variable";
 import { BindingInterface } from "./BindingInterface";
+import { ButtonMapping } from "./ButtonMapping";
 import { PropertiesType } from "./elements/PropertiesType";
 import { VariablesInterface } from "./Variables";
 
@@ -23,7 +25,9 @@ export interface OverrideInterface {
     addBindings(
         binding?: BindingInterface | Binding | Var | Array<BindingInterface | Binding | Var>
     ): OverrideInterface;
+    addMapping(mapping?: Array<ButtonMapping> | ButtonMapping): OverrideInterface;
     addVariables(variables?: VariablesInterface): OverrideInterface;
+    addAnimation(animation?: Animation, startIndex?: number): OverrideInterface;
     searchBinding(bindingName: BindingName, controlName: string): any;
     sourceBindings: Record<string, string>;
 }
