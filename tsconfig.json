@@ -9,6 +9,6 @@
         "incremental": true,
         "tsBuildInfoFile": ".tsbuildinfo"
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "src/compilers/BindingCompiler.bak.ts"],
     "exclude": ["node_modules", "dist"]
 }

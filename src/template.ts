@@ -32,7 +32,7 @@ const config = {
     installer: {
         autoInstall: {autoinstall},
         allowGDK: true,
-        installGDKUser: "auto",
+        installGDKUser: "{userid}",
         developEvironment: {development},
         previewVersion: {preview},
         customPath: false,

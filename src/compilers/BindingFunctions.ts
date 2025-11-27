@@ -3,7 +3,7 @@ import { Random } from "../components/Random";
 import { UI } from "../components/UI";
 import { OverrideInterface, ModificationBindingsInterface } from "../types/objects/Modify";
 import { Binding } from "../types/values/Binding";
-import { BindingCompiler, BindingFunctionObject } from "./BindingCompiler";
+import { BindingCompiler, BindingFunctionObject } from "./BindingCompiler.bak";
 import { Log } from "./generator/Log";
 import { CurrentLine } from "./reader/CurrentLine";
 

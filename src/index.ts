@@ -2,7 +2,7 @@ console.time("COMPILER");
 import "./compilers/PreCompile";
 import "./compilers/generator/Template";
 export * from "./compilers/Config";
-export * from "./compilers/BindingCompiler";
+export * from "./compilers/BindingCompiler.bak";
 export * from "./compilers/BindingFunctions";
 export * from "./compilers/Compiler";
 export * from "./compilers/Compress";

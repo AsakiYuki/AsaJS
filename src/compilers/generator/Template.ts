@@ -11,7 +11,8 @@ export function firstRun() {
             .replace("{packdescription}", "Build with AsaJS <3")
             .replace("{autoinstall}", "true")
             .replace("{development}", "true")
-            .replace("{preview}", "false"),
+            .replace("{preview}", "false")
+            .replace("{version}", ""),
         "asakiyuki.global_variables.cjs": globalVariables,
         "asakiyuki.env.cjs": env,
     };
