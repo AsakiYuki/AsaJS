@@ -4,7 +4,6 @@ import { UI } from "./UI.js"
 
 import { Renderer } from "../types/enums/Renderer.js"
 import {
-	RendererProperties,
 	Properties,
 	CollectionPanel,
 	Custom,
@@ -111,11 +110,13 @@ export function Label(properties?: Label, name?: string, namespace?: string) {
 
 export function Custom<R extends Renderer>(
 	renderer: R,
-	properties?: Custom | RendererProperties<R>,
+	properties?: Properties<Type.CUSTOM, R>,
 	name?: string,
 	namespace?: string
 ) {
-	return new UI(Type.CUSTOM, name, namespace).setProperties({ renderer, ...properties })
+	const custom = new UI<Type.CUSTOM, R>(Type.CUSTOM, name, namespace)
+	if (properties) custom.setProperties({ renderer, ...properties })
+	return custom
 }
 
 export function TooltipTrigger(properties?: TooltipTrigger, name?: string, namespace?: string) {
@@ -162,8 +163,14 @@ export function SliderBox(properties?: SliderBox, name?: string, namespace?: str
 	return new UI(Type.SLIDER_BOX, name, namespace).setProperties(properties || {})
 }
 
-export function Extends<T extends Type>(element: UI<T>, properties?: Properties<T>, name?: string, namespace?: string) {
-	const ui = new UI(undefined, name, namespace).setProperties(properties || {})
+export function Extends<T extends Type, K extends Renderer | null>(
+	element: UI<T, K>,
+	properties?: Properties<T, K>,
+	name?: string,
+	namespace?: string
+) {
+	const ui = new UI<T, K>(undefined, name, namespace)
+	if (properties) ui.setProperties(properties)
 	ui.extend = element
 	return ui as typeof element
 }

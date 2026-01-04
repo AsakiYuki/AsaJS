@@ -1,5 +1,6 @@
 import { FormatProperties } from "../compilers/FormatProperties.js"
 import { Memory } from "../compilers/Memory.js"
+import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 import { Properties } from "../types/properties/components.js"
 import { Class } from "./Class.js"
@@ -7,15 +8,15 @@ import { RandomString } from "./Utils.js"
 
 import util from "node:util"
 
-export class UI<T extends Type> extends Class {
+export class UI<T extends Type, K extends Renderer | null = null> extends Class {
 	private path: string
 
 	name: string
 	namespace: string
-	extend?: UI<Type>
+	extend?: UI<Type, Renderer | null>
 
-	controls = new Map<string, [UI<Type>, Properties<Type>]>()
-	properties: Properties<T> = <any>{}
+	controls = new Map<string, [UI<Type, Renderer | null>, Properties<Type, Renderer | null>]>()
+	properties: Properties<T, K> = <any>{}
 
 	constructor(public type?: T, name?: string, namespace?: string, path?: string) {
 		super()
@@ -29,12 +30,12 @@ export class UI<T extends Type> extends Class {
 		Memory.register_ui(this.path, this)
 	}
 
-	setProperties(properties: Properties<T>) {
+	setProperties(properties: Properties<T, K>) {
 		this.properties = properties
 		return this
 	}
 
-	addChild<T extends Type>(child: UI<T>, properties?: Properties<T>, name?: string) {
+	addChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>, name?: string) {
 		if (this === <any>child) {
 			throw new Error("Cannot add a child to itself")
 		}

@@ -53,8 +53,6 @@ export interface ComponenetsProperties {
 	[Type.SLIDER_BOX]: SliderBox
 }
 
-export type Properties<T> = T extends keyof ComponenetsProperties ? Partial<ComponenetsProperties[T]> : {}
-
 export interface CustomRendererProperties {
 	[Renderer.PAPER_DOLL_RENDERER]: e.PaperDollRenderer
 	[Renderer.NETEASE_PAPER_DOLL_RENDERER]: e.NeteasePaperDollRenderer
@@ -67,4 +65,7 @@ export interface CustomRendererProperties {
 	[Renderer.EQUIPMENT_PREVIEW_RENDERER]: e.EquipmentPreviewRenderer
 }
 
-export type RendererProperties<T> = T extends keyof CustomRendererProperties ? Partial<CustomRendererProperties[T]> : {}
+export type Properties<T extends Type, K extends Renderer | null = null> = (T extends keyof ComponenetsProperties
+	? Partial<ComponenetsProperties[T]>
+	: {}) &
+	(K extends keyof CustomRendererProperties ? Partial<CustomRendererProperties[K]> : {})

@@ -3,7 +3,7 @@ import { UI } from "../components/UI.js"
 export const Memory = {
 	cache: new Map<string, { namespace: string; elements: Map<string, UI<any>> }>(),
 
-	register_ui(path: string, element: UI<any>) {
+	register_ui(path: string, element: UI<any, any>) {
 		const { elements: saver, namespace } = this.get_file(path, element.namespace!)
 
 		if (saver.get(element.name!)) {
