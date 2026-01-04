@@ -1,0 +1,4 @@
+dist
+prefetch
+node_modules
+.tsbuildinfo

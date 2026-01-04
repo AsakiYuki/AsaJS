@@ -1,0 +1,31 @@
+import { Color } from "../../../components/Utils.js"
+import { ButtonId } from "../../enums/ButtonId.js"
+import { CollectionName } from "../../enums/CollectionName.js"
+import { Orientation } from "../../enums/Orientation.js"
+import { SliderName } from "../../enums/SliderName.js"
+import { Array3, Value } from "../value.js"
+
+export interface Slider {
+	slider_track_button?: Value<string>
+	slider_small_decrease_button?: Value<string | ButtonId>
+	slider_small_increase_button?: Value<string | ButtonId>
+	slider_steps?: Value<number>
+	slider_direction?: Value<string | Orientation>
+	slider_timeout?: Value<number>
+	slider_collection_name?: Value<string | CollectionName>
+	slider_name?: Value<string | SliderName>
+	slider_select_on_hover?: Value<boolean>
+	slider_selected_button?: Value<string | ButtonId>
+	slider_deselected_button?: Value<string | ButtonId>
+	slider_box_control?: Value<string>
+	background_control?: Value<string>
+	background_hover_control?: Value<string>
+	progress_control?: Value<string>
+	progress_hover_control?: Value<string>
+	slider_render_bar_background_color?: Value<Array3<number>>
+	slider_render_bar_progress_color?: Value<Array3<number>>
+	slider_render_bar_outline_color?: Value<Array3<number>>
+	slider_render_bar_background_hover_color?: Value<Array3<number>>
+	slider_render_bar_progress_hover_color?: Value<Array3<number>>
+	slider_render_bar_outline_hover_color?: Value<Array3<number>>
+}

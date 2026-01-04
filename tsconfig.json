@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+
+		"outDir": "dist",
+		"declaration": true,
+
+		"sourceMap": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"incremental": true,
+		"tsBuildInfoFile": ".tsbuildinfo"
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}

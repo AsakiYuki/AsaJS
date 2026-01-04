@@ -1,0 +1,36 @@
+{
+	"name": "asajs",
+	"version": "4.0.0",
+	"description": "Create your Minecraft JSON-UI resource packs using JavaScript",
+	"keywords": [
+		"Minecraft",
+		"JSON-UI"
+	],
+	"homepage": "https://github.com/asakiyuki/asajs",
+	"bugs": {
+		"url": "https://github.com/asakiyuki/asajs/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/asakiyuki/asajs.git"
+	},
+	"license": "MIT",
+	"author": "Asaki Yuki",
+	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npx tsc",
+		"watch": "npx tsc --watch",
+		"test": "bun test/app.ts",
+		"test-watch": "bun --watch test/app.ts",
+		"prefetch": "bun scripts/prefetch"
+	},
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"jsonc-parser": "^3.3.1"
+	}
+}
