@@ -21,6 +21,11 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	constructor(public type?: T, name?: string, namespace?: string, path?: string) {
 		super()
 
+		if (name === "namespace") {
+			console.error("The 'namespace' cannot be used as a name")
+			process.exit(1)
+		}
+
 		this.name = name?.match(/^\w+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomString(16)
 
@@ -31,7 +36,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	}
 
 	setProperties(properties: Properties<T, K>) {
-		this.properties = properties
+		this.properties = { ...this.properties, ...properties }
 		return this
 	}
 
@@ -40,7 +45,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 			throw new Error("Cannot add a child to itself")
 		}
 
-		this.controls.set(name || child.name, [child, properties || {}])
+		this.controls.set(name || RandomString(16), [child, properties || {}])
 		return this
 	}
 
@@ -50,8 +55,11 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 
 	toJSON() {
 		const obj: any = {
-			type: this.type,
 			...FormatProperties(this.properties),
+		}
+
+		if (this.type) {
+			obj.type = this.type
 		}
 
 		if (this.controls.size) {
@@ -63,7 +71,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	}
 
 	[util.inspect.custom]($: any, opts: any) {
-		const obj: any = this.properties
+		const obj: any = FormatProperties(this.properties)
 
 		if (this.controls.size) {
 			obj.controls = []

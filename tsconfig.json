@@ -7,7 +7,7 @@
 		"outDir": "dist",
 		"declaration": true,
 
-		"sourceMap": true,
+		"sourceMap": false,
 		"strict": true,
 		"esModuleInterop": true,
 		"incremental": true,

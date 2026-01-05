@@ -1,4 +1,4 @@
-import { AnimValue, Array2, Binding, PropertyBags, Value } from "../value.js"
+import { AnimValue, Array2, Binding, PropertyBags, Value, Variable } from "../value.js"
 
 export interface Control {
 	visible?: Value<boolean>
@@ -18,4 +18,5 @@ export interface Control {
 	follows_cursor?: Value<boolean>
 	property_bags?: Value<PropertyBags>
 	[key: Binding]: Value<any>
+	[key: Variable]: Value<any>
 }

@@ -1,21 +1,13 @@
-import { Anchor, Button, Custom, Extends, GlobalVariables, Panel, Renderer, Type, UI } from ".."
+import { Binding, Color, Label, Panel } from ".."
 
-const paperDoll = Custom(Renderer.ANIMATED_GIF_RENDERER, {
-	camera_tilt_degrees: 360,
-	starting_rotation: 0,
-})
-
-const panel = Panel({
-	anchor: Anchor.BOTTOM_LEFT,
-	offset: [50, 50],
-}).setProperties({
-	camera_tilt_degrees: 360,
-})
-
-paperDoll.setProperties({
-	camera_tilt_degrees: 360,
-})
-
-panel.setProperties({
-	hover_control: "cac",
-})
+Panel({
+	"#test": 123,
+	[Binding.IS_CREATIVE_LAYOUT]: true,
+	[Binding.INVENTORY_SELECTED_ITEM_COLOR]: Color(0x00ff00),
+}).addChild(
+	Label({
+		text: "Hello, World!",
+		shadow: true,
+		color: Color("#3b0202"),
+	})
+)
