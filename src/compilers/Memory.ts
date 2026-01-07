@@ -17,7 +17,7 @@ export const Memory = {
 		return namespace
 	},
 
-	gen_ui_file_content(namespace: string, elements: Map<string, UI<Type, Renderer | null>>) {
+	gen_ui_file_contents(namespace: string, elements: Map<string, UI<Type, Renderer | null>>) {
 		return JSON.stringify(
 			{
 				namespace,
