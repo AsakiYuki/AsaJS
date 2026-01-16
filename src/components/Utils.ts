@@ -1,5 +1,5 @@
 import { Type } from "../types/enums/Type.js"
-import { Array3 } from "../types/properties/value.js"
+import { Array3, Binding } from "../types/properties/value.js"
 import { UI } from "./UI.js"
 
 import { Renderer } from "../types/enums/Renderer.js"
@@ -73,6 +73,10 @@ export function RandomString(length: number, base: number = 32) {
 	}
 
 	return out.join("")
+}
+
+export function RandomBindingString(length: number, base: number = 32): Binding {
+	return `#${RandomString(length, base)}`
 }
 
 // Quick Elements

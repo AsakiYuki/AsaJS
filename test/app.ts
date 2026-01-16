@@ -1,7 +1,5 @@
-import { BindingTranspiler } from ".."
+import { Parser } from ".."
 
-const input = "abcdef + 123456"
+const { gen, out } = new Parser("new(#a + #b) >= #b").out()
 
-const lexer = BindingTranspiler.lexer(input)
-
-console.log(lexer)
+console.log(gen, out)
