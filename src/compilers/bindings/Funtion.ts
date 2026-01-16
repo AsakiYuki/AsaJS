@@ -1,13 +1,16 @@
 import { RandomBindingString } from "../../components/Utils.js"
 import { Expression, GenBinding } from "./types.js"
 
-export const FuntionMap = new Map<
-	string,
-	(...args: Expression[]) => {
-		genBindings?: GenBinding[]
-		value: Expression
-	}
->()
+type Callback = (...args: Expression[]) => {
+	genBindings?: GenBinding[]
+	value: Expression
+}
+
+export const FuntionMap = new Map<string, Callback>()
+
+function callFn(name: string, ...args: Expression[]) {
+	return FuntionMap.get(name)!(...args)
+}
 
 // Default Functions
 FuntionMap.set("abs", number => {
@@ -26,8 +29,29 @@ FuntionMap.set("new", expression => {
 	}
 })
 
-FuntionMap.set("max", (...args) => {
+FuntionMap.set("sqrt", number => {
+	const rtn = RandomBindingString(16),
+		$1 = RandomBindingString(16),
+		$2 = RandomBindingString(16)
+
+	const { genBindings: absValue, value: absRtn } = callFn("abs")
+
 	return {
-		value: "#a",
+		genBindings: [
+			{
+				source: `${number} * 100 / 2`,
+				target: $1,
+			},
+			...absValue!,
+			{
+				source: `${absRtn} > 1`,
+				target: $2,
+			},
+			{
+				source: `(${number} < 0) * -1 + (${number} > -1) * (${$2} * ((${rtn} + ${number} / ${rtn}) / 2) + (not ${$2}) * ${rtn})`,
+				target: rtn,
+			},
+		],
+		value: rtn,
 	}
 })

@@ -1,5 +1,5 @@
-import { Parser } from ".."
+import { Parser, Panel } from ".."
 
-const { gen, out } = new Parser("new(#a + #b) >= #b").out()
+const { gen, out } = new Parser("abs(#a)").out()
 
 console.log(gen, out)

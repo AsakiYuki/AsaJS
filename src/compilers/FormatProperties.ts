@@ -17,12 +17,13 @@ export function FormatProperties(properties: any) {
 		delete properties.anchor
 	}
 
-	if (Object.keys(property_bags))
+	if (Object.keys(property_bags).length) {
 		if (properties.property_bags) {
 			properties.property_bags = { ...property_bags, ...properties.property_bags }
 		} else {
 			properties.property_bags = property_bags
 		}
+	}
 
 	return properties
 }
