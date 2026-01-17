@@ -116,7 +116,7 @@ export function Custom<R extends Renderer>(
 	renderer: R,
 	properties?: Properties<Type.CUSTOM, R>,
 	name?: string,
-	namespace?: string
+	namespace?: string,
 ) {
 	const custom = new UI<Type.CUSTOM, R>(Type.CUSTOM, name, namespace)
 	if (properties) custom.setProperties({ renderer, ...properties })
@@ -171,8 +171,11 @@ export function Extends<T extends Type, K extends Renderer | null>(
 	element: UI<T, K>,
 	properties?: Properties<T, K>,
 	name?: string,
-	namespace?: string
+	namespace?: string,
 ) {
+	if (!element.canExtend) {
+		throw new Error("Cannot extend a UI that cannot be extended")
+	}
 	const ui = new UI<T, K>(undefined, name, namespace)
 	if (properties) ui.setProperties(properties)
 	ui.extend = element

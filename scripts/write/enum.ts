@@ -35,6 +35,10 @@ for (const key in schema) {
 			}
 		}
 
+		if (enumName === "Type") {
+			fileData.push(`    UNKNOWN = "unknown",`)
+		}
+
 		fileData.push("}")
 
 		fs.writeFile(`${enumPath}${enumName}.ts`, fileData.join("\n"))

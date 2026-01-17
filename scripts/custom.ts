@@ -1,4 +1,4 @@
-export {} // 👈 BẮT BUỘC
+export {}
 
 declare global {
 	interface String {

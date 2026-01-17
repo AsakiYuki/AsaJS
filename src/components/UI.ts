@@ -3,22 +3,30 @@ import { Memory } from "../compilers/Memory.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 import { Properties } from "../types/properties/components.js"
+import { Namespace, VanillaType } from "../types/vanilla/intellisense.js"
 import { Class } from "./Class.js"
 import { RandomString } from "./Utils.js"
 
 import util from "node:util"
 
 export class UI<T extends Type, K extends Renderer | null = null> extends Class {
-	private path: string
+	path: string
 
 	name: string
 	namespace: string
 	extend?: UI<Type, Renderer | null>
 
+	canExtend: boolean
+
 	controls = new Map<string, [UI<Type, Renderer | null>, Properties<Type, Renderer | null>]>()
 	properties: Properties<T, K> = <any>{}
 
-	constructor(public type?: T, name?: string, namespace?: string, path?: string) {
+	constructor(
+		public type?: T,
+		name?: string,
+		namespace?: string,
+		path?: string,
+	) {
 		super()
 
 		if (name === "namespace") {
@@ -26,11 +34,13 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 			process.exit(1)
 		}
 
-		this.name = name?.match(/^\w+/)?.[0] || RandomString(16)
+		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomString(16)
 
 		if (!path) this.path = `@/${this.namespace}`
 		else this.path = path
+
+		this.canExtend = this.name.search("/") === -1
 
 		Memory.register_ui(this.path, this)
 	}
@@ -79,7 +89,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		}
 
 		return `\x1b[33mUI\x1b[0m<\x1b[92m${
-			this.type || `${this.extend}`
+			this.type || this.extend ? `${this.extend}` : "ANY"
 		}\x1b[0m> \x1b[92m"${this}\x1b[92m"\x1b[0m ${util.inspect(obj, opts)}\n`
 	}
 }

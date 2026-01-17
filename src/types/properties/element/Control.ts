@@ -2,6 +2,7 @@ import { AnimValue, Array2, Binding, PropertyBags, Value, Variable } from "../va
 
 export interface Control {
 	visible?: Value<boolean>
+	ignored?: Value<boolean>
 	enabled?: Value<boolean>
 	layer?: Value<number>
 	z_order?: Value<number>
