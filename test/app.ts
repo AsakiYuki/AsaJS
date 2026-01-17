@@ -1,5 +1,4 @@
-import { Parser, Panel } from ".."
+import { Lexer, Parser } from ".."
 
-const { gen, out } = new Parser("abs(#a)").out()
-
-console.log(gen, out)
+const { out } = new Parser("`A${`#a${#a + #b}`}A`").out()
+console.log(out)

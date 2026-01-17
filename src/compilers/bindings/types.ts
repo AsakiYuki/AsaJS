@@ -12,27 +12,50 @@ export enum TokenKind {
 	COMMA,
 }
 
-export enum GroupType {
-	FUNCTION_CALL,
-	FUNCTION_PARAMS,
-	OPERATOR_SCOPE,
+export enum TSTokenKind {
+	STRING,
+	EXPRESSION,
 }
 
-export interface Token {
-	kind: TokenKind
-	value: string
+export type TSToken =
+	| {
+			kind: TSTokenKind.EXPRESSION
+			tokens: Token[]
+	  }
+	| {
+			kind: TSTokenKind.STRING
+			tokens: Token
+	  }
+
+export interface BaseToken {
 	start: number
 	length: number
 }
 
+export interface NormalToken extends BaseToken {
+	value: string
+	kind: Exclude<TokenKind, TokenKind.TEMPLATE_STRING>
+}
+
+export interface TemplateToken extends BaseToken {
+	value: TSToken[]
+	kind: TokenKind.TEMPLATE_STRING
+}
+
+export type Token = NormalToken | TemplateToken
+
 export type Expression = string
 
-export function makeToken(input: string, kind: TokenKind, start: number, length: number = 1): Token {
-	return {
-		value: input.slice(start, start + length),
-		kind,
-		start,
-		length,
+export function makeToken<T extends TokenKind>(
+	input: T extends TokenKind.TEMPLATE_STRING ? TSToken[] : string,
+	kind: T,
+	start: number,
+	length: number = 1,
+): Token {
+	if (kind === TokenKind.TEMPLATE_STRING) {
+		return { value: input as TSToken[], kind: kind, start, length }
+	} else {
+		return { value: input.slice(start, start + length) as string, kind, start, length }
 	}
 }
 

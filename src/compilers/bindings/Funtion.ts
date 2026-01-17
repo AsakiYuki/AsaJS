@@ -34,7 +34,7 @@ FuntionMap.set("sqrt", number => {
 		$1 = RandomBindingString(16),
 		$2 = RandomBindingString(16)
 
-	const { genBindings: absValue, value: absRtn } = callFn("abs")
+	const { genBindings: absValue, value: absRtn } = callFn("abs", number)
 
 	return {
 		genBindings: [

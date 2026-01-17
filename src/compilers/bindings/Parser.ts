@@ -2,7 +2,7 @@ import { BindingType } from "../../types/enums/BindingType.js"
 import { BindingItem } from "../../types/properties/value.js"
 import { FuntionMap } from "./Funtion.js"
 import { Lexer } from "./Lexer.js"
-import { Expression, GenBinding, Token, TokenKind } from "./types.js"
+import { Expression, GenBinding, Token, TokenKind, TSToken, TSTokenKind } from "./types.js"
 
 export class Parser {
 	position: number = 0
@@ -29,7 +29,74 @@ export class Parser {
 	}
 
 	private parseExpression(): Expression {
-		return this.parseAdditiveExpression()
+		return this.parseOrExpression()
+	}
+
+	private parseOrExpression(): Expression {
+		let left = this.parseAndExpression(),
+			current
+
+		while (
+			(current = this.at()) &&
+			this.at().kind === TokenKind.OPERATOR &&
+			["||"].includes(<string>current.value)
+		) {
+			this.eat()
+			left = `(${left} or ${this.parseAndExpression()})`
+		}
+
+		return left
+	}
+
+	private parseAndExpression(): Expression {
+		let left = this.parseComparisonExpression(),
+			current
+
+		while (
+			(current = this.at()) &&
+			this.at().kind === TokenKind.OPERATOR &&
+			["&&"].includes(<string>current.value)
+		) {
+			this.eat()
+			left = `(${left} and ${this.parseComparisonExpression()})`
+		}
+
+		return left
+	}
+
+	private parseComparisonExpression(): Expression {
+		let left = this.parseAdditiveExpression(),
+			current
+
+		while (
+			(current = this.at()) &&
+			this.at().kind === TokenKind.OPERATOR &&
+			["==", ">", "<", ">=", "<=", "!="].includes(<string>current.value)
+		) {
+			const operator = this.eat()
+			const right = this.parseAdditiveExpression()
+
+			switch (operator.value) {
+				case "==":
+					left = `(${left} = ${right})`
+					break
+
+				case "!=":
+					left = `(not (${left} = ${right}))`
+					break
+
+				case ">=":
+				case "<=":
+					left = `((${left} ${operator.value[0]} ${right}) or (${left} = ${right}))`
+					break
+
+				default:
+					left = `(${left} ${operator.value} ${right})`
+					break
+			}
+		}
+
+		return left
 	}
 
 	private parseAdditiveExpression(): Expression {
@@ -39,37 +106,12 @@ export class Parser {
 		while (
 			(current = this.at()) &&
 			this.at()?.kind === TokenKind.OPERATOR &&
-			["+", "-", "==", ">", "<", ">=", "<=", "!=", "&&", "||"].includes(current.value)
+			["+", "-"].includes(<string>current.value)
 		) {
 			const operator = this.eat()
 			const right = this.parseMultiplicativeExpression()
 
-			switch (operator.value) {
-				case "==":
-					left = `(${left} = ${right})`
-					break
-
-				case ">=":
-				case "<=":
-					left = `((${left} ${operator.value[0]} ${right}) or (${left} = ${right}))`
-					break
-
-				case "!=":
-					left = `(not (${left} = ${right}))`
-					break
-
-				case "&&":
-					left = `(${left} and ${right})`
-					break
-
-				case "||":
-					left = `(${left} or ${right})`
-					break
-
-				default:
-					left = `(${left} ${operator.value} ${right})`
-					break
-			}
+			left = `(${left} ${operator.value} ${right})`
 		}
 
 		return left
@@ -82,7 +124,7 @@ export class Parser {
 		while (
 			(current = this.at()) &&
 			this.at()?.kind === TokenKind.OPERATOR &&
-			["*", "/", "%"].includes(current.value)
+			["*", "/", "%"].includes(<string>current.value)
 		) {
 			const operator = this.eat()
 			const right = this.parsePrimaryExpression()
@@ -99,7 +141,7 @@ export class Parser {
 
 		switch (left?.kind) {
 			case TokenKind.WORD:
-				return this.parseCallExpression(this.eat())
+				return this.parseCallableOrLiteral(this.eat())
 
 			case TokenKind.OPEN_PARENTHESIS: {
 				this.eat()
@@ -108,6 +150,32 @@ export class Parser {
 				this.eat()
 				return `(${value})`
 			}
+
+			case TokenKind.VARIABLE:
+			case TokenKind.NUMBER:
+			case TokenKind.STRING:
+				return <string>this.eat().value
+
+			case TokenKind.TEMPLATE_STRING:
+				return `(${(<TSToken[]>this.eat().value)
+					.map(v => {
+						if (v.kind === TSTokenKind.STRING) return v.tokens.value
+						else {
+							const bakTokens = this.tokens
+							const bakPosition = this.position
+
+							this.tokens = v.tokens
+							this.position = 0
+
+							const out = this.parseExpression()
+
+							this.tokens = bakTokens
+							this.position = bakPosition
+
+							return out
+						}
+					})
+					.join(" + ")})`
 
 			case TokenKind.OPERATOR: {
 				if (left.value === "-" || left.value === "+") {
@@ -144,27 +212,27 @@ export class Parser {
 
 					const value = this.parsePrimaryExpression()
 					return not ? `(not ${value})` : value
-				} else break
+				}
 			}
 
-			case TokenKind.VARIABLE:
-			case TokenKind.NUMBER:
-			case TokenKind.STRING:
-				return this.eat().value
-
-			case undefined:
+			default:
+				console.log(left)
 				this.expect(TokenKind.NUMBER, "Unexpected token!")
 		}
 
-		return left.value
+		return <string>left.value
 	}
 
-	private parseCallExpression(callerToken: Token): Expression {
+	private parseCallableOrLiteral(callerToken: Token): Expression {
 		const left = this.at()
 
 		if (left?.kind === TokenKind.OPEN_PARENTHESIS) {
 			this.eat()
 			const args: Expression[] = []
+
+			if (this.at().kind === TokenKind.COMMA) {
+				this.expect(TokenKind.NUMBER, "Unexpected token!")
+			}
 
 			if (this.at().kind !== TokenKind.CLOSE_PARENTHESIS) {
 				args.push(this.parseExpression())
@@ -172,7 +240,7 @@ export class Parser {
 				while (this.at().kind === TokenKind.COMMA) {
 					this.eat()
 					if (this.at().kind === TokenKind.CLOSE_PARENTHESIS) {
-						this.expect(TokenKind.CLOSE_PARENTHESIS, "Unexpected token!")
+						this.expect(TokenKind.NUMBER, "Unexpected token!")
 					}
 					args.push(this.parseExpression())
 				}
@@ -180,15 +248,18 @@ export class Parser {
 
 			this.eat()
 
-			return this.funtionCall(callerToken.value, ...args)
+			return this.funtionCall(<string>callerToken.value, ...args)
 		} else {
-			this.warn("This token should be a string!", callerToken)
-			return callerToken.value
+			this.warn(
+				`Implicit string literal '${callerToken.value}'. Use quoted string ('${callerToken.value}') for clarity!`,
+				callerToken,
+			)
+			return <string>callerToken.value
 		}
 	}
 
 	private funtionCall(name: string, ...params: Expression[]): Expression {
-		const func = FuntionMap.get(name)
+		const func = FuntionMap.get(name.toLowerCase())
 		if (!func) {
 			return this.expect(TokenKind.WORD, "Function not found!")!
 		} else {
@@ -202,7 +273,7 @@ export class Parser {
 		const prev = this.at() || this.last()
 		if (!prev || prev.kind !== kind) {
 			throw new Error(
-				`\x1b[31m${this.getPointer(prev)}\n` + `[ERROR]: ${err}\x1b[0m - Expected ${TokenKind[kind]}`
+				`\x1b[31m${this.getPointer(prev)}\n` + `[ERROR]: ${err}\x1b[0m - Expected ${TokenKind[kind]}`,
 			)
 		}
 	}
@@ -215,7 +286,7 @@ export class Parser {
 	private getPointer(token: Token) {
 		return `${this.input.slice(0, token.start)}>>>${this.input.slice(
 			token.start,
-			token.start + token.length
+			token.start + token.length,
 		)}<<<${this.input.slice(token.start + token.length)}`
 	}
 
@@ -228,7 +299,7 @@ export class Parser {
 						binding_type: BindingType.VIEW,
 						source_property_name: `(${source})`,
 						target_property_name: `${target}`,
-					}
+					},
 			),
 		}
 	}

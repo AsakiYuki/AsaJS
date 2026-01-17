@@ -21,9 +21,9 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "npx tsc",
-		"build-watch": "npx tsc --watch",
+		"dev": "npx tsc --watch",
 		"test": "bun test/app.ts",
-		"test-watch": "bun --watch test/app.ts",
+		"test:watch": "bun --watch test/app.ts",
 		"prefetch": "bun scripts/prefetch"
 	},
 	"devDependencies": {
