@@ -11,6 +11,7 @@ for (const key in schema) {
 	const data = schema[key]
 	if (data.enum) {
 		const enumName = key.match(/\w+$/)?.[0].toCamelCase(true)!
+		console.log(enumName)
 		index.push(`export { ${enumName} } from "./${enumName}.js"`)
 		const count = new Map<string, number>()
 

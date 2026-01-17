@@ -36,11 +36,7 @@ export class Parser {
 		let left = this.parseAndExpression(),
 			current
 
-		while (
-			(current = this.at()) &&
-			this.at().kind === TokenKind.OPERATOR &&
-			["||"].includes(<string>current.value)
-		) {
+		while ((current = this.at()) && this.at().kind === TokenKind.OPERATOR && current.value === "||") {
 			this.eat()
 			left = `(${left} or ${this.parseAndExpression()})`
 		}
@@ -52,11 +48,7 @@ export class Parser {
 		let left = this.parseComparisonExpression(),
 			current
 
-		while (
-			(current = this.at()) &&
-			this.at().kind === TokenKind.OPERATOR &&
-			["&&"].includes(<string>current.value)
-		) {
+		while ((current = this.at()) && this.at().kind === TokenKind.OPERATOR && current.value === "&&") {
 			this.eat()
 			left = `(${left} and ${this.parseComparisonExpression()})`
 		}
@@ -156,26 +148,26 @@ export class Parser {
 			case TokenKind.STRING:
 				return <string>this.eat().value
 
-			case TokenKind.TEMPLATE_STRING:
-				return `(${(<TSToken[]>this.eat().value)
-					.map(v => {
-						if (v.kind === TSTokenKind.STRING) return v.tokens.value
-						else {
-							const bakTokens = this.tokens
-							const bakPosition = this.position
+			case TokenKind.TEMPLATE_STRING: {
+				const out = (<TSToken[]>this.eat().value).map(v => {
+					if (v.kind === TSTokenKind.STRING) return v.tokens.value
+					else {
+						const bakTokens = this.tokens
+						const bakPosition = this.position
 
-							this.tokens = v.tokens
-							this.position = 0
+						this.tokens = v.tokens
+						this.position = 0
 
-							const out = this.parseExpression()
+						const out = this.parseExpression()
 
-							this.tokens = bakTokens
-							this.position = bakPosition
+						this.tokens = bakTokens
+						this.position = bakPosition
 
-							return out
-						}
-					})
-					.join(" + ")})`
+						return out
+					}
+				})
+				return out.length === 1 ? (out[0] as string) : `(${out.join(" + ")})`
+			}
 
 			case TokenKind.OPERATOR: {
 				if (left.value === "-" || left.value === "+") {
@@ -216,11 +208,10 @@ export class Parser {
 			}
 
 			default:
-				console.log(left)
 				this.expect(TokenKind.NUMBER, "Unexpected token!")
 		}
 
-		return <string>left.value
+		return left.value
 	}
 
 	private parseCallableOrLiteral(callerToken: Token): Expression {
@@ -249,11 +240,14 @@ export class Parser {
 			this.eat()
 
 			return this.funtionCall(<string>callerToken.value, ...args)
-		} else {
+		} else if (left.kind === TokenKind.OPERATOR) {
 			this.warn(
 				`Implicit string literal '${callerToken.value}'. Use quoted string ('${callerToken.value}') for clarity!`,
 				callerToken,
 			)
+			return <string>callerToken.value
+		} else {
+			this.expect(TokenKind.OPERATOR, "Unexpected token!")
 			return <string>callerToken.value
 		}
 	}

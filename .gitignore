@@ -1,4 +1,4 @@
 dist
-prefetch
+cache
 node_modules
 .tsbuildinfo

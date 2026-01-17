@@ -3,6 +3,7 @@ import "./compilers/RunEnd.js"
 
 export * from "./components/Animation.js"
 export * from "./components/UI.js"
+export * from "./components/Modify.js"
 export * from "./components/Utils.js"
 
 export * from "./types/enums/index.js"
