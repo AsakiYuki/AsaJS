@@ -110,21 +110,6 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 		Napi::Function::New(env, Lexer::Lexer)
 	);
 
-	exports.Set(
-		Napi::String::New(env, "isBlankChar"),
-		Napi::Function::New(env, Lexer::isBlankChar)
-	);
-
-	exports.Set(
-		Napi::String::New(env, "isWordChar"),
-		Napi::Function::New(env, Lexer::isWordChar)
-	);
-
-	exports.Set(
-		Napi::String::New(env, "isNumberChar"),
-		Napi::Function::New(env, Lexer::isNumberChar)
-	);
-
 	return exports;
 }
 

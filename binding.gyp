@@ -3,7 +3,7 @@
         {
             "target_name": "asajs-compiler",
             "sources": [
-                "src/native/main.cc",
+                "src/native/main.cpp",
             ],
 
             "dependencies": [
