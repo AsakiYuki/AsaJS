@@ -26,6 +26,7 @@ import {
 	Slider,
 	SliderBox,
 } from "../types/properties/components.js"
+import { ItemAuxID } from "../types/enums/Items.js"
 
 const CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
@@ -77,6 +78,11 @@ export function RandomString(length: number, base: number = 32) {
 
 export function RandomBindingString(length: number, base: number = 32): Binding {
 	return `#${RandomString(length, base)}`
+}
+
+export function GetItemByAuxID(auxID: number) {
+	const item = ItemAuxID[auxID]
+	if (item) return `minecraft:${item.toLowerCase()}`
 }
 
 // Quick Elements
@@ -167,13 +173,13 @@ export function SliderBox(properties?: SliderBox, name?: string, namespace?: str
 	return new UI(Type.SLIDER_BOX, name, namespace).setProperties(properties || {})
 }
 
-export function Extends<T extends Type, K extends Renderer | null>(
+export function ExtendsOf<T extends Type, K extends Renderer | null>(
 	element: UI<T, K>,
 	properties?: Properties<T, K>,
 	name?: string,
 	namespace?: string,
 ) {
-	if (!element.canExtend) {
+	if (!element.extendable) {
 		throw new Error("Cannot extend a UI that cannot be extended")
 	}
 	const ui = new UI<T, K>(undefined, name, namespace)

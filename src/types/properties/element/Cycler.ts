@@ -2,6 +2,7 @@ import { Value } from "../value.js"
 
 export interface Image {
 	texture_path?: Value<string>
+	texture?: Value<string>
 }
 
 export interface Cycler {

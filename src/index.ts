@@ -7,5 +7,6 @@ export * from "./components/Modify.js"
 export * from "./components/Utils.js"
 
 export * from "./types/enums/index.js"
-export * from "./compilers/bindings/index.js"
 export * as Properties from "./types/properties/index.js"
+
+export { ItemAuxID } from "./types/enums/Items.js"

@@ -25,8 +25,9 @@
 		"test": "bun test/app.ts",
 		"test:watch": "bun --watch test/app.ts",
 		"prefetch": "bun scripts/prefetch",
-		"gen:enums": "bun scripts/write/enum",
 		"vanilla:defs": "bun scripts/vanilladefs",
+		"gen:enums": "bun scripts/enum",
+		"gen:items": "bun scripts/items",
 		"gen:autocomplete": "bun scripts/autocomplete-build"
 	},
 	"devDependencies": {

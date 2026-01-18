@@ -1,6 +1,6 @@
-import { PFFS } from "../components"
+import { PFFS } from "./components"
 import fs from "fs/promises"
-import "../custom"
+import "./custom"
 
 const schema = PFFS.readFileJSON("ui.schema.json").definitions
 

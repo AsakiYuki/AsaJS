@@ -3,7 +3,6 @@ import { Memory } from "../compilers/Memory.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 import { Properties } from "../types/properties/components.js"
-import { Namespace, VanillaType } from "../types/vanilla/intellisense.js"
 import { Class } from "./Class.js"
 import { RandomString } from "./Utils.js"
 
@@ -16,7 +15,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	namespace: string
 	extend?: UI<Type, Renderer | null>
 
-	canExtend: boolean
+	extendable: boolean
 
 	controls = new Map<string, [UI<Type, Renderer | null>, Properties<Type, Renderer | null>]>()
 	properties: Properties<T, K> = <any>{}
@@ -40,9 +39,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		if (!path) this.path = `@/${this.namespace}`
 		else this.path = path
 
-		this.canExtend = this.name.search("/") === -1
-
-		Memory.register_ui(this.path, this)
+		this.extendable = this.name.search("/") === -1
 	}
 
 	setProperties(properties: Properties<T, K>) {
