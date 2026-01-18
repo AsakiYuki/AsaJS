@@ -10,7 +10,11 @@
                 "<!(node -p \"require('node-addon-api').targets\"):node_addon_api",
             ],
 
-            "cflags_cc": [ "-std=c++17" ],
+            "msvs_settings": {
+                "VCCLCompilerTool": {
+                    "LanguageStandard": "stdcpp20"
+                }
+            }
         }
     ]
 }

@@ -1,4 +1,5 @@
 #include <napi.h>
+#include <format>
 #include <regex>
 
 enum TokenKind {
@@ -31,7 +32,7 @@ namespace Lexer {
 		return std::regex_match(std::string(1, c), pattern);
 	}
 
-	Napi::Object makeToken(Napi::Env &env, const std::string &input, TokenKind kind, size_t start, size_t length) {
+	Napi::Object makeToken(Napi::Env &env, const std::string &input, TokenKind kind, size_t start, size_t length = 1) {
 		Napi::Object token = Napi::Object::New(env);
 
 		token.Set(Napi::String::New(env, "start"), Napi::Number::New(env, start));
@@ -71,8 +72,71 @@ namespace Lexer {
 			char c = input[index];
 
 			switch (c) {
+				// Literals
+				case '#':
+				case '$': {
+					const size_t start = index++;
+
+					while (index < length) {
+						const char c = input[index];
+						if (Lexer::isWordChar(c)) index++;
+						else break;
+					}
+
+					tokens.push_back(makeToken(env, input, TokenKind::VARIABLE, start, index-- - start));
+					break;
+				} break;
+
+				case '\'': {
+					const size_t start = index++;
+
+					while (index < length) {
+						const char c = input[index];
+						if (c == '\'') break;
+						index++;
+					}
+
+					tokens.push_back(makeToken(env, input, TokenKind::STRING, start, index - start + 1));
+				} break;
+
+				case ',':
+					tokens.push_back(makeToken(env, input, TokenKind::COMMA, index));
+					break;
+
+				// Single operators
+				case '+':
+				case '-':
+				case '*':
+				case '/':
+				case '%':
+					tokens.push_back(makeToken(env, input, TokenKind::OPERATOR, index));
+					break;
+
+				case '(':
+					tokens.push_back(makeToken(env, input, TokenKind::OPEN_PARENTHESIS, index));
+					break;
+
+				case ')':
+					tokens.push_back(makeToken(env, input, TokenKind::CLOSE_PARENTHESIS, index));
+					break;
+
+				// Double operators
+				case '&':
+				case '|':
+				case '=':
+					if (input[index + 1] == input[index]) tokens.push_back(makeToken(env, input, TokenKind::OPERATOR, index++, 2));
+					else tokens.push_back(makeToken(env, input, TokenKind::OPERATOR, index));
+					break;
+
+				case '!':
+				case '>':
+				case '<':
+					if (input[index + 1] == '=') tokens.push_back(makeToken(env, input, TokenKind::OPERATOR, index++, 2));
+					else tokens.push_back(makeToken(env, input, TokenKind::OPERATOR, index));
+					break;
+
 				default: {
-					size_t start = index;
+					const size_t start = index;
 
 					if (Lexer::isNumberChar(c)) {
 						while (Lexer::isNumberChar(input[index + 1])) index++;
@@ -85,9 +149,17 @@ namespace Lexer {
 							Lexer::makeToken(env, input, TokenKind::WORD, start, index - start + 1)
 						);
 					} else if (!Lexer::isBlankChar(c)) {
+						std::string message = std::format(
+							"\x1b[31m{}>>>{}<<<{}\nInvalid character\x1b[0m",
+							input.substr(0, start),
+							input.substr(start, index - start + 1),
+							input.substr(index + 1)
+						);
+
+						Napi::TypeError::New(env, Napi::String::New(env, message)).ThrowAsJavaScriptException();
 						return Napi::Array::New(env, 0);
 					}
-				}
+				} break;
 			};
 
 			index++;
@@ -96,9 +168,8 @@ namespace Lexer {
 		size_t tokenLength = tokens.size();
 		Napi::Array result = Napi::Array::New(env, tokenLength);
 
-		for (size_t i = 0; i < tokenLength; i++) {
+		for (size_t i = 0; i < tokenLength; i++) 
 			result.Set(i, tokens[i]);
-		}
 
 		return result;
 	}

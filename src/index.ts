@@ -8,6 +8,7 @@ export * from "./components/Utils.js"
 export * from "./types/enums/index.js"
 export * as Properties from "./types/properties/index.js"
 
-export * from "./compilers/Bindings.js"
+export { Lexer as NativeLexer } from "./compilers/Bindings.js"
+export { Lexer } from "./compilers/bindings/Lexer.js"
 
 export { ItemAuxID } from "./types/enums/Items.js"
