@@ -9,3 +9,7 @@ export function isWordChar(char: string) {
 export function isNumberChar(char: string) {
 	return /\d/.test(char)
 }
+
+export function isCompileBinding(input: string) {
+	return input.startsWith("[") && input.endsWith("]")
+}

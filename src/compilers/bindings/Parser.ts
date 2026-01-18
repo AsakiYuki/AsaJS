@@ -1,8 +1,8 @@
+import { Expression, GenBinding, Token, TokenKind, TSToken, TSTokenKind } from "./types.js"
 import { BindingType } from "../../types/enums/BindingType.js"
 import { BindingItem } from "../../types/properties/value.js"
 import { FuntionMap } from "./Funtion.js"
 import { Lexer } from "./Lexer.js"
-import { Expression, GenBinding, Token, TokenKind, TSToken, TSTokenKind } from "./types.js"
 
 export class Parser {
 	position: number = 0
@@ -240,14 +240,14 @@ export class Parser {
 			this.eat()
 
 			return this.funtionCall(<string>callerToken.value, ...args)
-		} else if (left.kind === TokenKind.OPERATOR) {
+		} else if (left?.kind === TokenKind.OPERATOR) {
 			this.warn(
 				`Implicit string literal '${callerToken.value}'. Use quoted string ('${callerToken.value}') for clarity!`,
 				callerToken,
 			)
 			return <string>callerToken.value
 		} else {
-			this.expect(TokenKind.OPERATOR, "Unexpected token!")
+			this.expect(TokenKind.WORD, "Unexpected token!")
 			return <string>callerToken.value
 		}
 	}

@@ -1,6 +1,6 @@
 import { Type } from "../types/enums/Type.js"
 import { Array3, Binding } from "../types/properties/value.js"
-import { UI } from "./UI.js"
+import { ModifyUI, UI } from "./UI.js"
 
 import { Renderer } from "../types/enums/Renderer.js"
 import {
@@ -27,6 +27,8 @@ import {
 	SliderBox,
 } from "../types/properties/components.js"
 import { ItemAuxID } from "../types/enums/Items.js"
+import { Element, Namespace, VanillaType } from "../types/vanilla/intellisense.js"
+import { paths } from "../types/vanilla/paths.js"
 
 const CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 
@@ -86,6 +88,11 @@ export function GetItemByAuxID(auxID: number) {
 }
 
 // Quick Elements
+export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, name: K) {
+	// @ts-ignore -- TS cannot prove this, but runtime guarantees it
+	return new ModifyUI<VanillaType<T, K>>(name, namespace, paths[namespace][name])
+}
+
 export function Panel(properties?: Panel, name?: string, namespace?: string) {
 	return new UI(Type.PANEL, name, namespace).setProperties(properties || {})
 }
