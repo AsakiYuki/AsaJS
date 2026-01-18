@@ -32,13 +32,9 @@
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",
-		"node-api-headers": "^1.7.0",
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@types/bindings": "^1.5.5",
-		"bindings": "^1.5.0",
-		"jsonc-parser": "^3.3.1",
-		"node-addon-api": "^8.5.0"
+		"jsonc-parser": "^3.3.1"
 	}
 }
