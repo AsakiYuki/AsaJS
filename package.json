@@ -23,8 +23,6 @@
 		"build": "tsc",
 		"dev": "tsc --watch",
 		"prefetch": "bun scripts/prefetch",
-		"native:build": "node-gyp build",
-		"native:rebuild": "node-gyp rebuild",
 		"vanilla:defs": "bun scripts/vanilladefs",
 		"gen:enums": "bun scripts/enum",
 		"gen:items": "bun scripts/items",

@@ -31,6 +31,7 @@ export type BindingItem = {
 	source_property_name?: Value<string | Binding | bind.Binding>
 	target_property_name?: Value<Binding | bind.Binding>
 	resolve_sibling_scope?: Value<boolean>
+	resolve_ancestor_scope?: Value<boolean>
 }
 
 export type FocusContainerCustom = Array<{

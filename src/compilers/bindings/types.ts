@@ -10,6 +10,8 @@ export enum TokenKind {
 
 	OPERATOR,
 	COMMA,
+
+	EOF
 }
 
 export enum TSTokenKind {

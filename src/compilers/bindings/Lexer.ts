@@ -42,93 +42,6 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 				break
 			}
 
-			case "`": {
-				const tsTokens: TSToken[] = []
-				const start = index
-
-				const tokenization = (start: number) => {
-					while (index < input.length) {
-						const char = input[index]
-						if (char === "`") {
-							index++
-							eatString()
-						} else if (char === "}") {
-							tsTokens.push({
-								kind: TSTokenKind.EXPRESSION,
-								tokens: Lexer(input, start + 1, index),
-							})
-							break
-						}
-						index++
-					}
-				}
-
-				const stringification = (start: number) => {
-					while (index < input.length) {
-						const char = input[index]
-						if (char === "`") {
-							if (start + 1 !== index)
-								tsTokens.push({
-									kind: TSTokenKind.STRING,
-									tokens: {
-										kind: TokenKind.STRING,
-										start: start + 1,
-										length: index - start + 1,
-										value: `'${input.slice(start + 1, index)}'`,
-									},
-								})
-
-							break
-						} else if (char === "$" && input[index + 1] === "{") {
-							tsTokens.push({
-								kind: TSTokenKind.STRING,
-								tokens: {
-									value: `'${input.slice(start + 1, index)}'`,
-									kind: TokenKind.STRING,
-									length: index - start + 1,
-									start,
-								},
-							})
-							tokenization(++index)
-							start = index
-						}
-						index++
-					}
-				}
-
-				const eatString = () => {
-					while (index < input.length) {
-						const char = input[index]
-
-						if (char === "`") {
-							break
-						} else if (char === "$" && input[index + 1] === "{") {
-							index++
-							eatTemplate()
-						}
-
-						index++
-					}
-				}
-
-				const eatTemplate = () => {
-					while (index < input.length) {
-						const char = input[index]
-						if (char === "`") {
-							eatString()
-						} else if (char === "}") {
-							break
-						}
-						index++
-					}
-				}
-
-				stringification(index++)
-				tokens.push(makeToken(tsTokens, TokenKind.TEMPLATE_STRING, start, index - start + 1))
-
-				break
-			}
-
 			case ",":
 				tokens.push(makeToken(input, TokenKind.COMMA, index))
 				break
@@ -165,6 +78,92 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 				else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 				break
 
+			case "f":
+			case "F": {
+				if (input[index + 1] === "'") {
+					const tsTokens: TSToken[] = []
+					const start = ++index
+
+					const tokenization = (start: number) => {
+						while (index < input.length) {
+							const char = input[index]
+							if (char === "'") {
+								index++
+								eatString()
+							} else if (char === "}") {
+								tsTokens.push({
+									kind: TSTokenKind.EXPRESSION,
+									tokens: Lexer(input, start + 1, index),
+								})
+								break
+							}
+							index++
+						}
+					}
+
+					const stringification = (start: number) => {
+						while (index < input.length) {
+							const char = input[index]
+							if (char === "'") {
+								if (start + 1 !== index)
+									tsTokens.push({
+										kind: TSTokenKind.STRING,
+										tokens: {
+											kind: TokenKind.STRING,
+											start: start + 1,
+											length: index - start + 1,
+											value: `'${input.slice(start + 1, index)}'`,
+										},
+									})
+								break
+							} else if (char === "#" && input[index + 1] === "{") {
+								tsTokens.push({
+									kind: TSTokenKind.STRING,
+									tokens: {
+										value: `'${input.slice(start + 1, index)}'`,
+										kind: TokenKind.STRING,
+										length: index - start + 1,
+										start,
+									},
+								})
+								tokenization(++index)
+								start = index
+							}
+							index++
+						}
+					}
+
+					const eatString = () => {
+						while (index < input.length) {
+							const char = input[index]
+							if (char === "'") {
+								break
+							} else if (char === "#" && input[index + 1] === "{") {
+								index++
+								eatTemplate()
+							}
+							index++
+						}
+					}
+
+					const eatTemplate = () => {
+						while (index < input.length) {
+							const char = input[index]
+							if (char === "'") {
+								eatString()
+							} else if (char === "}") {
+								break
+							}
+							index++
+						}
+					}
+
+					stringification(index++)
+					tokens.push(makeToken(tsTokens, TokenKind.TEMPLATE_STRING, start - 1, index - start + 1))
+					break
+				}
+			}
+
 			default: {
 				let start = index
 
@@ -176,7 +175,7 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 					tokens.push(makeToken(input, TokenKind.WORD, start, index - start + 1))
 				} else if (!Checker.isBlankChar(token)) {
 					console.error(
-						`\x1b[31m${input.slice(0, index)}>>>${token}<<<${input.slice(index + 1)}\nInvalid character.\x1b[0m`,
+						`\x1b[31merror: ${input + "\n" + " ".repeat(index + 7) + "^"}\nInvalid character.\x1b[0m`,
 					)
 					throw new Error()
 				}

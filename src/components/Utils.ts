@@ -31,6 +31,7 @@ import { Element, Namespace, VanillaType } from "../types/vanilla/intellisense.j
 import { paths } from "../types/vanilla/paths.js"
 
 const CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
+type CompileBinding = `[${string}]`
 
 export function Color(hex: string | number): Array3<number> {
 	if (typeof hex === "number") {
@@ -87,110 +88,134 @@ export function GetItemByAuxID(auxID: number) {
 	if (item) return `minecraft:${item.toLowerCase()}`
 }
 
+// Binding
+/**
+ * Return format string binding input
+ * @param input
+ * @returns {CompileBinding}
+ */
+export function f(input: string): CompileBinding {
+	if (/^'.+'$/.test(input)) input = `f${input}`
+	else if (!/^f'.+'$/.test(input)) input = `f'${input}'`
+	return b(input)
+}
+
+/**
+ * Return bracket binding input
+ * @param input
+ * @returns {CompileBinding}
+ */
+export function b(input: string): CompileBinding {
+	return `[ ${input} ]`
+}
+
 // Quick Elements
 export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, name: K) {
 	// @ts-ignore -- TS cannot prove this, but runtime guarantees it
 	return new ModifyUI<VanillaType<T, K>>(name, namespace, paths[namespace][name])
 }
 
-export function Panel(properties?: Panel, name?: string, namespace?: string) {
+export function Panel(properties?: Panel, namespace?: string, name?: string) {
 	return new UI(Type.PANEL, name, namespace).setProperties(properties || {})
 }
 
-export function CollectionPanel(properties?: CollectionPanel, name?: string, namespace?: string) {
+export function CollectionPanel(properties?: CollectionPanel, namespace?: string, name?: string) {
 	return new UI(Type.COLLECTION_PANEL, name, namespace).setProperties(properties || {})
 }
 
-export function StackPanel(properties?: StackPanel, name?: string, namespace?: string) {
+export function StackPanel(properties?: StackPanel, namespace?: string, name?: string) {
 	return new UI(Type.STACK_PANEL, name, namespace).setProperties(properties || {})
 }
 
-export function InputPanel(properties?: InputPanel, name?: string, namespace?: string) {
+export function InputPanel(properties?: InputPanel, namespace?: string, name?: string) {
 	return new UI(Type.INPUT_PANEL, name, namespace).setProperties(properties || {})
 }
 
-export function Gird(properties?: Grid, name?: string, namespace?: string) {
+export function Gird(properties?: Grid, namespace?: string, name?: string) {
 	return new UI(Type.GRID, name, namespace).setProperties(properties || {})
 }
 
-export function Screen(properties?: Screen, name?: string, namespace?: string) {
+export function Screen(properties?: Screen, namespace?: string, name?: string) {
 	return new UI(Type.SCREEN, name, namespace).setProperties(properties || {})
 }
 
-export function Image(properties?: Image, name?: string, namespace?: string) {
+export function Image(properties?: Image, namespace?: string, name?: string) {
 	return new UI(Type.IMAGE, name, namespace).setProperties(properties || {})
 }
 
-export function Label(properties?: Label, name?: string, namespace?: string) {
+export function Label(properties?: Label, namespace?: string, name?: string) {
 	return new UI(Type.LABEL, name, namespace).setProperties(properties || {})
 }
 
 export function Custom<R extends Renderer>(
 	renderer: R,
 	properties?: Properties<Type.CUSTOM, R>,
-	name?: string,
 	namespace?: string,
+	name?: string,
 ) {
 	const custom = new UI<Type.CUSTOM, R>(Type.CUSTOM, name, namespace)
 	if (properties) custom.setProperties({ renderer, ...properties })
 	return custom
 }
 
-export function TooltipTrigger(properties?: TooltipTrigger, name?: string, namespace?: string) {
+export function TooltipTrigger(properties?: TooltipTrigger, namespace?: string, name?: string) {
 	return new UI(Type.TOOLTIP_TRIGGER, name, namespace).setProperties(properties || {})
 }
 
-export function Button(properties?: Button, name?: string, namespace?: string) {
+export function Button(properties?: Button, namespace?: string, name?: string) {
 	return new UI(Type.BUTTON, name, namespace).setProperties(properties || {})
 }
 
-export function Toggle(properties?: Toggle, name?: string, namespace?: string) {
+export function Toggle(properties?: Toggle, namespace?: string, name?: string) {
 	return new UI(Type.TOGGLE, name, namespace).setProperties(properties || {})
 }
 
-export function Dropdown(properties?: Dropdown, name?: string, namespace?: string) {
+export function Dropdown(properties?: Dropdown, namespace?: string, name?: string) {
 	return new UI(Type.DROPDOWN, name, namespace).setProperties(properties || {})
 }
 
-export function SelectionWheel(properties?: SelectionWheel, name?: string, namespace?: string) {
+export function SelectionWheel(properties?: SelectionWheel, namespace?: string, name?: string) {
 	return new UI(Type.SELECTION_WHEEL, name, namespace).setProperties(properties || {})
 }
 
-export function EditBox(properties?: EditBox, name?: string, namespace?: string) {
+export function EditBox(properties?: EditBox, namespace?: string, name?: string) {
 	return new UI(Type.EDIT_BOX, name, namespace).setProperties(properties || {})
 }
 
-export function ScrollbarBox(properties?: ScrollbarBox, name?: string, namespace?: string) {
+export function ScrollbarBox(properties?: ScrollbarBox, namespace?: string, name?: string) {
 	return new UI(Type.SCROLLBAR_BOX, name, namespace).setProperties(properties || {})
 }
 
-export function ScrollbarTrack(properties?: ScrollbarTrack, name?: string, namespace?: string) {
+export function ScrollbarTrack(properties?: ScrollbarTrack, namespace?: string, name?: string) {
 	return new UI(Type.SCROLL_TRACK, name, namespace).setProperties(properties || {})
 }
 
-export function ScrollView(properties?: ScrollView, name?: string, namespace?: string) {
+export function ScrollView(properties?: ScrollView, namespace?: string, name?: string) {
 	return new UI(Type.SCROLL_VIEW, name, namespace).setProperties(properties || {})
 }
 
-export function Slider(properties?: Slider, name?: string, namespace?: string) {
+export function Slider(properties?: Slider, namespace?: string, name?: string) {
 	return new UI(Type.SLIDER, name, namespace).setProperties(properties || {})
 }
 
-export function SliderBox(properties?: SliderBox, name?: string, namespace?: string) {
+export function SliderBox(properties?: SliderBox, namespace?: string, name?: string) {
 	return new UI(Type.SLIDER_BOX, name, namespace).setProperties(properties || {})
 }
 
 export function ExtendsOf<T extends Type, K extends Renderer | null>(
 	element: UI<T, K>,
 	properties?: Properties<T, K>,
-	name?: string,
 	namespace?: string,
+	name?: string,
 ) {
 	if (!element.extendable) {
 		throw new Error("Cannot extend a UI that cannot be extended")
 	}
 	const ui = new UI<T, K>(undefined, name, namespace)
 	if (properties) ui.setProperties(properties)
+	// @ts-ignore
 	ui.extend = element
+	// @ts-ignore
+	ui.extendType = element.type || element.extendType
 	return ui as typeof element
 }

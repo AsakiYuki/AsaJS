@@ -14,6 +14,10 @@ export class Parser {
 	constructor(private input: string) {
 		this.tokens = Lexer(this.input)
 		this.output = this.parseExpression()
+
+		if (this.at()) {
+			this.expect(TokenKind.EOF, "Unexpected token!")
+		}
 	}
 
 	at() {
@@ -247,7 +251,12 @@ export class Parser {
 			)
 			return <string>callerToken.value
 		} else {
-			this.expect(TokenKind.WORD, "Unexpected token!")
+			if (callerToken.kind === TokenKind.WORD)
+				this.warn(
+					`Implicit string literal '${callerToken.value}'. Use quoted string ('${callerToken.value}') for clarity!`,
+					callerToken,
+				)
+			else this.expect(TokenKind.WORD, "Unexpected token!")
 			return <string>callerToken.value
 		}
 	}
@@ -274,14 +283,11 @@ export class Parser {
 
 	private warn(err: string, token?: Token) {
 		const prev = token || this.at()
-		console.warn(`\x1b[33m${this.getPointer(prev)}\n` + `[WARNING]: ${err}\x1b[0m`)
+		console.warn(`\x1b[33mwarn:${this.getPointer(prev, true)}\n` + `[WARNING]: ${err}\x1b[0m`)
 	}
 
-	private getPointer(token: Token) {
-		return `${this.input.slice(0, token.start)}>>>${this.input.slice(
-			token.start,
-			token.start + token.length,
-		)}<<<${this.input.slice(token.start + token.length)}`
+	private getPointer(token: Token, isWarn = false) {
+		return this.input + "\n" + " ".repeat(token.start + (isWarn ? 5 : 7)) + "^".repeat(token.length)
 	}
 
 	out(): { gen?: BindingItem[]; out: Expression } {
