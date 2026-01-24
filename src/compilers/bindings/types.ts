@@ -11,7 +11,7 @@ export enum TokenKind {
 	OPERATOR,
 	COMMA,
 
-	EOF
+	EOF,
 }
 
 export enum TSTokenKind {
@@ -55,9 +55,9 @@ export function makeToken<T extends TokenKind>(
 	length: number = 1,
 ): Token {
 	if (kind === TokenKind.TEMPLATE_STRING) {
-		return { value: input as TSToken[], kind: kind, start, length }
+		return { kind: kind, start, length, value: input as TSToken[] }
 	} else {
-		return { value: input.slice(start, start + length) as string, kind, start, length }
+		return { kind, start, length, value: input.slice(start, start + length) as string }
 	}
 }
 

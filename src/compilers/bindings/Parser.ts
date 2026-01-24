@@ -292,7 +292,7 @@ export class Parser {
 
 	out(): { gen?: BindingItem[]; out: Expression } {
 		return {
-			out: this.output,
+			out: `(${this.output})`,
 			gen: this.genBindings.map(
 				({ source, target }) =>
 					<BindingItem>{

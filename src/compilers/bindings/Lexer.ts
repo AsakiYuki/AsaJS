@@ -1,10 +1,13 @@
 import { makeToken, TokenKind, Token, TSToken, TSTokenKind } from "./types.js"
 import * as Checker from "./Checker.js"
 
-export function Lexer(input: string, start: number = 0, end?: number) {
+export function Lexer(input: string, start: number = 0, length?: number) {
 	const tokens: Token[] = []
 
 	if (input.length === 0) return tokens
+	length ||= input.length
+
+	console.log(input.slice(start, length))
 
 	let index = start
 	do {
@@ -17,27 +20,21 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 			case "#":
 			case "$": {
 				const start = index++
-
-				while (index < input.length) {
+				while (index < length) {
 					const token = input[index]
 					if (Checker.isWordChar(token)) index++
-					else break
+					else {
+						if (start + 1 === index) {
+							console.error(
+								`\x1b[31merror: ${input + "\n" + " ".repeat(index + 6) + "^"}\nInvalid character.\x1b[0m`,
+							)
+							throw new Error()
+						}
+						break
+					}
 				}
 
 				tokens.push(makeToken(input, TokenKind.VARIABLE, start, index-- - start))
-
-				break
-			}
-
-			case "'": {
-				const start = index++
-
-				do {
-					const token = input[index]
-					if (token === "'") break
-				} while (++index < input.length)
-
-				tokens.push(makeToken(input, TokenKind.STRING, start, index - start + 1))
 
 				break
 			}
@@ -78,88 +75,39 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 				else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 				break
 
-			case "f":
-			case "F": {
+			// string
+			case "'": {
+				const start = index++
+
+				do {
+					const token = input[index]
+					if (token === "'") break
+				} while (++index < length)
+
+				tokens.push(makeToken(input, TokenKind.STRING, start, index - start + 1))
+
+				break
+			}
+
+			// template string
+			case "f": {
 				if (input[index + 1] === "'") {
 					const tsTokens: TSToken[] = []
-					const start = ++index
+					const start = index
 
-					const tokenization = (start: number) => {
-						while (index < input.length) {
+					const templateStringTokens = (start: number) => {
+						while (index < length) {
 							const char = input[index]
+
 							if (char === "'") {
-								index++
-								eatString()
-							} else if (char === "}") {
-								tsTokens.push({
-									kind: TSTokenKind.EXPRESSION,
-									tokens: Lexer(input, start + 1, index),
-								})
-								break
 							}
+
 							index++
 						}
 					}
 
-					const stringification = (start: number) => {
-						while (index < input.length) {
-							const char = input[index]
-							if (char === "'") {
-								if (start + 1 !== index)
-									tsTokens.push({
-										kind: TSTokenKind.STRING,
-										tokens: {
-											kind: TokenKind.STRING,
-											start: start + 1,
-											length: index - start + 1,
-											value: `'${input.slice(start + 1, index)}'`,
-										},
-									})
-								break
-							} else if (char === "#" && input[index + 1] === "{") {
-								tsTokens.push({
-									kind: TSTokenKind.STRING,
-									tokens: {
-										value: `'${input.slice(start + 1, index)}'`,
-										kind: TokenKind.STRING,
-										length: index - start + 1,
-										start,
-									},
-								})
-								tokenization(++index)
-								start = index
-							}
-							index++
-						}
-					}
-
-					const eatString = () => {
-						while (index < input.length) {
-							const char = input[index]
-							if (char === "'") {
-								break
-							} else if (char === "#" && input[index + 1] === "{") {
-								index++
-								eatTemplate()
-							}
-							index++
-						}
-					}
-
-					const eatTemplate = () => {
-						while (index < input.length) {
-							const char = input[index]
-							if (char === "'") {
-								eatString()
-							} else if (char === "}") {
-								break
-							}
-							index++
-						}
-					}
-
-					stringification(index++)
-					tokens.push(makeToken(tsTokens, TokenKind.TEMPLATE_STRING, start - 1, index - start + 1))
+					templateStringTokens(index)
+					tokens.push(makeToken(tsTokens, TokenKind.TEMPLATE_STRING, start, index - start))
 					break
 				}
 			}
@@ -181,7 +129,7 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 				}
 			}
 		}
-	} while (++index < (end || input.length))
+	} while (++index < length)
 
 	return tokens
 }

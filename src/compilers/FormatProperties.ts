@@ -1,13 +1,13 @@
 import { Binding } from "../types/properties/value.js"
 
 export function FormatProperties(properties: any) {
-	const property_bags: Record<Binding, any> = {}
+	const property_bag: Record<Binding, any> = {}
 
 	for (const key in properties) {
 		const value = properties[key]
 
 		if (key.startsWith("#")) {
-			property_bags[<Binding>key] = value
+			property_bag[<Binding>key] = value
 			delete properties[key]
 		}
 	}
@@ -17,11 +17,11 @@ export function FormatProperties(properties: any) {
 		delete properties.anchor
 	}
 
-	if (Object.keys(property_bags).length) {
-		if (properties.property_bags) {
-			properties.property_bags = { ...property_bags, ...properties.property_bags }
+	if (Object.keys(property_bag).length) {
+		if (properties.property_bag) {
+			properties.property_bag = { ...property_bag, ...properties.property_bag }
 		} else {
-			properties.property_bags = property_bags
+			properties.property_bag = property_bag
 		}
 	}
 
