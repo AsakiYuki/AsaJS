@@ -1,13 +1,11 @@
 import { makeToken, TokenKind, Token, TSToken, TSTokenKind } from "./types.js"
 import * as Checker from "./Checker.js"
 
-export function Lexer(input: string, start: number = 0, length?: number) {
+export function Lexer(input: string, start: number = 0, end?: number) {
 	const tokens: Token[] = []
 
 	if (input.length === 0) return tokens
-	length ||= input.length
-
-	console.log(input.slice(start, length))
+	const length = (end ||= input.length)
 
 	let index = start
 	do {
@@ -65,7 +63,12 @@ export function Lexer(input: string, start: number = 0, length?: number) {
 			case "|":
 			case "=":
 				if (input[index + 1] === input[index]) tokens.push(makeToken(input, TokenKind.OPERATOR, index++, 2))
-				else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
+				else {
+					console.error(
+						`\x1b[31merror: ${input + "\n" + " ".repeat(index + 7) + "^"}\nInvalid character.\x1b[0m`,
+					)
+					throw new Error()
+				}
 				break
 
 			case "!":
@@ -94,20 +97,88 @@ export function Lexer(input: string, start: number = 0, length?: number) {
 				if (input[index + 1] === "'") {
 					const tsTokens: TSToken[] = []
 					const start = index
+					index += 2
 
 					const templateStringTokens = (start: number) => {
 						while (index < length) {
+							const char = input[index++]
+
+							if (char === "#") {
+								if (input[index] === "{") {
+									if (start !== index - 1)
+										tsTokens.push({
+											kind: TSTokenKind.STRING,
+											tokens: {
+												kind: TokenKind.STRING,
+												start: start,
+												length: index - start,
+												value: `'${input.slice(start, index - 1)}'`,
+											},
+										})
+									start = index + 1
+									eatExpression(index)
+									tsTokens.push({
+										kind: TSTokenKind.EXPRESSION,
+										tokens: Lexer(input, start, index),
+									})
+									start = index += 1
+								}
+							} else if (char === "'") {
+								if (start !== index - 1)
+									tsTokens.push({
+										kind: TSTokenKind.STRING,
+										tokens: {
+											kind: TokenKind.STRING,
+											start: start,
+											length: index - start,
+											value: `'${input.slice(start, index - 1)}'`,
+										},
+									})
+								break
+							}
+						}
+					}
+
+					const eatExpression = (start: number) => {
+						while (index < length) {
+							const char = input[index]
+							if (char === "'") eatString(++index)
+							else if (char === "}") break
+							else if (char === "f") {
+								if (input[++index] === "'") {
+									eatTemplateString(++index)
+								}
+							}
+							index++
+						}
+					}
+
+					const eatTemplateString = (start: number) => {
+						while (index < length) {
 							const char = input[index]
 
-							if (char === "'") {
+							if (char === "'") break
+							else if (char === "#") {
+								if (input[++index] === "{") eatExpression(++index)
 							}
 
 							index++
 						}
 					}
 
+					const eatString = (start: number) => {
+						while (index < length) {
+							const char = input[index]
+							if (char === "'") break
+							index++
+						}
+					}
+
 					templateStringTokens(index)
-					tokens.push(makeToken(tsTokens, TokenKind.TEMPLATE_STRING, start, index - start))
+
+					if (tsTokens.length)
+						tokens.push(makeToken(tsTokens, TokenKind.TEMPLATE_STRING, start, index - start))
+					else tokens.push(makeToken(input, TokenKind.STRING, start + 1, index - start - 1))
 					break
 				}
 			}
