@@ -96,6 +96,8 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 			}
 			this.bindings.push(binding)
 		}
+
+		return this
 	}
 
 	addChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>, name?: string) {

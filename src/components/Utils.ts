@@ -106,7 +106,7 @@ export function f(input: string): CompileBinding {
  * @returns {CompileBinding}
  */
 export function b(input: string): CompileBinding {
-	return `[ ${input} ]`
+	return `[${input}]`
 }
 
 // Quick Elements

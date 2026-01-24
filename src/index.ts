@@ -9,5 +9,3 @@ export * from "./types/enums/index.js"
 export * as Properties from "./types/properties/index.js"
 
 export { ItemAuxID } from "./types/enums/Items.js"
-
-export * from "./compilers/bindings/index.js"

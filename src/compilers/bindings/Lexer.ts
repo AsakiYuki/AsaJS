@@ -188,6 +188,18 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 
 				if (Checker.isNumberChar(token)) {
 					while (Checker.isNumberChar(input[index + 1])) index++
+					if (input[index + 1] === "e") {
+						index++
+						if (input[index + 1] === "-") index++
+						if (!Checker.isNumberChar(input[index + 1])) {
+							console.error(
+								`\x1b[31merror: ${input + "\n" + " ".repeat(index + 7) + "^"}\nInvalid character.\x1b[0m`,
+							)
+							throw new Error()
+						}
+						while (Checker.isNumberChar(input[index + 1])) index++
+					}
+
 					tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
 				} else if (Checker.isWordChar(token)) {
 					while (Checker.isWordChar(input[index + 1])) index++

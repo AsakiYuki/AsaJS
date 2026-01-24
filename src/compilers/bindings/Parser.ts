@@ -125,7 +125,7 @@ export class Parser {
 			const operator = this.eat()
 			const right = this.parsePrimaryExpression()
 
-			if (current.value === "%") left = `(${left} - ${left} / ${right} * ${right})`
+			if (current.value === "%") left = `(${left} - (${left} / ${right} * ${right}))`
 			else left = `(${left} ${operator.value} ${right})`
 		}
 
@@ -147,8 +147,12 @@ export class Parser {
 				return `(${value})`
 			}
 
+			case TokenKind.NUMBER: {
+				const [num, exp] = (<string>this.eat().value).split("e")
+				return "" + (exp ? +num * 10 ** +exp : num)
+			}
+
 			case TokenKind.VARIABLE:
-			case TokenKind.NUMBER:
 			case TokenKind.STRING:
 				return <string>this.eat().value
 
