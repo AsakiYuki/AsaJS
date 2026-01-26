@@ -1,9 +1,11 @@
+import { AnimationKeyframe } from "../components/AnimationKeyframe.js"
 import { Class } from "../components/Class.js"
 import { UI } from "../components/UI.js"
+import { AnimType } from "../types/enums/AnimType.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 
-type Element = UI<Type, Renderer | null>
+type Element = UI<Type, Renderer | null> | AnimationKeyframe<AnimType>
 interface FileInterface {
 	namespace: string
 	elements: Element[]
@@ -13,7 +15,7 @@ type Files = Map<string, FileInterface>
 export class Memory extends Class {
 	protected static files: Files = new Map<string, FileInterface>()
 
-	public static add(element: UI<Type, Renderer | null>) {
+	public static add(element: UI<Type, Renderer | null> | AnimationKeyframe<AnimType>) {
 		let file = Memory.files.get(element.path)
 
 		if (!file) {

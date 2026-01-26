@@ -10,7 +10,12 @@ const intelliSense: string[] = [
 	'import { Type as T } from "../enums/Type.js"\n',
 	"export type Namespace = keyof IntelliSense;",
 	"export type Element<T extends Namespace> = Extract<keyof IntelliSense[T], string>",
-	"export type VanillaType<T extends Namespace, K extends Element<T>> = IntelliSense[T][K]\n",
+	"export type VanillaElementInfo<T extends Namespace, K extends Element<T>> = IntelliSense[T][K]",
+	"// @ts-ignore",
+	'export type VanillaType<T extends Namespace, K extends Element<T>> = VanillaElementInfo<T, K>["type"]',
+	"// @ts-ignore",
+	'export type VanillaElementChilds<T extends Namespace, K extends Element<T>> = VanillaElementInfo<T, K>["children"]',
+	"\n",
 	"export type IntelliSense = {",
 ]
 
@@ -27,9 +32,12 @@ for (const [namespace, element] of Object.entries(data)) {
 		ePaths: string[] = [`    "${namespace}": {`]
 
 	for (const [ePath, info] of Object.entries(<any>element)) {
-		const { file, type, extend } = <any>info
+		const { file, type, extend, children } = <any>info
+
+		const childType = children?.map((v: string) => `'${v}'`).join(" | ") || "string"
+
 		eType.push(`"${ePath}"`)
-		eType3.push(`    "${ePath}": T.${type.toUpperCase()},`)
+		eType3.push(`    "${ePath}": { type: T.${type.toUpperCase()}, children: ${childType} },`)
 		ePaths.push(`        "${ePath}": "${file}",`)
 	}
 

@@ -1,8 +1,9 @@
 import "./compilers/PreCompile.js"
 import "./compilers/RunEnd.js"
 
-export * from "./components/Animation.js"
-export * from "./components/UI.js"
+export { Animation } from "./components/Animation.js"
+export { AnimationKeyframe } from "./components/AnimationKeyframe.js"
+export { ModifyUI, UI } from "./components/UI.js"
 export * from "./components/Utils.js"
 
 export * from "./types/enums/index.js"

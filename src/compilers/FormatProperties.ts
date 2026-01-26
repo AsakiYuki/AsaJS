@@ -1,3 +1,6 @@
+import { AnimationKeyframe } from "../components/AnimationKeyframe.js"
+import { AnimType } from "../types/enums/AnimType.js"
+import { KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
 import { Binding } from "../types/properties/value.js"
 
 export function FormatProperties(properties: any) {
@@ -23,6 +26,14 @@ export function FormatProperties(properties: any) {
 		} else {
 			properties.property_bag = property_bag
 		}
+	}
+
+	return properties
+}
+
+export function FormatAnimationProperties(properties: KeyframeAnimationProperties<AnimType>) {
+	if (properties.next instanceof AnimationKeyframe) {
+		properties.next = `${properties.next}`
 	}
 
 	return properties

@@ -7,6 +7,8 @@ import { ButtonId } from "../enums/ButtonId.js"
 import { MappingType } from "../enums/MappingType.js"
 import { InputModeCondition } from "../enums/InputModeCondition.js"
 import { Scope } from "../enums/Scope.js"
+import { ArrayName } from "../enums/ArrayName.js"
+import { Operation } from "../enums/Operation.js"
 
 export type Variable = `$${string}`
 export type Binding = `#${string}`
@@ -34,6 +36,15 @@ export type BindingItem = {
 	resolve_ancestor_scope?: Value<boolean>
 }
 
+export type VariableItem = {
+	requires: string
+	[key: Variable]: Value<any>
+}
+
+export type Variables = {
+	[key: Variable | `(${string})`]: Record<Variable, unknown>
+}
+
 export type FocusContainerCustom = Array<{
 	other_focus_container_name?: Value<string>
 	focus_id_inside?: Value<string>
@@ -55,4 +66,14 @@ export type ButtonMapping = {
 
 export type PropertyBags = {
 	[key: Binding]: Value<any>
+}
+
+export type ModificationItem = {
+	array_name?: ArrayName
+	control_name?: string
+	where?: BindingItem | object
+	target?: object
+	target_control?: string
+	value?: object | (object | BindingItem)[]
+	operation?: Operation
 }

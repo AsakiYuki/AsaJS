@@ -6,6 +6,8 @@ const vanilla: NamespaceMap = new Map()
 function readControls(namespace: string, file: string, elements: ElementMap, data: any[], prefix: string) {
 	prefix += "/"
 
+	const childs: string[] = []
+
 	for (const element of data) {
 		const [fullname, properties] = Object.entries(element)[0]
 
@@ -17,6 +19,7 @@ function readControls(namespace: string, file: string, elements: ElementMap, dat
 		const [name, $2] = fullname.split("@")
 
 		if (name.startsWith("$")) continue
+		childs.push(name)
 
 		if ($2 && !$2.startsWith("$")) {
 			const [$3, $4] = $2.split(".")
@@ -37,9 +40,12 @@ function readControls(namespace: string, file: string, elements: ElementMap, dat
 
 		const controls = (<any>properties).controls
 		if (controls) {
-			readControls(namespace, file, elements, controls, prefix + name)
+			const childs = readControls(namespace, file, elements, controls, prefix + name)
+			if (childs.length) data.children = childs
 		}
 	}
+
+	return childs
 }
 
 function readData(namespace: string, file: string, elements: ElementMap, data: any) {
@@ -73,7 +79,8 @@ function readData(namespace: string, file: string, elements: ElementMap, data: a
 
 		const controls = (<any>properties).controls
 		if (controls) {
-			readControls(namespace, file, elements, controls, name)
+			const childs = readControls(namespace, file, elements, controls, name)
+			if (childs.length) data.children = childs
 		}
 	}
 }
@@ -148,6 +155,7 @@ interface VanillaElement {
 		namespace: string
 	}
 	anim_type?: string
+	children?: string[]
 	type: string
 	file: string
 }

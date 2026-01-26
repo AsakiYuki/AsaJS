@@ -1,5 +1,5 @@
 import { Type } from "../types/enums/Type.js"
-import { Array3, Binding } from "../types/properties/value.js"
+import { Array3, Binding, BindingItem } from "../types/properties/value.js"
 import { ModifyUI, UI } from "./UI.js"
 
 import { Renderer } from "../types/enums/Renderer.js"
@@ -27,8 +27,14 @@ import {
 	SliderBox,
 } from "../types/properties/components.js"
 import { ItemAuxID } from "../types/enums/Items.js"
-import { Element, Namespace, VanillaType } from "../types/vanilla/intellisense.js"
+import { Element, Namespace, VanillaElementChilds, VanillaType } from "../types/vanilla/intellisense.js"
 import { paths } from "../types/vanilla/paths.js"
+import { isCompileBinding } from "../compilers/bindings/Checker.js"
+import { Parser } from "../compilers/bindings/Parser.js"
+import { BindingType } from "../types/enums/BindingType.js"
+import { AnimType } from "../types/enums/AnimType.js"
+import { AnimationKeyframe } from "./AnimationKeyframe.js"
+import { KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
 
 const CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 type CompileBinding = `[${string}]`
@@ -58,6 +64,27 @@ export function Color(hex: string | number): Array3<number> {
 			process.exit(1)
 		}
 	}
+}
+
+export function ResolveBinding(...bindings: BindingItem[]) {
+	const result: BindingItem[] = []
+
+	for (const binding of bindings) {
+		if (binding.source_property_name) {
+			if (isCompileBinding(binding.source_property_name)) {
+				const { gen, out } = new Parser(binding.source_property_name.slice(1, -1)).out()
+				if (gen) result.push(...gen)
+				binding.source_property_name = out
+			}
+
+			binding.binding_type = BindingType.VIEW
+
+			if (!binding.target_property_name) throw new Error("Binding must have a target property name")
+		}
+		result.push(binding)
+	}
+
+	return result
 }
 
 export function RandomString(length: number, base: number = 32) {
@@ -112,7 +139,7 @@ export function b(input: string): CompileBinding {
 // Quick Elements
 export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, name: K) {
 	// @ts-ignore -- TS cannot prove this, but runtime guarantees it
-	return new ModifyUI<VanillaType<T, K>>(name, namespace, paths[namespace][name])
+	return new ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>(namespace, name, paths[namespace][name])
 }
 
 export function Panel(properties?: Panel, namespace?: string, name?: string) {
@@ -218,4 +245,73 @@ export function ExtendsOf<T extends Type, K extends Renderer | null>(
 	// @ts-ignore
 	ui.extendType = element.type || element.extendType
 	return ui as typeof element
+}
+
+// Quick Keyframe
+export function KeyframeOffset(
+	properties?: KeyframeAnimationProperties<AnimType.OFFSET>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.OFFSET, properties || {}, name, namespace)
+}
+
+export function KeyframeSize(
+	properties?: KeyframeAnimationProperties<AnimType.SIZE>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.SIZE, properties || {}, name, namespace)
+}
+
+export function KeyframeUV(properties?: KeyframeAnimationProperties<AnimType.UV>, namespace?: string, name?: string) {
+	return new AnimationKeyframe(AnimType.UV, properties || {}, name, namespace)
+}
+
+export function KeyframeClip(
+	properties?: KeyframeAnimationProperties<AnimType.CLIP>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.CLIP, properties || {}, name, namespace)
+}
+
+export function KeyframeColor(
+	properties?: KeyframeAnimationProperties<AnimType.COLOR>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.COLOR, properties || {}, name, namespace)
+}
+
+export function KeyframeAlpha(
+	properties?: KeyframeAnimationProperties<AnimType.ALPHA>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.ALPHA, properties || {}, name, namespace)
+}
+
+export function KeyframeWait(
+	properties?: KeyframeAnimationProperties<AnimType.WAIT>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.WAIT, properties || {}, name, namespace)
+}
+
+export function KeyframeFlipBook(
+	properties?: KeyframeAnimationProperties<AnimType.FLIP_BOOK>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.FLIP_BOOK, properties || {}, name, namespace)
+}
+
+export function KeyframeAsepriteFlipBook(
+	properties?: KeyframeAnimationProperties<AnimType.ASEPRITE_FLIP_BOOK>,
+	namespace?: string,
+	name?: string,
+) {
+	return new AnimationKeyframe(AnimType.ASEPRITE_FLIP_BOOK, properties || {}, name, namespace)
 }

@@ -17,16 +17,18 @@
 	"license": "MIT",
 	"author": "Asaki Yuki",
 	"type": "module",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "dist/js/index.js",
+	"types": "dist/types/index.d.ts",
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc --watch",
+		"test": "bun test/app.ts",
 		"prefetch": "bun scripts/prefetch",
 		"vanilla:defs": "bun scripts/vanilladefs",
 		"gen:enums": "bun scripts/enum",
 		"gen:items": "bun scripts/items",
-		"gen:autocomplete": "bun scripts/autocomplete-build"
+		"gen:autocomplete": "bun scripts/autocomplete-build",
+		"full-build": "bun run prefetch;\nbun run vanilla:defs;\nbun run gen:enums;\nbun run gen:items;\nbun run gen:autocomplete;\nbun run build"
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",

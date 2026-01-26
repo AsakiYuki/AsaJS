@@ -1,30 +1,31 @@
-import { isCompileBinding } from "../compilers/bindings/Checker.js"
-import { Parser } from "../compilers/bindings/Parser.js"
 import { FormatProperties } from "../compilers/FormatProperties.js"
 import { Memory } from "../compilers/Memory.js"
-import { BindingType } from "../types/enums/BindingType.js"
+import { ArrayName } from "../types/enums/ArrayName.js"
+import { Operation } from "../types/enums/Operation.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 import { Properties } from "../types/properties/components.js"
-import { BindingItem } from "../types/properties/value.js"
+import { BindingItem, ButtonMapping, ModificationItem, VariableItem, Variables } from "../types/properties/value.js"
 import { Class } from "./Class.js"
-import { ExtendsOf, RandomString } from "./Utils.js"
+import { ExtendsOf, RandomString, ResolveBinding } from "./Utils.js"
 
 import util from "node:util"
 
 export class UI<T extends Type, K extends Renderer | null = null> extends Class {
 	readonly path: string
-
 	readonly name: string
 	readonly namespace: string
-	readonly extend?: UI<Type, Renderer | null>
 
+	readonly extend?: UI<Type, Renderer | null>
 	readonly extendable: boolean
 
-	readonly controls = new Map<string, [UI<Type, Renderer | null>, Properties<Type, Renderer | null>]>()
-	readonly bindings: BindingItem[] = []
-	readonly extendType?: Type
-	properties: Properties<T, K> = <any>{}
+	protected readonly controls = new Map<string, [UI<Type, Renderer | null>, Properties<Type, Renderer | null>]>()
+	protected readonly bindings: BindingItem[] = []
+	protected readonly variables: VariableItem[] = []
+	protected readonly buttonMappings: ButtonMapping[] = []
+	protected readonly extendType?: Type
+
+	protected properties: Properties<T, K> = <any>{}
 
 	constructor(
 		public type?: T,
@@ -55,60 +56,72 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		Memory.add(this)
 	}
 
-	protected UI_JSON() {
-		const obj: any = {
-			...FormatProperties(this.properties),
-		}
-
-		if (this.type) {
-			obj.type = this.type
-		}
-
-		if (this.bindings.length) {
-			obj.bindings = this.bindings
-		}
-
-		if (this.controls.size) {
-			obj.controls = []
-			this.controls.forEach((e, key) => obj.controls.push({ [key + e[0]]: e[1] }))
-		}
-
-		return obj
-	}
-
+	/**
+	 * Set properties for this element
+	 * @param properties
+	 * @returns
+	 */
 	setProperties(properties: Properties<T, K>) {
 		this.properties = { ...this.properties, ...properties }
 		return this
 	}
 
+	/**
+	 * Bind data (coming from the code) to this UI element to use.
+	 * @param bindings
+	 * @returns
+	 */
 	addBindings(...bindings: BindingItem[]) {
-		for (const binding of bindings) {
-			if (binding.source_property_name) {
-				if (isCompileBinding(binding.source_property_name)) {
-					const { gen, out } = new Parser(binding.source_property_name.slice(1, -1)).out()
-					if (gen) this.bindings.push(...gen)
-					binding.source_property_name = out
-				}
+		this.bindings.push(...ResolveBinding(...bindings))
+		return this
+	}
 
-				binding.binding_type = BindingType.VIEW
-
-				if (!binding.target_property_name) throw new Error("Binding must have a target property name")
-			}
-			this.bindings.push(binding)
-		}
+	/**
+	 * Changes variables values if conditions are met.
+	 * @param variables
+	 * @returns
+	 */
+	addVariables(variables: Variables) {
+		Object.entries(variables).forEach(([key, value]) => {
+			this.variables.push({
+				requires: key,
+				...value,
+			})
+		})
 
 		return this
 	}
 
-	addChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>, name?: string) {
-		if (this === <any>child) {
-			throw new Error("Cannot add a child to itself")
-		}
+	/**
+	 * Add button mappings for this element
+	 * @param mappings
+	 * @returns
+	 */
+	addButtonMappings(...mappings: ButtonMapping[]) {
+		this.buttonMappings.push(...mappings)
+		return this
+	}
 
+	/**
+	 * Children of the UI element.
+	 * @param child
+	 * @param properties
+	 * @param name
+	 * @returns
+	 */
+	addChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>, name?: string) {
+		if (this === <any>child) throw new Error("Cannot add a child to itself")
 		this.controls.set(name || RandomString(16), [child, properties || {}])
 		return this
 	}
 
+	/**
+	 * Return a extend of this element
+	 * @param properties
+	 * @param name
+	 * @param namespace
+	 * @returns
+	 */
 	clone(properties?: Properties<T, K>, name?: string, namespace?: string) {
 		return ExtendsOf(this, properties, name, namespace)
 	}
@@ -117,40 +130,264 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		return `@${this.namespace}.${this.name}`
 	}
 
-	protected toJSON() {
-		return this.UI_JSON()
-	}
-
-	protected [util.inspect.custom]($: any, opts: any) {
+	protected toJsonUI() {
 		const obj: any = {
 			...FormatProperties(this.properties),
 		}
 
-		if (this.bindings.length) {
-			obj.bindings = this.bindings
-		}
+		if (this.type) obj.type = this.type
+
+		if (this.bindings.length) obj.bindings = this.bindings
+		if (this.variables.length) obj.variables = this.variables
+		if (this.buttonMappings.length) obj.button_mappings = this.buttonMappings
 
 		if (this.controls.size) {
 			obj.controls = []
 			this.controls.forEach((e, key) => obj.controls.push({ [key + e[0]]: e[1] }))
 		}
 
-		const elementType = this.type || (this.extend ? `${this.extendType || "unknown"}:${this.extend}` : "unknown")
-
-		return `\x1b[33mUI\x1b[0m<\x1b[92m${
-			elementType
-		}\x1b[0m> \x1b[92m"${this}\x1b[92m"\x1b[0m ${util.inspect(obj, opts)}\n`
-	}
-}
-
-export class ModifyUI<T extends Type> extends UI<T, null> {
-	constructor(namespace: string, name: string, path: string) {
-		if (!path) throw new Error("ModifyUI cannot have a path")
-		super(undefined, name, namespace, path)
+		return obj
 	}
 
 	protected toJSON() {
-		const obj = this.UI_JSON()
+		return this.toJsonUI()
+	}
+
+	protected [util.inspect.custom]($: any, opts: any) {
+		return `\x1b[33mUI\x1b[0m<\x1b[92m${
+			this.type || (this.extend ? `${this.extendType || "unknown"}:${this.extend}` : "unknown")
+		}\x1b[0m> \x1b[92m"${this}\x1b[92m"\x1b[0m ${util.inspect(this.toJsonUI(), opts)}\n`
+	}
+}
+
+export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> extends UI<T, null> {
+	private isClearBinding: boolean = false
+	private isClearVariables: boolean = false
+	private isClearButtonMappings: boolean = false
+
+	protected modifications: ModificationItem[] = []
+
+	constructor(namespace: string, name: string, path: string) {
+		super(undefined, name, namespace, path)
+	}
+
+	/**
+	 * Remove all bindings of this modify element
+	 * @returns
+	 */
+	clearBinding() {
+		this.isClearBinding = true
+		return this
+	}
+
+	/**
+	 * Remove all variables of this modfy element
+	 * @returns
+	 */
+	clearVariables() {
+		this.isClearVariables = true
+		return this
+	}
+
+	/**
+	 * Remove all button mappings of this element
+	 * @returns
+	 */
+	clearButtonMappings() {
+		this.isClearButtonMappings = true
+		return this
+	}
+
+	/**
+	 * Allows to modify the UI elements from resource packs below this one
+	 * @returns
+	 */
+	addModifications(...modifications: ModificationItem[]) {
+		this.modifications.push(...modifications)
+		return this
+	}
+
+	insertBackChild<T extends Type, K extends Renderer | null>(
+		child: UI<T, K>,
+		properties?: Properties<T, K>,
+		name?: string,
+	) {
+		if (this === <any>child) throw new Error("Cannot add a child to itself")
+		if (!name) name = RandomString(16)
+
+		return this.addModifications({
+			array_name: ArrayName.CONTROLS,
+			operation: Operation.INSERT_BACK,
+			value: {
+				[`${name}${child}`]: properties || {},
+			},
+		})
+	}
+
+	insertFrontChild<T extends Type, K extends Renderer | null>(
+		child: UI<T, K>,
+		properties?: Properties<T, K>,
+		name?: string,
+	) {
+		if (this === <any>child) throw new Error("Cannot add a child to itself")
+		if (!name) name = RandomString(16)
+
+		return this.addModifications({
+			array_name: ArrayName.CONTROLS,
+			operation: Operation.INSERT_FRONT,
+			value: {
+				[`${name}${child}`]: properties || {},
+			},
+		})
+	}
+
+	insertAfterChild<T extends Type, K extends Renderer | null>(
+		where: S,
+		child: UI<T, K>,
+		properties?: Properties<T, K>,
+		name?: string,
+	) {
+		if (this === <any>child) throw new Error("Cannot add a child to itself")
+		if (!name) name = RandomString(16)
+
+		return this.addModifications({
+			array_name: ArrayName.CONTROLS,
+			operation: Operation.INSERT_AFTER,
+			control_name: where!,
+			value: {
+				[`${name}${child}`]: properties || {},
+			},
+		})
+	}
+
+	insertBeforeChild<T extends Type, K extends Renderer | null>(
+		where: S,
+		child: UI<T, K>,
+		properties?: Properties<T, K>,
+		name?: string,
+	) {
+		if (this === <any>child) throw new Error("Cannot add a child to itself")
+		if (!name) name = RandomString(16)
+
+		return this.addModifications({
+			array_name: ArrayName.CONTROLS,
+			operation: Operation.INSERT_BEFORE,
+			control_name: where!,
+			value: {
+				[`${name}${child}`]: properties || {},
+			},
+		})
+	}
+
+	insertChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>) {
+		return this.insertBackChild(child, properties)
+	}
+
+	replaceChild<T extends Type, K extends Renderer | null>(where: S, child: UI<T, K>, properties?: Properties<T, K>) {
+		return this.addModifications({
+			array_name: ArrayName.CONTROLS,
+			operation: Operation.REPLACE,
+			control_name: where!,
+			value: properties || {},
+		})
+	}
+
+	/**
+	 * Remove a child of this element
+	 * @param name
+	 * @returns
+	 */
+	removeChild(name: S) {
+		return this.addModifications({
+			array_name: ArrayName.CONTROLS,
+			operation: Operation.REMOVE,
+			control_name: name,
+		})
+	}
+
+	insertBackBindings(...bindings: BindingItem[]) {
+		return this.addModifications({
+			array_name: ArrayName.BINDINGS,
+			operation: Operation.INSERT_BACK,
+			value: ResolveBinding(...bindings),
+		})
+	}
+
+	insertFrontBindings(...bindings: BindingItem[]) {
+		return this.addModifications({
+			array_name: ArrayName.BINDINGS,
+			operation: Operation.INSERT_FRONT,
+			value: ResolveBinding(...bindings),
+		})
+	}
+
+	insertBindings(...bindings: BindingItem[]) {
+		return this.insertBackBindings(...bindings)
+	}
+
+	/**
+	 * Remove a binding of this element
+	 * @param binding
+	 */
+	removeBinding(binding: BindingItem) {
+		return this.addModifications({
+			array_name: ArrayName.BINDINGS,
+			operation: Operation.REMOVE,
+			where: binding,
+		})
+	}
+
+	insertBackButtonMappings(...buttonMappings: ButtonMapping[]) {
+		return this.addModifications({
+			array_name: ArrayName.BUTTON_MAPPINGS,
+			operation: Operation.INSERT_BACK,
+			value: buttonMappings,
+		})
+	}
+
+	insertFrontButtonMappings(...buttonMappings: ButtonMapping[]) {
+		return this.addModifications({
+			array_name: ArrayName.BUTTON_MAPPINGS,
+			operation: Operation.INSERT_FRONT,
+			value: buttonMappings,
+		})
+	}
+
+	insertButtonMappings(...buttonMappings: ButtonMapping[]) {
+		return this.insertBackButtonMappings(...buttonMappings)
+	}
+
+	/**
+	 * Remove a button mapping of this element
+	 * @param buttonMapping
+	 * @returns
+	 */
+	removeButtonMapping(buttonMapping: ButtonMapping) {
+		return this.addModifications({
+			array_name: ArrayName.BUTTON_MAPPINGS,
+			operation: Operation.REMOVE,
+			where: buttonMapping,
+		})
+	}
+
+	protected toJsonUIModify() {
+		const obj = this.toJsonUI()
+
+		if (this.isClearBinding) obj.bindings = []
+		if (this.isClearVariables) obj.variables = []
+		if (this.isClearButtonMappings) obj.button_mappings = []
+
+		if (this.modifications.length) obj.modifications = this.modifications
+
 		return obj
+	}
+
+	protected toJSON() {
+		const obj = this.toJsonUIModify()
+		return obj
+	}
+
+	protected [util.inspect.custom]($: any, opts: any) {
+		return `\x1b[33mUI\x1b[0m<\x1b[92mmodify\x1b[0m> \x1b[92m"${this}\x1b[92m"\x1b[0m ${util.inspect(this.toJsonUIModify(), opts)}\n`
 	}
 }
