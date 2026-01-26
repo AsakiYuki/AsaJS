@@ -34,7 +34,9 @@ import { Parser } from "../compilers/bindings/Parser.js"
 import { BindingType } from "../types/enums/BindingType.js"
 import { AnimType } from "../types/enums/AnimType.js"
 import { AnimationKeyframe } from "./AnimationKeyframe.js"
-import { KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
+import { AnimationProperties, KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
+import { Animation } from "./Animation.js"
+import { SmartAnimation } from "../types/enums/SmartAnimation.js"
 
 const CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 type CompileBinding = `[${string}]`
@@ -314,4 +316,45 @@ export function KeyframeAsepriteFlipBook(
 	name?: string,
 ) {
 	return new AnimationKeyframe(AnimType.ASEPRITE_FLIP_BOOK, properties || {}, name, namespace)
+}
+
+// Quick Animation
+type Anim<T extends AnimType> = AnimationProperties<T> | number
+type AnimWithSmartAnim<T extends AnimType> = [SmartAnimation | Anim<T>, ...Anim<T>[]]
+
+export function AnimationOffset(...keyframes: AnimWithSmartAnim<AnimType.OFFSET>) {
+	return new Animation(AnimType.OFFSET, ...keyframes)
+}
+
+export function AnimationSize(...keyframes: AnimWithSmartAnim<AnimType.SIZE>) {
+	return new Animation(AnimType.SIZE, ...keyframes)
+}
+
+export function AnimationUV(...keyframes: AnimWithSmartAnim<AnimType.UV>) {
+	return new Animation(AnimType.UV, ...keyframes)
+}
+
+export function AnimationClip(...keyframes: AnimWithSmartAnim<AnimType.CLIP>) {
+	return new Animation(AnimType.CLIP, ...keyframes)
+}
+
+export function AnimationColor(...keyframes: AnimWithSmartAnim<AnimType.COLOR>) {
+	return new Animation(AnimType.COLOR, ...keyframes)
+}
+
+export function AnimationAlpha(...keyframes: AnimWithSmartAnim<AnimType.ALPHA>) {
+	return new Animation(AnimType.ALPHA, ...keyframes)
+}
+
+// Animation Extendof
+export function AnimationExtendsOf<T extends AnimType>(
+	animation: AnimationKeyframe<T> | Animation<T>,
+	properties?: AnimationProperties<T>,
+) {
+	const anim = new AnimationKeyframe(animation.type, properties || {})
+
+	// @ts-ignore
+	anim.extend = animation
+
+	return anim
 }

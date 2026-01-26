@@ -1,6 +1,5 @@
+import { isBuildMode } from "./Configuration.js"
 import { Memory } from "./Memory.js"
-
-const isBuildMode = process.argv.includes("--build")
 
 if (isBuildMode) {
 	process.on("beforeExit", () => {

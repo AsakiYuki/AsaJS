@@ -2,6 +2,7 @@ import { FormatAnimationProperties } from "../compilers/FormatProperties.js"
 import { Memory } from "../compilers/Memory.js"
 import { AnimType } from "../types/enums/AnimType.js"
 import { KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
+import { Animation } from "./Animation.js"
 import { Class } from "./Class.js"
 import { RandomString } from "./Utils.js"
 
@@ -11,6 +12,8 @@ export class AnimationKeyframe<T extends AnimType> extends Class {
 	readonly path: string
 	readonly name: string
 	readonly namespace: string
+
+	readonly extend?: AnimationKeyframe<T> | Animation<T>
 
 	constructor(
 		readonly type: T,
@@ -38,14 +41,28 @@ export class AnimationKeyframe<T extends AnimType> extends Class {
 		Memory.add(this)
 	}
 
+	setNext(keyframe: AnimationKeyframe<AnimType>) {
+		this.properties.next = keyframe
+		return this
+	}
+
+	clearNext() {
+		delete this.properties.next
+		return this
+	}
+
 	protected toJsonUI() {
 		return FormatAnimationProperties(this.properties)
 	}
 
 	protected toJSON() {
-		return {
-			anim_type: this.type,
-			...this.toJsonUI(),
+		if (this.extend) {
+			return this.toJsonUI()
+		} else {
+			return {
+				anim_type: this.type,
+				...this.toJsonUI(),
+			}
 		}
 	}
 

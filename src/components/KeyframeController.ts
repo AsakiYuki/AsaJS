@@ -7,13 +7,7 @@ export class KeyframeController<T extends AnimType> extends AnimationKeyframe<T>
 		super(type, properties, name, namespace, path)
 	}
 
-	setNext(keyframe: AnimationKeyframe<AnimType>) {
-		this.properties.next = keyframe
-		return this
-	}
-
-	clearNext() {
-		delete this.properties.next
-		return this
+	serialize() {
+		return this.toJsonUI()
 	}
 }

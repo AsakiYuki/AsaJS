@@ -1,10 +1,22 @@
-import { Animation, AnimType } from ".."
+import { AnimationSize } from ".."
 
-const animation = new Animation(
-	AnimType.OFFSET,
+const animation = AnimationSize(
+	"smooth_loop",
 	{
-		from: [0, 0],
-		to: [100, 100],
+		to: [10, 10],
+		duration: 1.5,
 	},
-	123,
-).setLoop(false)
+	{
+		to: [1, 1],
+	},
+	1,
+	{
+		from: [10, 10],
+		to: [20, 20],
+	},
+	{
+		to: [1, 1],
+	},
+).setLoop(true)
+
+console.log(animation)

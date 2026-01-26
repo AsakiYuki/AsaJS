@@ -1,7 +1,8 @@
 import { AnimationKeyframe } from "../../../components/AnimationKeyframe.js"
 import { AnimType } from "../../enums/AnimType.js"
 import { Easing } from "../../enums/Easing.js"
-import { Array2, Array3, Value } from "../value.js"
+import { Animation, Array2, Array3, Value } from "../value.js"
+import * as components from "../../../components/Animation.js"
 
 export interface DurationAnimation {
 	duration?: Value<number>
@@ -65,7 +66,7 @@ export interface AnimationPropertiesItem {
 }
 
 export interface KeyframeAnimationPropertiesItem extends AnimationPropertiesItem {
-	next?: Value<string | AnimationKeyframe<AnimType>>
+	next?: Value<string | AnimationKeyframe<AnimType> | components.Animation<AnimType>>
 }
 
 export type KeyframeAnimationProperties<T extends keyof AnimationValueType> = Partial<AnimationValueType[T]> &
