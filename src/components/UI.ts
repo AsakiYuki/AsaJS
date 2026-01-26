@@ -1,11 +1,14 @@
 import { FormatProperties } from "../compilers/FormatProperties.js"
 import { Memory } from "../compilers/Memory.js"
+import { AnimType } from "../types/enums/AnimType.js"
 import { ArrayName } from "../types/enums/ArrayName.js"
 import { Operation } from "../types/enums/Operation.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 import { Properties } from "../types/properties/components.js"
 import { BindingItem, ButtonMapping, ModificationItem, VariableItem, Variables } from "../types/properties/value.js"
+import { Animation } from "./Animation.js"
+import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { Class } from "./Class.js"
 import { ExtendsOf, RandomString, ResolveBinding } from "./Utils.js"
 
@@ -23,6 +26,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	protected readonly bindings: BindingItem[] = []
 	protected readonly variables: VariableItem[] = []
 	protected readonly buttonMappings: ButtonMapping[] = []
+	protected readonly anims: (Animation<AnimType> | AnimationKeyframe<AnimType>)[] = []
 	protected readonly extendType?: Type
 
 	protected properties: Properties<T, K> = <any>{}
@@ -115,6 +119,11 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		return this
 	}
 
+	addAnimations(...anims: (Animation<AnimType> | AnimationKeyframe<AnimType>)[]) {
+		this.anims.push(...anims)
+		return this
+	}
+
 	/**
 	 * Return a extend of this element
 	 * @param properties
@@ -140,6 +149,8 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		if (this.bindings.length) obj.bindings = this.bindings
 		if (this.variables.length) obj.variables = this.variables
 		if (this.buttonMappings.length) obj.button_mappings = this.buttonMappings
+
+		if (this.anims.length) obj.anims = this.anims.map(a => String(a))
 
 		if (this.controls.size) {
 			obj.controls = []

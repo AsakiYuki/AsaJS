@@ -1,4 +1,4 @@
-import { AnimationSize } from ".."
+import { Anchor, AnimationSize, Easing, KeyframeSize, Panel } from ".."
 
 const animation = AnimationSize(
 	"smooth_loop",
@@ -19,4 +19,16 @@ const animation = AnimationSize(
 	},
 ).setLoop(true)
 
-console.log(animation)
+const panel = Panel({
+	anchor: Anchor.BOTTOM_LEFT,
+}).addAnimations(
+	animation,
+	KeyframeSize({
+		from: [10, 10],
+		to: [20, 20],
+		duration: 0.3,
+		easing: Easing.LINEAR,
+	}),
+)
+
+console.log(String(panel))
