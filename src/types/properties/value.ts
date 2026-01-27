@@ -9,10 +9,12 @@ import { InputModeCondition } from "../enums/InputModeCondition.js"
 import { Scope } from "../enums/Scope.js"
 import { ArrayName } from "../enums/ArrayName.js"
 import { Operation } from "../enums/Operation.js"
+import { AnimType } from "../enums/AnimType.js"
+import { AnimationKeyframe } from "../../components/AnimationKeyframe.js"
 
 export type Variable = `$${string}`
 export type Binding = `#${string}`
-export type Animation = anim.Animation | `@${string}`
+export type Animation = anim.Animation<AnimType> | AnimationKeyframe<AnimType> | `@${string}`
 
 export type Array2<T> = [T, T]
 export type Array3<T> = [T, T, T]
