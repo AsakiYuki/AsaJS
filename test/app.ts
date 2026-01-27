@@ -31,4 +31,4 @@ const panel = Panel({
 	}),
 )
 
-console.log(String(panel))
+console.log(animation)
