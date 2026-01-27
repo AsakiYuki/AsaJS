@@ -55,3 +55,9 @@ FuntionMap.set("sqrt", number => {
 		value: rtn,
 	}
 })
+
+FuntionMap.set("translatable", key => {
+	return {
+		value: `'%' + ${key}`,
+	}
+})

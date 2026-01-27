@@ -11,6 +11,7 @@ import { Animation } from "./Animation.js"
 import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { Class } from "./Class.js"
 import { ExtendsOf, RandomString, ResolveBinding } from "./Utils.js"
+import { RandomNamespace } from "../compilers/Random.js"
 
 import util from "node:util"
 
@@ -50,7 +51,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		}
 
 		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
-		this.namespace = namespace || RandomString(16)
+		this.namespace = namespace || RandomNamespace()
 
 		if (!path) this.path = `@/${this.namespace}`
 		else this.path = path

@@ -37,8 +37,8 @@ import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { AnimationProperties, KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
 import { Animation } from "./Animation.js"
 import { SmartAnimation } from "../types/enums/SmartAnimation.js"
+import { Memory, MemoryModify } from "../compilers/Memory.js"
 
-const CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 type CompileBinding = `[${string}]`
 
 export function Color(hex: string | number): Array3<number> {
@@ -90,7 +90,7 @@ export function ResolveBinding(...bindings: BindingItem[]) {
 }
 
 export function RandomString(length: number, base: number = 32) {
-	const chars = CHARS.slice(0, base)
+	const chars = "0123456789abcdefghijklmnopqrstuvwxyz".slice(0, base)
 	const out = new Array<string>(length)
 
 	try {
@@ -140,8 +140,21 @@ export function b(input: string): CompileBinding {
 
 // Quick Elements
 export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, name: K) {
-	// @ts-ignore -- TS cannot prove this, but runtime guarantees it
-	return new ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>(namespace, name, paths[namespace][name])
+	// @ts-ignore
+	const memoryUI = MemoryModify[paths[namespace][name]]?.[name]
+	// @ts-ignore
+	if (memoryUI) return memoryUI as ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>
+	// @ts-ignore
+	const modifyUI = new ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>(
+		namespace,
+		name,
+		// @ts-ignore
+		paths[namespace][name],
+	)
+	// @ts-ignore
+	;(MemoryModify[paths[namespace][name]] ||= {})[name] = modifyUI
+
+	return modifyUI
 }
 
 export function Panel(properties?: Panel, namespace?: string, name?: string) {

@@ -1,6 +1,6 @@
 import { AnimationKeyframe } from "../components/AnimationKeyframe.js"
 import { Class } from "../components/Class.js"
-import { UI } from "../components/UI.js"
+import { ModifyUI, UI } from "../components/UI.js"
 import { AnimType } from "../types/enums/AnimType.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
@@ -12,6 +12,8 @@ interface FileInterface {
 	elements: Element[]
 }
 type Files = Map<string, FileInterface>
+
+export const MemoryModify: Record<string, Record<string, unknown>> = {}
 
 export class Memory extends Class {
 	protected static files: Files = new Map<string, FileInterface>()
