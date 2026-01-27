@@ -1,5 +1,5 @@
 import "./compilers/PreCompile.js"
-import "./compilers/RunEnd.js"
+import "./compilers/ui/builder.js"
 
 export { Animation } from "./components/Animation.js"
 export { AnimationKeyframe } from "./components/AnimationKeyframe.js"

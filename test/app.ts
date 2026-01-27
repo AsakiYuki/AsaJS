@@ -1,6 +1,6 @@
-import { Anchor, AnimationSize, Easing, KeyframeSize, Panel } from ".."
+import { Anchor, AnimationOffset, Easing, KeyframeSize, Panel } from ".."
 
-const animation = AnimationSize(
+const animation = AnimationOffset(
 	"smooth_loop",
 	{
 		to: [10, 10],
@@ -31,4 +31,4 @@ const panel = Panel({
 	}),
 )
 
-console.log(animation)
+console.log(animation, panel)

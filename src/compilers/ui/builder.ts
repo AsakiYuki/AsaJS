@@ -1,5 +1,5 @@
-import { isBuildMode } from "./Configuration.js"
-import { Memory } from "./Memory.js"
+import { isBuildMode } from "../Configuration.js"
+import { Memory } from "../Memory.js"
 
 if (isBuildMode) {
 	process.on("beforeExit", () => {
