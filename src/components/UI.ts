@@ -53,7 +53,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomNamespace()
 
-		if (!path) this.path = `@/${this.namespace}`
+		if (!path) this.path = `@/${this.namespace}.json`
 		else this.path = path
 
 		this.extendable = this.name.search("/") === -1
@@ -247,9 +247,11 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 		return this.addModifications({
 			array_name: ArrayName.CONTROLS,
 			operation: Operation.INSERT_FRONT,
-			value: {
-				[`${name}${child}`]: properties || {},
-			},
+			value: [
+				{
+					[`${name}${child}`]: properties || {},
+				},
+			],
 		})
 	}
 
@@ -292,7 +294,7 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 	}
 
 	insertChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>) {
-		return this.insertBackChild(child, properties)
+		return this.insertFrontChild(child, properties)
 	}
 
 	replaceChild<T extends Type, K extends Renderer | null>(where: S, child: UI<T, K>, properties?: Properties<T, K>) {
@@ -334,7 +336,7 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 	}
 
 	insertBindings(...bindings: BindingItem[]) {
-		return this.insertBackBindings(...bindings)
+		return this.insertFrontBindings(...bindings)
 	}
 
 	/**
@@ -366,7 +368,7 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 	}
 
 	insertButtonMappings(...buttonMappings: ButtonMapping[]) {
-		return this.insertBackButtonMappings(...buttonMappings)
+		return this.insertFrontButtonMappings(...buttonMappings)
 	}
 
 	/**

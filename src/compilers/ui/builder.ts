@@ -2,16 +2,16 @@ import { isBuildMode } from "../Configuration.js"
 import { Memory } from "../Memory.js"
 import { createBuildFolder } from "./linker.js"
 import fs from "fs/promises"
+import { genManifest } from "./manifest.js"
 
 async function buildUI() {
 	const build = Memory.build()
-	let i = 0
 
-	build.set("ui/ui_defs.json", {
+	build.set("ui/_ui_defs.json", {
 		ui_defs: Array.from(build.keys()),
 	})
 
-	await Promise.all(
+	const out = await Promise.all(
 		build.entries().map(async ([file, value]) => {
 			const outFile = `build/build/${file}`
 			await fs
@@ -20,11 +20,12 @@ async function buildUI() {
 
 			await fs.writeFile(outFile, JSON.stringify(value), "utf-8")
 			build.delete(file)
-			i++
 		}),
 	)
 
-	return i - 1
+	await fs.writeFile("build/build/manifest.json", await genManifest(), "utf-8")
+
+	return out.length
 }
 
 if (isBuildMode) {
