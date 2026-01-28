@@ -19,6 +19,7 @@ async function buildUI() {
 				.catch(async () => await fs.mkdir(outFile.split(/\\|\//g).slice(0, -1).join("/"), { recursive: true }))
 
 			await fs.writeFile(outFile, JSON.stringify(value), "utf-8")
+			build.delete(file)
 			i++
 		}),
 	)
