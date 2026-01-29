@@ -1,6 +1,9 @@
 import fs from "fs/promises"
 import { BuildCache } from "./buildcache.js"
 import { RandomString } from "../../components/Utils.js"
+import { prevData } from "./prevdata.js"
+import path from "path"
+import { getGamedataPath } from "./installer.js"
 
 const HEX: string[] = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, "0"))
 
@@ -22,7 +25,7 @@ function genUUID(): string {
 }
 
 export async function clearBuild() {
-	await fs.rm("build/build", { recursive: true, force: true })
+	await Promise.all(prevData.files.map(file => fs.rm(`build/build/${file}`).catch(() => null)))
 }
 
 export async function createBuildFolder() {
@@ -34,6 +37,14 @@ export async function createBuildFolder() {
 
 export async function getBuildFolderName() {
 	return await BuildCache.getWithSetDefault("build-key", () => RandomString(16))
+}
+
+export async function linkToGame() {
+	const sourcePath = path.resolve("build/build")
+	const targetPath = path.resolve(getGamedataPath(), "development_resource_packs", await getBuildFolderName())
+	await fs.stat(targetPath).catch(async () => {
+		await fs.symlink(sourcePath, targetPath, "junction")
+	})
 }
 
 export async function getUUID(): Promise<[string, string]> {

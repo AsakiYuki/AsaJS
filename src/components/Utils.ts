@@ -37,7 +37,7 @@ import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { AnimationProperties, KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
 import { Animation } from "./Animation.js"
 import { SmartAnimation } from "../types/enums/SmartAnimation.js"
-import { Memory, MemoryModify } from "../compilers/Memory.js"
+import { MemoryModify } from "../compilers/Memory.js"
 
 type CompileBinding = `[${string}]`
 
@@ -250,9 +250,7 @@ export function ExtendsOf<T extends Type, K extends Renderer | null>(
 	namespace?: string,
 	name?: string,
 ) {
-	if (!element.extendable) {
-		throw new Error("Cannot extend a UI that cannot be extended")
-	}
+	if (!element.extendable) throw new Error("Cannot extend a UI that cannot be extended")
 	const ui = new UI<T, K>(undefined, name, namespace)
 	if (properties) ui.setProperties(properties)
 	// @ts-ignore
@@ -260,6 +258,27 @@ export function ExtendsOf<T extends Type, K extends Renderer | null>(
 	// @ts-ignore
 	ui.extendType = element.type || element.extendType
 	return ui as typeof element
+}
+
+export function VanillaExtendsOf<T extends Namespace, K extends Exclude<Element<T>, `${string}/${string}`>>(
+	originNamespace: T,
+	originName: K,
+	// @ts-ignore
+	properties?: Properties<VanillaType<T, K>, null>,
+	namespace?: string,
+	name?: string,
+) {
+	// @ts-ignore
+	const ui = new UI<VanillaType<T, K>, null>(undefined, name, namespace)
+	if (properties) ui.setProperties(properties)
+	// @ts-ignore
+	ui.extend = {
+		name: originName,
+		namespace: originNamespace,
+		toString: () => `@${originNamespace}.${originName}`,
+	}
+
+	return ui
 }
 
 // Quick Keyframe
@@ -359,7 +378,7 @@ export function AnimationAlpha(...keyframes: AnimWithSmartAnim<AnimType.ALPHA>) 
 	return new Animation(AnimType.ALPHA, ...keyframes)
 }
 
-// Animation Extendof
+// Animation ExtendsOf
 export function AnimationExtendsOf<T extends AnimType>(
 	animation: AnimationKeyframe<T> | Animation<T>,
 	properties?: AnimationProperties<T>,

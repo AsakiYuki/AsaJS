@@ -1,7 +1,7 @@
 import os from "os"
 import path from "path"
 
-function getGamedataPath() {
+export function getGamedataPath() {
 	switch (os.platform()) {
 		case "win32": {
 			if (/Windows (10|11)/.test(os.version())) {

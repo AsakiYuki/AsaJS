@@ -15,12 +15,18 @@ import { RandomNamespace } from "../compilers/Random.js"
 
 import util from "node:util"
 
+interface ExtendUI {
+	name: string
+	namespace: string
+	toString(): string
+}
+
 export class UI<T extends Type, K extends Renderer | null = null> extends Class {
 	readonly path: string
 	readonly name: string
 	readonly namespace: string
 
-	readonly extend?: UI<Type, Renderer | null>
+	readonly extend?: UI<Type, Renderer | null> | ExtendUI
 	readonly extendable: boolean
 
 	protected readonly controls = new Map<string, [UI<Type, Renderer | null>, Properties<Type, Renderer | null>]>()
@@ -53,7 +59,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomNamespace()
 
-		if (!path) this.path = `@/${this.namespace}.json`
+		if (!path) this.path = `asajs/${this.namespace}.json`
 		else this.path = path
 
 		this.extendable = this.name.search("/") === -1
@@ -132,8 +138,15 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	 * @param namespace
 	 * @returns
 	 */
-	clone(properties?: Properties<T, K>, name?: string, namespace?: string) {
-		return ExtendsOf(this, properties, name, namespace)
+	createExtends(properties?: Properties<T, K>, name?: string, namespace?: string) {
+		if (!this.extendable) throw new Error("This element is not extendable")
+		const ui = new UI<T, K>(undefined, name, namespace)
+		if (properties) ui.setProperties(properties)
+		// @ts-ignore
+		ui.extend = this
+		// @ts-ignore
+		ui.extendType = this.type || this.extendType
+		return ui
 	}
 
 	protected toString() {

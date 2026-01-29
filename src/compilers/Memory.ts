@@ -1,6 +1,6 @@
 import { AnimationKeyframe } from "../components/AnimationKeyframe.js"
 import { Class } from "../components/Class.js"
-import { ModifyUI, UI } from "../components/UI.js"
+import { UI } from "../components/UI.js"
 import { AnimType } from "../types/enums/AnimType.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
@@ -40,9 +40,7 @@ export class Memory extends Class {
 		Memory.files.entries().forEach(([path, { elements, namespace }]) => {
 			const record: Record<string, any> = {}
 
-			elements.forEach(element => {
-				record[element.name] = element
-			})
+			elements.forEach(element => (record[element.name] = element))
 
 			data.set(path, {
 				namespace,
