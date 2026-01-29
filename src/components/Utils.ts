@@ -282,7 +282,7 @@ export function VanillaExtendsOf<T extends Namespace, K extends Exclude<Element<
 }
 
 // Quick Keyframe
-export function KeyframeOffset(
+export function OffsetKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.OFFSET>,
 	namespace?: string,
 	name?: string,
@@ -290,7 +290,7 @@ export function KeyframeOffset(
 	return new AnimationKeyframe(AnimType.OFFSET, properties || {}, name, namespace)
 }
 
-export function KeyframeSize(
+export function SizeKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.SIZE>,
 	namespace?: string,
 	name?: string,
@@ -298,11 +298,11 @@ export function KeyframeSize(
 	return new AnimationKeyframe(AnimType.SIZE, properties || {}, name, namespace)
 }
 
-export function KeyframeUV(properties?: KeyframeAnimationProperties<AnimType.UV>, namespace?: string, name?: string) {
+export function UVKeyframe(properties?: KeyframeAnimationProperties<AnimType.UV>, namespace?: string, name?: string) {
 	return new AnimationKeyframe(AnimType.UV, properties || {}, name, namespace)
 }
 
-export function KeyframeClip(
+export function ClipKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.CLIP>,
 	namespace?: string,
 	name?: string,
@@ -310,7 +310,7 @@ export function KeyframeClip(
 	return new AnimationKeyframe(AnimType.CLIP, properties || {}, name, namespace)
 }
 
-export function KeyframeColor(
+export function ColorKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.COLOR>,
 	namespace?: string,
 	name?: string,
@@ -318,7 +318,7 @@ export function KeyframeColor(
 	return new AnimationKeyframe(AnimType.COLOR, properties || {}, name, namespace)
 }
 
-export function KeyframeAlpha(
+export function AlphaKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.ALPHA>,
 	namespace?: string,
 	name?: string,
@@ -326,7 +326,7 @@ export function KeyframeAlpha(
 	return new AnimationKeyframe(AnimType.ALPHA, properties || {}, name, namespace)
 }
 
-export function KeyframeWait(
+export function WaitKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.WAIT>,
 	namespace?: string,
 	name?: string,
@@ -334,7 +334,7 @@ export function KeyframeWait(
 	return new AnimationKeyframe(AnimType.WAIT, properties || {}, name, namespace)
 }
 
-export function KeyframeFlipBook(
+export function FlipBookKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.FLIP_BOOK>,
 	namespace?: string,
 	name?: string,
@@ -342,7 +342,7 @@ export function KeyframeFlipBook(
 	return new AnimationKeyframe(AnimType.FLIP_BOOK, properties || {}, name, namespace)
 }
 
-export function KeyframeAsepriteFlipBook(
+export function AsepriteFlipBookKeyframe(
 	properties?: KeyframeAnimationProperties<AnimType.ASEPRITE_FLIP_BOOK>,
 	namespace?: string,
 	name?: string,
@@ -354,27 +354,27 @@ export function KeyframeAsepriteFlipBook(
 type Anim<T extends AnimType> = AnimationProperties<T> | number
 type AnimWithSmartAnim<T extends AnimType> = [SmartAnimation | Anim<T>, ...Anim<T>[]]
 
-export function AnimationOffset(...keyframes: AnimWithSmartAnim<AnimType.OFFSET>) {
+export function OffsetAnimation(...keyframes: AnimWithSmartAnim<AnimType.OFFSET>) {
 	return new Animation(AnimType.OFFSET, ...keyframes)
 }
 
-export function AnimationSize(...keyframes: AnimWithSmartAnim<AnimType.SIZE>) {
+export function SizeAnimation(...keyframes: AnimWithSmartAnim<AnimType.SIZE>) {
 	return new Animation(AnimType.SIZE, ...keyframes)
 }
 
-export function AnimationUV(...keyframes: AnimWithSmartAnim<AnimType.UV>) {
+export function UVAnimation(...keyframes: AnimWithSmartAnim<AnimType.UV>) {
 	return new Animation(AnimType.UV, ...keyframes)
 }
 
-export function AnimationClip(...keyframes: AnimWithSmartAnim<AnimType.CLIP>) {
+export function ClipAnimation(...keyframes: AnimWithSmartAnim<AnimType.CLIP>) {
 	return new Animation(AnimType.CLIP, ...keyframes)
 }
 
-export function AnimationColor(...keyframes: AnimWithSmartAnim<AnimType.COLOR>) {
+export function ColorAnimation(...keyframes: AnimWithSmartAnim<AnimType.COLOR>) {
 	return new Animation(AnimType.COLOR, ...keyframes)
 }
 
-export function AnimationAlpha(...keyframes: AnimWithSmartAnim<AnimType.ALPHA>) {
+export function AlphaAnimation(...keyframes: AnimWithSmartAnim<AnimType.ALPHA>) {
 	return new Animation(AnimType.ALPHA, ...keyframes)
 }
 
