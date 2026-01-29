@@ -1,3 +1,4 @@
+import { config } from "../Configuration.js"
 import { getUUID } from "./linker.js"
 
 export async function genManifest() {
@@ -5,10 +6,10 @@ export async function genManifest() {
 	return JSON.stringify({
 		format_version: 2,
 		header: {
-			name: "AsaJS UI",
-			description: "A framework for creating UIs for AsaJS.",
+			name: config.packinfo?.name || "AsaJS",
+			description: config.packinfo?.description || "A framework for creating UIs for AsaJS.",
 			uuid: uuid1,
-			version: [4, 0, 0],
+			version: config.packinfo?.version || [4, 0, 0],
 			min_engine_version: [1, 21, 132],
 		},
 		modules: [

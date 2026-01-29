@@ -5,7 +5,7 @@ export let prevData: {
 }
 
 try {
-	prevData = JSON.parse(fs.readFileSync("build/build/build.json", "utf-8"))
+	prevData = JSON.parse(fs.readFileSync("build/build.json", "utf-8"))
 } catch (error) {
 	prevData = { files: [] }
 }

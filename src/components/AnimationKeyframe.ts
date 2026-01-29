@@ -37,7 +37,7 @@ export class AnimationKeyframe<T extends AnimType> extends Class {
 
 		this.name = name || RandomString(16)
 		this.namespace = namespace || RandomNamespace()
-		this.path = path || `@/${this.namespace}.json`
+		this.path = path || `asajs/${this.namespace}.json`
 
 		Memory.add(this)
 	}

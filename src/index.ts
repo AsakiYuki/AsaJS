@@ -1,3 +1,4 @@
+import "./compilers/Configuration.js"
 import "./compilers/PreCompile.js"
 import "./compilers/ui/builder.js"
 import "./compilers/ui/installer.js"
@@ -11,3 +12,5 @@ export * from "./types/enums/index.js"
 export * as Properties from "./types/properties/index.js"
 
 export { ItemAuxID } from "./types/enums/Items.js"
+
+export { ArrayName, Operation } from "./types/properties/index.js"

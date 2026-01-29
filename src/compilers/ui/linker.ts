@@ -25,7 +25,7 @@ function genUUID(): string {
 }
 
 export async function clearBuild() {
-	await Promise.all(prevData.files.map(file => fs.rm(`build/build/${file}`).catch(() => null)))
+	await Promise.all(prevData.files.map(file => fs.rm(`build/${file}`).catch(() => null)))
 }
 
 export async function createBuildFolder() {
@@ -40,11 +40,20 @@ export async function getBuildFolderName() {
 }
 
 export async function linkToGame() {
-	const sourcePath = path.resolve("build/build")
+	const sourcePath = path.resolve("build")
 	const targetPath = path.resolve(getGamedataPath(), "development_resource_packs", await getBuildFolderName())
 	await fs.stat(targetPath).catch(async () => {
 		await fs.symlink(sourcePath, targetPath, "junction")
 	})
+}
+
+export async function unlink() {
+	const targetPath = path.resolve(getGamedataPath(), "development_resource_packs", await getBuildFolderName())
+	try {
+		await fs.unlink(targetPath)
+	} catch (error) {
+		console.error(error)
+	}
 }
 
 export async function getUUID(): Promise<[string, string]> {

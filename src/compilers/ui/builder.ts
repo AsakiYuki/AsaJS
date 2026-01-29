@@ -1,6 +1,6 @@
-import { isBuildMode } from "../Configuration.js"
+import { config, isBuildMode, isLinkMode, unLinked } from "../Configuration.js"
 import { Memory } from "../Memory.js"
-import { createBuildFolder, linkToGame } from "./linker.js"
+import { createBuildFolder, linkToGame, unlink } from "./linker.js"
 import { genManifest } from "./manifest.js"
 import { UI } from "../../components/UI.js"
 import { Type } from "../../types/enums/Type.js"
@@ -13,13 +13,15 @@ async function buildUI() {
 		ui_defs: Array.from(build.keys()),
 	})
 
+	if (config.global_variables) build.set("ui/_global_variables.json", config.global_variables)
+
 	build.set("build.json", {
 		files: Array.from(build.keys()),
 	})
 
 	const out = await Promise.all(
 		build.entries().map(async ([file, value]) => {
-			const outFile = `build/build/${file}`
+			const outFile = `build/${file}`
 			await fs
 				.stat(outFile.split(/\\|\//g).slice(0, -1).join("/"))
 				.catch(async () => await fs.mkdir(outFile.split(/\\|\//g).slice(0, -1).join("/"), { recursive: true }))
@@ -42,11 +44,11 @@ async function buildUI() {
 	)
 
 	await Promise.all([
-		fs.writeFile("build/build/manifest.json", await genManifest(), "utf-8"),
-		fs.writeFile("build/build/.gitignore", [...out, "manifest.json"].join("\n"), "utf-8"),
+		fs.writeFile("build/manifest.json", await genManifest(), "utf-8"),
+		fs.writeFile("build/.gitignore", [...out, "manifest.json"].join("\n"), "utf-8"),
 		fs
-			.stat("build/build/pack_icon.png")
-			.catch(() => fs.copyFile("node_modules/asajs/resources/pack_icon.png", "build/build/pack_icon.png")),
+			.stat("build/pack_icon.png")
+			.catch(() => fs.copyFile("node_modules/asajs/resources/pack_icon.png", "build/pack_icon.png")),
 	])
 
 	return out.length
@@ -58,8 +60,9 @@ if (isBuildMode) {
 		if (first) {
 			await createBuildFolder()
 			await buildUI()
-			await linkToGame()
+			if (isLinkMode) await linkToGame()
 		}
 		first = false
 	})
-}
+} else if (isLinkMode) linkToGame()
+else if (unLinked) unlink()

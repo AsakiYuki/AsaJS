@@ -12,6 +12,6 @@
 		"incremental": true,
 		"tsBuildInfoFile": ".tsbuildinfo"
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "config.d.ts"],
 	"exclude": ["node_modules"]
 }
