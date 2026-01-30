@@ -1,4 +1,5 @@
 import { RandomBindingString } from "../../components/Utils.js"
+import { Parser } from "./Parser.js"
 import { Expression, GenBinding } from "./types.js"
 
 type Callback = (...args: Expression[]) => {
@@ -6,14 +7,14 @@ type Callback = (...args: Expression[]) => {
 	value: Expression
 }
 
-export const FuntionMap = new Map<string, Callback>()
+export const FunctionMap = new Map<string, Callback>()
 
 function callFn(name: string, ...args: Expression[]) {
-	return FuntionMap.get(name)!(...args)
+	return FunctionMap.get(name)!(...args)
 }
 
 // Default Functions
-FuntionMap.set("abs", number => {
+FunctionMap.set("abs", number => {
 	const randomBinding = RandomBindingString(16)
 	return {
 		genBindings: [{ source: `((-1 + (${number} > 0) * 2) * ${number})`, target: randomBinding }],
@@ -21,7 +22,7 @@ FuntionMap.set("abs", number => {
 	}
 })
 
-FuntionMap.set("new", expression => {
+FunctionMap.set("new", expression => {
 	const randomBinding = RandomBindingString(16)
 	return {
 		genBindings: [{ source: expression, target: randomBinding }],
@@ -29,7 +30,7 @@ FuntionMap.set("new", expression => {
 	}
 })
 
-FuntionMap.set("sqrt", number => {
+FunctionMap.set("sqrt", number => {
 	const rtn = RandomBindingString(16),
 		$1 = RandomBindingString(16),
 		$2 = RandomBindingString(16)
@@ -56,8 +57,19 @@ FuntionMap.set("sqrt", number => {
 	}
 })
 
-FuntionMap.set("translatable", key => {
+FunctionMap.set("translatable", key => {
 	return {
 		value: `'%' + ${key}`,
 	}
+})
+
+FunctionMap.set("bin", input => {
+	const { ret, bindings } = Parser.intToBin(input)
+
+	bindings.push({
+		source: `'§z' + ${Array.from({ length: 30 }, (_, i) => `${ret}${30 - i - 1}`).join(" + ")}`,
+		target: ret,
+	})
+
+	return { genBindings: bindings, value: ret }
 })

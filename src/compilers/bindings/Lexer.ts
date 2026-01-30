@@ -47,6 +47,7 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 			case "*":
 			case "/":
 			case "%":
+			case "^":
 				tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 				break
 
@@ -63,19 +64,19 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 			case "|":
 			case "=":
 				if (input[index + 1] === input[index]) tokens.push(makeToken(input, TokenKind.OPERATOR, index++, 2))
-				else {
-					console.error(
-						`\x1b[31merror: ${input + "\n" + " ".repeat(index + 7) + "^"}\nInvalid character.\x1b[0m`,
-					)
-					throw new Error()
-				}
+				else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 				break
 
 			case "!":
 			case ">":
 			case "<":
 				if (input[index + 1] === "=") tokens.push(makeToken(input, TokenKind.OPERATOR, index++, 2))
-				else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
+				else {
+					if (input[index] === input[index + 1]) {
+						if (input[index] !== "!") tokens.push(makeToken(input, TokenKind.OPERATOR, index++, 2))
+						else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
+					} else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
+				}
 				break
 
 			// string

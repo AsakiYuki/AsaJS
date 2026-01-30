@@ -68,13 +68,13 @@ export function Color(hex: string | number): Array3<number> {
 	}
 }
 
-export function ResolveBinding(...bindings: BindingItem[]) {
+export function ResolveBinding(cache: Map<string, unknown>, ...bindings: BindingItem[]) {
 	const result: BindingItem[] = []
 
 	for (const binding of bindings) {
 		if (binding.source_property_name) {
 			if (isCompileBinding(binding.source_property_name)) {
-				const { gen, out } = new Parser(binding.source_property_name.slice(1, -1)).out()
+				const { gen, out } = new Parser(binding.source_property_name.slice(1, -1), cache).out()
 				if (gen) result.push(...gen)
 				binding.source_property_name = out
 			}

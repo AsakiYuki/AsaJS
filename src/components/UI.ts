@@ -10,7 +10,7 @@ import { BindingItem, ButtonMapping, ModificationItem, VariableItem, Variables }
 import { Animation } from "./Animation.js"
 import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { Class } from "./Class.js"
-import { ExtendsOf, RandomString, ResolveBinding } from "./Utils.js"
+import { RandomString, ResolveBinding } from "./Utils.js"
 import { RandomNamespace } from "../compilers/Random.js"
 
 import util from "node:util"
@@ -37,6 +37,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	protected readonly extendType?: Type
 
 	protected properties: Properties<T, K> = <any>{}
+	protected bindCache = new Map<string, unknown>()
 
 	constructor(
 		public type?: T,
@@ -83,7 +84,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	 * @returns
 	 */
 	addBindings(...bindings: BindingItem[]) {
-		this.bindings.push(...ResolveBinding(...bindings))
+		this.bindings.push(...ResolveBinding(this.bindCache, ...bindings))
 		return this
 	}
 
@@ -336,7 +337,7 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 		return this.addModifications({
 			array_name: ArrayName.BINDINGS,
 			operation: Operation.INSERT_BACK,
-			value: ResolveBinding(...bindings),
+			value: ResolveBinding(this.bindCache, ...bindings),
 		})
 	}
 
@@ -344,7 +345,7 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 		return this.addModifications({
 			array_name: ArrayName.BINDINGS,
 			operation: Operation.INSERT_FRONT,
-			value: ResolveBinding(...bindings),
+			value: ResolveBinding(this.bindCache, ...bindings),
 		})
 	}
 

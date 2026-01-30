@@ -14,3 +14,5 @@ export * as Properties from "./types/properties/index.js"
 export { ItemAuxID } from "./types/enums/Items.js"
 
 export { ArrayName, Operation } from "./types/properties/index.js"
+
+export { Lexer } from "./compilers/bindings/Lexer.js"

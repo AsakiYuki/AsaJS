@@ -1,8 +1,9 @@
 import { Expression, GenBinding, Token, TokenKind, TSToken, TSTokenKind } from "./types.js"
 import { BindingType } from "../../types/enums/BindingType.js"
-import { BindingItem } from "../../types/properties/value.js"
-import { FuntionMap } from "./Funtion.js"
+import { Binding, BindingItem } from "../../types/properties/value.js"
+import { FunctionMap } from "./Funtion.js"
 import { Lexer } from "./Lexer.js"
+import { RandomBindingString } from "../../components/Utils.js"
 
 export class Parser {
 	position: number = 0
@@ -11,12 +12,45 @@ export class Parser {
 	genBindings: GenBinding[] = []
 	output: Expression
 
-	constructor(private input: string) {
+	constructor(
+		private input: string,
+		private cache = new Map<string, unknown>(),
+	) {
 		this.tokens = Lexer(this.input)
 		this.output = this.parseExpression()
 
 		if (this.at()) {
 			this.expect(TokenKind.EOF, "Unexpected token!")
+		}
+	}
+
+	static intToBin(input: string) {
+		const bindings: GenBinding[] = []
+		const rtn = RandomBindingString(16)
+
+		for (let i = 0; i < 30; i++) {
+			bindings.push({
+				source: `(${input} / ${2 ** i} - (${input} / ${2 ** (i + 1)}) * 2)`,
+				target: `${rtn}${i}`,
+			})
+		}
+
+		return {
+			ret: rtn,
+			bindings,
+		}
+	}
+
+	intToBin(input: string) {
+		const inStr = `expr:${input}`
+
+		if (this.cache.has(inStr)) {
+			return this.cache.get(inStr) as string
+		} else {
+			const { ret, bindings } = Parser.intToBin(input)
+			this.cache.set(inStr, ret)
+			this.genBindings.push(...bindings)
+			return ret
 		}
 	}
 
@@ -114,7 +148,7 @@ export class Parser {
 	}
 
 	private parseMultiplicativeExpression(): Expression {
-		let left = this.parsePrimaryExpression(),
+		let left = this.parseBitwiseLogicExpression(),
 			current
 
 		while (
@@ -127,6 +161,99 @@ export class Parser {
 
 			if (current.value === "%") left = `(${left} - (${left} / ${right} * ${right}))`
 			else left = `(${left} ${operator.value} ${right})`
+		}
+
+		return left
+	}
+
+	private parseBitwiseLogicExpression(): Expression {
+		let left = this.parseBitwiseShiftExpression(),
+			current
+
+		while (
+			(current = this.at()) &&
+			this.at()?.kind === TokenKind.OPERATOR &&
+			["&", "|", "^"].includes(<string>current.value)
+		) {
+			const operator = this.eat()
+			const right = this.parsePrimaryExpression()
+
+			const ret = RandomBindingString(16)
+
+			const leftBin = this.intToBin(left)
+			const rightBin = this.intToBin(right)
+
+			if (operator.value === "&") {
+				this.genBindings.push(
+					...Array.from({ length: 30 }, (_, i) => {
+						return {
+							source: `(${leftBin}${i} * ${rightBin}${i})`,
+							target: `${ret}${i}`,
+						}
+					}),
+				)
+			} else if (operator.value === "|") {
+				this.genBindings.push(
+					...Array.from({ length: 30 }, (_, i) => {
+						return {
+							source: `(${leftBin}${i} + ${rightBin}${i} - (${leftBin}${i} * ${rightBin}${i}))`,
+							target: `${ret}${i}`,
+						}
+					}),
+				)
+			} else {
+				this.genBindings.push(
+					...Array.from({ length: 30 }, (_, i) => {
+						return {
+							source: `(${leftBin}${i} + ${rightBin}${i} - 2 * (${leftBin}${i} * ${rightBin}${i}))`,
+							target: `${ret}${i}`,
+						}
+					}),
+				)
+			}
+
+			this.genBindings.push({
+				source: `(${Array.from({ length: 30 }, (_, i) => `(${ret}${i} * ${2 ** i})`).join(" + ")})`,
+				target: ret,
+			})
+
+			left = ret
+		}
+
+		return left
+	}
+
+	private parseBitwiseShiftExpression(): Expression {
+		let left = this.parsePrimaryExpression(),
+			current
+
+		while (
+			(current = this.at()) &&
+			this.at()?.kind === TokenKind.OPERATOR &&
+			[">>", "<<"].includes(<string>current.value)
+		) {
+			const operator = this.eat()
+			const right = this.parsePrimaryExpression()
+			const ret = RandomBindingString(16)
+			const leftBind = this.intToBin(left)
+
+			const op = operator.value === "<<" ? "-" : "+"
+
+			this.genBindings.push(
+				...Array.from({ length: 30 }, (_, i) => {
+					return {
+						source: `((0 * ${left}) + ('${leftBind}' + (${i} ${op} ${right})))`,
+						target: `${ret}${i}`,
+					}
+				}),
+			)
+
+			this.genBindings.push({
+				source: `(${Array.from({ length: 30 }, (_, i) => `(${ret}${i} * ${2 ** i})`).join(" + ")})`,
+				target: ret,
+			})
+
+			left = ret
 		}
 
 		return left
@@ -247,7 +374,15 @@ export class Parser {
 
 			this.eat()
 
-			return this.funtionCall(<string>callerToken.value, ...args)
+			const inputStr = `func:${callerToken.value}(${args.join(", ")})`
+
+			if (this.cache.has(inputStr)) {
+				return this.cache.get(inputStr) as Expression
+			} else {
+				const ret = this.functionCall(<string>callerToken.value, ...args)
+				this.cache.set(inputStr, ret)
+				return ret
+			}
 		} else if (left?.kind === TokenKind.OPERATOR) {
 			this.warn(
 				`Implicit string literal '${callerToken.value}'. Use quoted string ('${callerToken.value}') for clarity!`,
@@ -265,8 +400,8 @@ export class Parser {
 		}
 	}
 
-	private funtionCall(name: string, ...params: Expression[]): Expression {
-		const func = FuntionMap.get(name.toLowerCase())
+	private functionCall(name: string, ...params: Expression[]): Expression {
+		const func = FunctionMap.get(name.toLowerCase())
 		if (!func) {
 			return this.expect(TokenKind.WORD, "Function not found!")!
 		} else {
@@ -294,9 +429,10 @@ export class Parser {
 		return this.input + "\n" + " ".repeat(token.start + (isWarn ? 5 : 7)) + "^".repeat(token.length)
 	}
 
-	out(): { gen?: BindingItem[]; out: Expression } {
+	out(): { gen?: BindingItem[]; out: Expression; cache: Map<string, unknown> } {
 		return {
 			out: `(${this.output})`,
+			cache: this.cache,
 			gen: this.genBindings.map(
 				({ source, target }) =>
 					<BindingItem>{
