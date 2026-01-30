@@ -37,7 +37,7 @@ export class Memory extends Class {
 	public static build() {
 		const data: Map<string, any> = new Map()
 
-		Memory.files.entries().forEach(([path, { elements, namespace }]) => {
+		Array.from(Memory.files.entries()).forEach(([path, { elements, namespace }]) => {
 			const record: Record<string, any> = {}
 
 			elements.forEach(element => (record[element.name] = element))
