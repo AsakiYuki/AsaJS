@@ -7,10 +7,11 @@ export async function genManifest() {
 		format_version: 2,
 		header: {
 			name: config.packinfo?.name || "AsaJS",
-			description: config.packinfo?.description || "A framework for creating UIs for AsaJS.",
+			description:
+				config.packinfo?.description || "Create your Minecraft JSON-UI resource packs using JavaScript.",
 			uuid: uuid1,
 			version: config.packinfo?.version || [4, 0, 0],
-			min_engine_version: [1, 21, 132],
+			min_engine_version: [1, 21, 80],
 		},
 		modules: [
 			{
@@ -20,5 +21,7 @@ export async function genManifest() {
 				version: [4, 0, 0],
 			},
 		],
+		subpacks: config.packinfo?.subpacks,
+		metadata: config.packinfo?.metadata,
 	})
 }

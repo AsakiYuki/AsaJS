@@ -1,7 +1,6 @@
 import fs from "fs/promises"
 import { BuildCache } from "./buildcache.js"
 import { RandomString } from "../../components/Utils.js"
-import { prevData } from "./prevdata.js"
 import path from "path"
 import { getGamedataPath } from "./installer.js"
 
@@ -25,7 +24,8 @@ function genUUID(): string {
 }
 
 export async function clearBuild() {
-	await Promise.all(prevData.files.map(file => fs.rm(`build/${file}`).catch(() => null)))
+	const files: string[] = (await BuildCache.get("build-files")) || []
+	await Promise.all(files.map(file => fs.rm(`build/${file}`).catch(() => null)))
 }
 
 export async function createBuildFolder() {

@@ -5,6 +5,7 @@ import { genManifest } from "./manifest.js"
 import { UI } from "../../components/UI.js"
 import { Type } from "../../types/enums/Type.js"
 import fs from "fs/promises"
+import { BuildCache } from "./buildcache.js"
 
 async function buildUI() {
 	const build = Memory.build()
@@ -14,10 +15,6 @@ async function buildUI() {
 	})
 
 	if (config.global_variables) build.set("ui/_global_variables.json", config.global_variables)
-
-	build.set("build.json", {
-		files: Array.from(build.keys()),
-	})
 
 	const out = await Promise.all(
 		build.entries().map(async ([file, value]) => {
@@ -46,6 +43,7 @@ async function buildUI() {
 	await Promise.all([
 		fs.writeFile("build/manifest.json", await genManifest(), "utf-8"),
 		fs.writeFile("build/.gitignore", [...out, "manifest.json"].join("\n"), "utf-8"),
+		BuildCache.set("build-files", [...out, "manifest.json"]),
 		fs
 			.stat("build/pack_icon.png")
 			.catch(() => fs.copyFile("node_modules/asajs/resources/pack_icon.png", "build/pack_icon.png")),

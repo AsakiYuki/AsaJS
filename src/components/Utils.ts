@@ -144,6 +144,12 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 	const memoryUI = MemoryModify[paths[namespace][name]]?.[name]
 	// @ts-ignore
 	if (memoryUI) return memoryUI as ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>
+	if (!paths[namespace]) {
+		throw new Error(`Namespace '${namespace}' does not exist`)
+		// @ts-ignore
+	} else if (!paths[namespace][name]) {
+		throw new Error(`Element '${name}' does not exist in namespace '${namespace}'`)
+	}
 	// @ts-ignore
 	const modifyUI = new ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>(
 		namespace,

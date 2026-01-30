@@ -7,6 +7,10 @@ if (!fs.existsSync("asajs.config.cjs")) {
 	fs.copyFileSync("node_modules/asajs/resources/asajs.config.cjs", "asajs.config.cjs")
 }
 
+if (!fs.existsSync(".gitignore")) {
+	fs.writeFileSync(".gitignore", `node_modules`, "utf-8")
+}
+
 export const config: Config = require(path.resolve(process.cwd(), "asajs.config.cjs")).config
 
 export let isBuildMode = config.compiler?.enabled ?? false
