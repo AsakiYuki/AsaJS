@@ -1,22 +1,27 @@
 import { Expression, GenBinding, Token, TokenKind, TSToken, TSTokenKind } from "./types.js"
 import { BindingType } from "../../types/enums/BindingType.js"
-import { Binding, BindingItem } from "../../types/properties/value.js"
-import { FunctionMap } from "./Funtion.js"
+import { BindingItem } from "../../types/properties/value.js"
+import { FunctionMap } from "./Function.js"
 import { Lexer } from "./Lexer.js"
 import { RandomBindingString } from "../../components/Utils.js"
 
 export class Parser {
 	position: number = 0
-	tokens: Token[]
 
 	genBindings: GenBinding[] = []
 	output: Expression
+	tokens: Token[]
 
 	constructor(
 		private input: string,
 		private cache = new Map<string, unknown>(),
+		tokens?: Token[],
 	) {
-		this.tokens = Lexer(this.input)
+		if (tokens) {
+			this.tokens = tokens
+			tokens = undefined
+		} else this.tokens = Lexer(input)
+
 		this.output = this.parseExpression()
 
 		if (this.at()) {
@@ -159,8 +164,22 @@ export class Parser {
 			const operator = this.eat()
 			const right = this.parsePrimaryExpression()
 
-			if (current.value === "%") left = `(${left} - (${left} / ${right} * ${right}))`
-			else left = `(${left} ${operator.value} ${right})`
+			if (current.value === "%") {
+				const cacheStr = `expr:${left}${operator.value}${right}`
+				if (this.cache.has(cacheStr)) {
+					return (left = this.cache.get(cacheStr) as Expression)
+				}
+
+				const ret = RandomBindingString(16)
+
+				this.genBindings.push({
+					source: `(${left} - (${left} / ${right} * ${right}))`,
+					target: ret,
+				})
+
+				this.cache.set(cacheStr, ret)
+				left = ret
+			} else left = `(${left} ${operator.value} ${right})`
 		}
 
 		return left
@@ -178,7 +197,14 @@ export class Parser {
 			const operator = this.eat()
 			const right = this.parsePrimaryExpression()
 
+			const cacheStr = `expr:${left}${operator.value}${right}`
+			if (this.cache.has(cacheStr)) {
+				return (left = this.cache.get(cacheStr) as Expression)
+			}
+
 			const ret = RandomBindingString(16)
+
+			this.cache.set(cacheStr, ret)
 
 			const leftBin = this.intToBin(left)
 			const rightBin = this.intToBin(right)
@@ -234,7 +260,14 @@ export class Parser {
 		) {
 			const operator = this.eat()
 			const right = this.parsePrimaryExpression()
+
+			const cacheStr = `expr:${left}${operator.value}${right}`
+			if (this.cache.has(cacheStr)) {
+				return (left = this.cache.get(cacheStr) as Expression)
+			}
 			const ret = RandomBindingString(16)
+			this.cache.set(cacheStr, ret)
+
 			const leftBind = this.intToBin(left)
 
 			const op = operator.value === "<<" ? "-" : "+"
@@ -275,8 +308,22 @@ export class Parser {
 			}
 
 			case TokenKind.NUMBER: {
-				const [num, exp] = (<string>this.eat().value).split("e")
-				return "" + (exp ? +num * 10 ** +exp : num)
+				const numberToken = this.eat()
+
+				switch (numberToken.value[1]) {
+					case "x":
+						return "" + parseInt(numberToken.value.slice(2) as string, 16)
+
+					case "o":
+						return "" + parseInt(numberToken.value.slice(2) as string, 8)
+
+					case "b":
+						return "" + parseInt(numberToken.value.slice(2) as string, 2)
+
+					default:
+						const [num, exp] = (<string>numberToken.value).split("e")
+						return "" + (exp ? +num * 10 ** +exp : num)
+				}
 			}
 
 			case TokenKind.VARIABLE:

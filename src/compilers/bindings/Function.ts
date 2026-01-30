@@ -73,3 +73,22 @@ FunctionMap.set("bin", input => {
 
 	return { genBindings: bindings, value: ret }
 })
+
+FunctionMap.set("bind", (value, bait) => {
+	const ret = RandomBindingString(16)
+
+	if (!bait) {
+		throw new Error("Bait is required")
+	}
+
+	return {
+		genBindings: [{ source: `((${bait} - ${bait}) + ${value})`, target: ret }],
+		value: ret,
+	}
+})
+
+FunctionMap.set("int", input => {
+	return {
+		value: input,
+	}
+})

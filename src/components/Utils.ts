@@ -38,6 +38,8 @@ import { AnimationProperties, KeyframeAnimationProperties } from "../types/prope
 import { Animation } from "./Animation.js"
 import { SmartAnimation } from "../types/enums/SmartAnimation.js"
 import { MemoryModify } from "../compilers/Memory.js"
+import { Lexer } from "../compilers/bindings/Lexer.js"
+import { Token, TokenKind, TSToken, TSTokenKind } from "../compilers/bindings/types.js"
 
 type CompileBinding = `[${string}]`
 
@@ -74,9 +76,62 @@ export function ResolveBinding(cache: Map<string, unknown>, ...bindings: Binding
 	for (const binding of bindings) {
 		if (binding.source_property_name) {
 			if (isCompileBinding(binding.source_property_name)) {
-				const { gen, out } = new Parser(binding.source_property_name.slice(1, -1), cache).out()
-				if (gen) result.push(...gen)
-				binding.source_property_name = out
+				const inputBindings = binding.source_property_name.slice(1, -1)
+				if (binding.source_control_name) {
+					// @ts-ignore
+					const tokensMapping = (token: Token) => {
+						if (token.kind === TokenKind.VARIABLE) {
+							const mapkey = `mapping:${binding.source_control_name}:${token.value}`
+
+							if (cache.has(mapkey)) {
+								return {
+									...token,
+									value: cache.get(mapkey) as string,
+								}
+							} else {
+								const ret = RandomBindingString(16)
+								cache.set(mapkey, ret)
+
+								result.push({
+									source_property_name: token.value,
+									source_control_name: binding.source_control_name,
+									target_property_name: ret,
+									binding_type: BindingType.VIEW,
+								})
+
+								return {
+									...token,
+									value: ret,
+								}
+							}
+						} else if (token.kind === TokenKind.TEMPLATE_STRING) {
+							return {
+								...token,
+								// @ts-ignore
+								value: token.value.map((tstoken: TSToken) => {
+									if (tstoken.kind === TSTokenKind.STRING) return tstoken
+									else {
+										return {
+											...tstoken,
+											tokens: tstoken.tokens.map(tokensMapping),
+										}
+									}
+								}),
+							}
+						} else return token
+					}
+
+					const { gen, out } = new Parser(inputBindings, cache, Lexer(inputBindings).map(tokensMapping)).out()
+
+					delete binding.source_control_name
+
+					if (gen) result.push(...gen)
+					binding.source_property_name = out
+				} else {
+					const { gen, out } = new Parser(inputBindings, cache).out()
+					if (gen) result.push(...gen)
+					binding.source_property_name = out
+				}
 			}
 
 			binding.binding_type = BindingType.VIEW

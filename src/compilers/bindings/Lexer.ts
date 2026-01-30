@@ -188,6 +188,44 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 				let start = index
 
 				if (Checker.isNumberChar(token)) {
+					if (token === "0") {
+						const numType = input[index + 1]
+						if (numType === "x") {
+							index += 2
+							while (Checker.isHexChar(input[index + 1])) index++
+							if (start + 2 === index) {
+								console.error(
+									`\x1b[31merror: ${input + "\n" + " ".repeat(index + 6) + "^"}\nInvalid character.\x1b[0m`,
+								)
+								throw new Error()
+							}
+							tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+							break
+						} else if (numType === "b") {
+							index += 2
+							while (Checker.isBinaryChar(input[index + 1])) index++
+							tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+							if (start + 2 === index) {
+								console.error(
+									`\x1b[31merror: ${input + "\n" + " ".repeat(index + 6) + "^"}\nInvalid character.\x1b[0m`,
+								)
+								throw new Error()
+							}
+							break
+						} else if (numType === "o") {
+							index += 2
+							while (Checker.isOctalChar(input[index + 1])) index++
+							tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+							if (start + 2 === index) {
+								console.error(
+									`\x1b[31merror: ${input + "\n" + " ".repeat(index + 6) + "^"}\nInvalid character.\x1b[0m`,
+								)
+								throw new Error()
+							}
+							break
+						}
+					}
+
 					while (Checker.isNumberChar(input[index + 1])) index++
 					if (input[index + 1] === "e") {
 						index++
