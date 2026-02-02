@@ -1,6 +1,7 @@
 import { Value } from "../value.js"
 
 export interface Image {
+	fill?: Value<boolean>
 	texture_path?: Value<string>
 	texture?: Value<string>
 }

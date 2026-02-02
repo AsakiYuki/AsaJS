@@ -1,7 +1,7 @@
 import { config } from "../Configuration.js"
 import { getUUID } from "./linker.js"
 
-export const version = config.packinfo?.version || [4, 0, 0]
+export const version = config.packinfo?.version || [4, 0, 1]
 
 export async function genManifest() {
 	const [uuid1, uuid2] = await getUUID()

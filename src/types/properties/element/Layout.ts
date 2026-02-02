@@ -2,7 +2,7 @@ import { Anchor } from "../../enums/Anchor.js"
 import { Value, AnimValue, Array2 } from "../value.js"
 
 export interface Layout {
-	offset?: AnimValue<Array2<number>>
+	offset?: AnimValue<Array2<number | string>>
 	size?: AnimValue<Array2<number | string>>
 	max_size?: AnimValue<Array2<number | string>>
 	min_size?: AnimValue<Array2<number | string>>
