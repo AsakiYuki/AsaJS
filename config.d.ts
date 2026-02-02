@@ -3,7 +3,10 @@ import { Variable } from "./src/types/properties/value.ts"
 export interface Config {
 	compiler?: {
 		enabled?: boolean
-		linked?: boolean
+		autoImport?: boolean
+		importToPreview?: boolean
+		autoEnable?: boolean
+		gdkUserId?: string
 	}
 	packinfo?: {
 		name?: string

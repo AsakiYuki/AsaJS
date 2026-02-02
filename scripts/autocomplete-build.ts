@@ -8,15 +8,15 @@ function toCamelCase(str: string) {
 
 const intelliSense: string[] = [
 	'import { Type as T } from "../enums/Type.js"\n',
-	"export type Namespace = keyof IntelliSense;",
-	"export type Element<T extends Namespace> = Extract<keyof IntelliSense[T], string>",
-	"export type VanillaElementInfo<T extends Namespace, K extends Element<T>> = IntelliSense[T][K]",
+	"export type Namespace = keyof VanillaUI;",
+	"export type Element<T extends Namespace> = Extract<keyof VanillaUI[T], string>",
+	"export type VanillaElementInfo<T extends Namespace, K extends Element<T>> = VanillaUI[T][K]",
 	"// @ts-ignore",
 	'export type VanillaType<T extends Namespace, K extends Element<T>> = VanillaElementInfo<T, K>["type"]',
 	"// @ts-ignore",
 	'export type VanillaElementChilds<T extends Namespace, K extends Element<T>> = VanillaElementInfo<T, K>["children"]',
 	"\n",
-	"export type IntelliSense = {",
+	"export type VanillaUI = {",
 ]
 
 const intelliSenseTypeEachNamespace: string[] = []

@@ -14,8 +14,8 @@ if (!fs.existsSync(".gitignore")) {
 export const config: Config = require(path.resolve(process.cwd(), "asajs.config.cjs")).config
 
 export let isBuildMode = config.compiler?.enabled ?? false
-export let isLinkMode = config.compiler?.linked ?? false
-export let unLinked = !(config.compiler?.linked ?? true)
+export let isLinkMode = config.compiler?.autoImport ?? false
+export let unLinked = !(config.compiler?.autoImport ?? true)
 
 for (const arg of process.argv) {
 	if (arg === "--build") isBuildMode = true

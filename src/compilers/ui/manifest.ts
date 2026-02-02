@@ -1,6 +1,8 @@
 import { config } from "../Configuration.js"
 import { getUUID } from "./linker.js"
 
+export const version = config.packinfo?.version || [4, 0, 0]
+
 export async function genManifest() {
 	const [uuid1, uuid2] = await getUUID()
 	return JSON.stringify({
@@ -10,7 +12,7 @@ export async function genManifest() {
 			description:
 				config.packinfo?.description || "Create your Minecraft JSON-UI resource packs using JavaScript.",
 			uuid: uuid1,
-			version: config.packinfo?.version || [4, 0, 0],
+			version,
 			min_engine_version: [1, 21, 80],
 		},
 		modules: [
@@ -18,7 +20,7 @@ export async function genManifest() {
 				description: "This resource pack generate by AsaJS.",
 				type: "resources",
 				uuid: uuid2,
-				version: [4, 0, 0],
+				version: version,
 			},
 		],
 		subpacks: config.packinfo?.subpacks,

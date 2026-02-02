@@ -2,7 +2,8 @@ import fs from "fs/promises"
 import { BuildCache } from "./buildcache.js"
 import { RandomString } from "../../components/Utils.js"
 import path from "path"
-import { getGamedataPath } from "./installer.js"
+import { getGamedataPath, PathInfo, pathinfo } from "./installer.js"
+import { Log } from "../PreCompile.js"
 
 const HEX: string[] = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, "0"))
 
@@ -25,13 +26,17 @@ function genUUID(): string {
 
 export async function clearBuild() {
 	const files: string[] = (await BuildCache.get("build-files")) || []
-	await Promise.all(files.map(file => fs.rm(`build/${file}`).catch(() => null)))
+	await Promise.all(files.map(file => fs.rm(`build/${file}`).catch(() => null))).then(() => {
+		if (files.length) {
+			Log("INFO", `Build folder cleared (${files.length} files removed)!`)
+		}
+	})
 }
 
 export async function createBuildFolder() {
 	return fs
 		.stat("build")
-		.catch(() => fs.mkdir("build"))
+		.catch(() => fs.mkdir("build").then(() => Log("INFO", "Build folder created!")))
 		.then(() => clearBuild())
 }
 
@@ -39,18 +44,28 @@ export async function getBuildFolderName() {
 	return await BuildCache.getWithSetDefault("build-key", () => RandomString(16))
 }
 
+export let gamePath: string | null = null
 export async function linkToGame() {
-	const sourcePath = path.resolve("build")
-	const targetPath = path.resolve(getGamedataPath(), "development_resource_packs", await getBuildFolderName())
-	await fs.stat(targetPath).catch(async () => {
-		await fs.symlink(sourcePath, targetPath, "junction")
-	})
+	const gamedataPath = getGamedataPath()
+	await BuildCache.set("last-gamedata-path", pathinfo)
+	if (gamedataPath) {
+		const sourcePath = path.resolve("build")
+		const targetPath = path.resolve(gamedataPath, "development_resource_packs", await getBuildFolderName())
+		await fs.stat(targetPath).catch(async () => {
+			await fs
+				.symlink(sourcePath, targetPath, "junction")
+				.then(() => Log("INFO", "Linked build folder to gamedata!"))
+		})
+		gamePath = gamedataPath
+	} else console.warn("No gamedata path found, cannot link!")
 }
 
 export async function unlink() {
-	const targetPath = path.resolve(getGamedataPath(), "development_resource_packs", await getBuildFolderName())
+	const gamedataPath = await BuildCache.get<PathInfo>("last-gamedata-path")
+	if (!gamedataPath?.gamepath) return
+	const targetPath = path.resolve(gamedataPath.gamepath, "development_resource_packs", await getBuildFolderName())
 	try {
-		await fs.unlink(targetPath)
+		await fs.unlink(targetPath).then(() => Log("INFO", "Unlinked build folder from gamedata!"))
 	} catch (error) {
 		console.error(error)
 	}
