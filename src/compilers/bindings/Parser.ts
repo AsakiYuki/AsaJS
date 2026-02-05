@@ -186,110 +186,13 @@ export class Parser {
 	}
 
 	private parseBitwiseLogicExpression(): Expression {
-		let left = this.parseBitwiseShiftExpression(),
-			current
-
-		while (
-			(current = this.at()) &&
-			this.at()?.kind === TokenKind.OPERATOR &&
-			["&", "|", "^"].includes(<string>current.value)
-		) {
-			const operator = this.eat()
-			const right = this.parsePrimaryExpression()
-
-			const cacheStr = `expr:${left}${operator.value}${right}`
-			if (this.cache.has(cacheStr)) {
-				return (left = this.cache.get(cacheStr) as Expression)
-			}
-
-			const ret = RandomBindingString(16)
-
-			this.cache.set(cacheStr, ret)
-
-			const leftBin = this.intToBin(left)
-			const rightBin = this.intToBin(right)
-
-			if (operator.value === "&") {
-				this.genBindings.push(
-					...Array.from({ length: 30 }, (_, i) => {
-						return {
-							source: `(${leftBin}${i} * ${rightBin}${i})`,
-							target: `${ret}${i}`,
-						}
-					}),
-				)
-			} else if (operator.value === "|") {
-				this.genBindings.push(
-					...Array.from({ length: 30 }, (_, i) => {
-						return {
-							source: `(${leftBin}${i} + ${rightBin}${i} - (${leftBin}${i} * ${rightBin}${i}))`,
-							target: `${ret}${i}`,
-						}
-					}),
-				)
-			} else {
-				this.genBindings.push(
-					...Array.from({ length: 30 }, (_, i) => {
-						return {
-							source: `(${leftBin}${i} + ${rightBin}${i} - 2 * (${leftBin}${i} * ${rightBin}${i}))`,
-							target: `${ret}${i}`,
-						}
-					}),
-				)
-			}
-
-			this.genBindings.push({
-				source: `(${Array.from({ length: 30 }, (_, i) => `(${ret}${i} * ${2 ** i})`).join(" + ")})`,
-				target: ret,
-			})
-
-			left = ret
-		}
-
-		return left
+		// TODO
+		return this.parseBitwiseShiftExpression()
 	}
 
 	private parseBitwiseShiftExpression(): Expression {
-		let left = this.parsePrimaryExpression(),
-			current
-
-		while (
-			(current = this.at()) &&
-			this.at()?.kind === TokenKind.OPERATOR &&
-			[">>", "<<"].includes(<string>current.value)
-		) {
-			const operator = this.eat()
-			const right = this.parsePrimaryExpression()
-
-			const cacheStr = `expr:${left}${operator.value}${right}`
-			if (this.cache.has(cacheStr)) {
-				return (left = this.cache.get(cacheStr) as Expression)
-			}
-			const ret = RandomBindingString(16)
-			this.cache.set(cacheStr, ret)
-
-			const leftBind = this.intToBin(left)
-
-			const op = operator.value === "<<" ? "-" : "+"
-
-			this.genBindings.push(
-				...Array.from({ length: 30 }, (_, i) => {
-					return {
-						source: `((0 * ${left}) + ('${leftBind}' + (${i} ${op} ${right})))`,
-						target: `${ret}${i}`,
-					}
-				}),
-			)
-
-			this.genBindings.push({
-				source: `(${Array.from({ length: 30 }, (_, i) => `(${ret}${i} * ${2 ** i})`).join(" + ")})`,
-				target: ret,
-			})
-
-			left = ret
-		}
-
-		return left
+		// TODO
+		return this.parsePrimaryExpression()
 	}
 
 	private parsePrimaryExpression(): Expression {
@@ -307,7 +210,7 @@ export class Parser {
 				return `(${value})`
 			}
 
-			case TokenKind.NUMBER: {
+			case TokenKind.INT: {
 				const numberToken = this.eat()
 
 				switch (numberToken.value[1]) {
@@ -390,7 +293,7 @@ export class Parser {
 			}
 
 			default:
-				this.expect(TokenKind.NUMBER, "Unexpected token!")
+				this.expect(TokenKind.INT, "Unexpected token!")
 		}
 
 		return left.value
@@ -404,7 +307,7 @@ export class Parser {
 			const args: Expression[] = []
 
 			if (this.at().kind === TokenKind.COMMA) {
-				this.expect(TokenKind.NUMBER, "Unexpected token!")
+				this.expect(TokenKind.INT, "Unexpected token!")
 			}
 
 			if (this.at().kind !== TokenKind.CLOSE_PARENTHESIS) {
@@ -413,7 +316,7 @@ export class Parser {
 				while (this.at().kind === TokenKind.COMMA) {
 					this.eat()
 					if (this.at().kind === TokenKind.CLOSE_PARENTHESIS) {
-						this.expect(TokenKind.NUMBER, "Unexpected token!")
+						this.expect(TokenKind.INT, "Unexpected token!")
 					}
 					args.push(this.parseExpression())
 				}

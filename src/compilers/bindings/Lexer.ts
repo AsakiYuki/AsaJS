@@ -73,8 +73,11 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 				if (input[index + 1] === "=") tokens.push(makeToken(input, TokenKind.OPERATOR, index++, 2))
 				else {
 					if (input[index] === input[index + 1]) {
-						if (input[index] !== "!") tokens.push(makeToken(input, TokenKind.OPERATOR, index++, 2))
-						else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
+						if (input[index] !== "!") {
+							if (input[++index] === input[index + 1])
+								tokens.push(makeToken(input, TokenKind.OPERATOR, index++ - 1, 3))
+							else tokens.push(makeToken(input, TokenKind.OPERATOR, index - 1, 2))
+						} else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 					} else tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 				}
 				break
@@ -135,6 +138,7 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 											value: `'${input.slice(start, index - 1)}'`,
 										},
 									})
+								index--
 								break
 							}
 						}
@@ -199,12 +203,12 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 								)
 								throw new Error()
 							}
-							tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+							tokens.push(makeToken(input, TokenKind.INT, start, index - start + 1))
 							break
 						} else if (numType === "b") {
 							index += 2
 							while (Checker.isBinaryChar(input[index + 1])) index++
-							tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+							tokens.push(makeToken(input, TokenKind.INT, start, index - start + 1))
 							if (start + 2 === index) {
 								console.error(
 									`\x1b[31merror: ${input + "\n" + " ".repeat(index + 6) + "^"}\nInvalid character.\x1b[0m`,
@@ -215,7 +219,7 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 						} else if (numType === "o") {
 							index += 2
 							while (Checker.isOctalChar(input[index + 1])) index++
-							tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+							tokens.push(makeToken(input, TokenKind.INT, start, index - start + 1))
 							if (start + 2 === index) {
 								console.error(
 									`\x1b[31merror: ${input + "\n" + " ".repeat(index + 6) + "^"}\nInvalid character.\x1b[0m`,
@@ -239,7 +243,7 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 						while (Checker.isNumberChar(input[index + 1])) index++
 					}
 
-					tokens.push(makeToken(input, TokenKind.NUMBER, start, index - start + 1))
+					tokens.push(makeToken(input, TokenKind.INT, start, index - start + 1))
 				} else if (Checker.isWordChar(token)) {
 					while (Checker.isWordChar(input[index + 1])) index++
 					tokens.push(makeToken(input, TokenKind.WORD, start, index - start + 1))

@@ -1,5 +1,5 @@
 import { RandomBindingString } from "../../components/Utils.js"
-import { Parser } from "./Parser.js"
+import { intToBin } from "./Binary.js"
 import { Expression, GenBinding } from "./types.js"
 
 type Callback = (...args: Expression[]) => {
@@ -13,82 +13,134 @@ function callFn(name: string, ...args: Expression[]) {
 	return FunctionMap.get(name)!(...args)
 }
 
-// Default Functions
-FunctionMap.set("abs", number => {
-	const randomBinding = RandomBindingString(16)
-	return {
-		genBindings: [{ source: `((-1 + (${number} > 0) * 2) * ${number})`, target: randomBinding }],
-		value: randomBinding,
-	}
-})
+export const defaultFunctions = {
+	/**
+	 * Returns the absolute value of a number (the value without regard to whether it is positive or negative). For example, the absolute value of -5 is the same as the absolute value of 5.
+	 * @param number
+	 * @returns
+	 */
+	abs: number => {
+		const randomBinding = RandomBindingString(16)
+		return {
+			genBindings: [{ source: `((-1 + (${number} > 0) * 2) * ${number})`, target: randomBinding }],
+			value: randomBinding,
+		}
+	},
 
-FunctionMap.set("new", expression => {
-	const randomBinding = RandomBindingString(16)
-	return {
-		genBindings: [{ source: expression, target: randomBinding }],
-		value: randomBinding,
-	}
-})
+	/**
+	 * Returns the negative absolute value of a number (the value without regard to whether it is positive or negative). For example, the absolute value of 5 is the same as the negative absolute value of -5.
+	 * @param number
+	 * @returns
+	 */
+	negabs: number => {
+		const randomBinding = RandomBindingString(16)
+		return {
+			genBindings: [{ source: `((-1 + (${number} < 0) * 2) * ${number})`, target: randomBinding }],
+			value: randomBinding,
+		}
+	},
 
-FunctionMap.set("sqrt", number => {
-	const rtn = RandomBindingString(16),
-		$1 = RandomBindingString(16),
-		$2 = RandomBindingString(16)
+	/**
+	 * Generate a new binding for expression
+	 * @param expression
+	 * @returns
+	 */
+	new: expression => {
+		const randomBinding = RandomBindingString(16)
+		return {
+			genBindings: [{ source: expression, target: randomBinding }],
+			value: randomBinding,
+		}
+	},
 
-	const { genBindings: absValue, value: absRtn } = callFn("abs", number)
+	/**
+	 * Returns the square root of a number.
+	 * @param number
+	 * @returns
+	 */
+	sqrt: number => {
+		const rtn = RandomBindingString(16),
+			$1 = RandomBindingString(16),
+			$2 = RandomBindingString(16)
 
-	return {
-		genBindings: [
-			{
-				source: `${number} * 100 / 2`,
-				target: $1,
-			},
-			...absValue!,
-			{
-				source: `${absRtn} > 1`,
-				target: $2,
-			},
-			{
-				source: `(${number} < 0) * -1 + (${number} > -1) * (${$2} * ((${rtn} + ${number} / ${rtn}) / 2) + (not ${$2}) * ${rtn})`,
-				target: rtn,
-			},
-		],
-		value: rtn,
-	}
-})
+		const { genBindings: absValue, value: absRtn } = callFn("abs", number)
 
-FunctionMap.set("translatable", key => {
-	return {
-		value: `'%' + ${key}`,
-	}
-})
+		return {
+			genBindings: [
+				{
+					source: `${number} * 100 / 2`,
+					target: $1,
+				},
+				...absValue!,
+				{
+					source: `${absRtn} > 1`,
+					target: $2,
+				},
+				{
+					source: `(${number} < 0) * -1 + (${number} > -1) * (${$2} * ((${rtn} + ${number} / ${rtn}) / 2) + (not ${$2}) * ${rtn})`,
+					target: rtn,
+				},
+			],
+			value: rtn,
+		}
+	},
 
-FunctionMap.set("bin", input => {
-	const { ret, bindings } = Parser.intToBin(input)
+	/**
+	 * Return a translatable string
+	 * @param key
+	 * @returns
+	 */
+	translatable: key => {
+		return {
+			value: `'%' + ${key}`,
+		}
+	},
 
-	bindings.push({
-		source: `'§z' + ${Array.from({ length: 30 }, (_, i) => `${ret}${30 - i - 1}`).join(" + ")}`,
-		target: ret,
-	})
+	/**
+	 * Return a binary of int32 number in string
+	 * @param value
+	 * @param bait
+	 * @returns
+	 */
+	// bin: value => {
+	// 	const {} = intToBin(value)
 
-	return { genBindings: bindings, value: ret }
-})
+	// 	return {
+	// 		value,
+	// 	}
+	// },
 
-FunctionMap.set("bind", (value, bait) => {
-	const ret = RandomBindingString(16)
+	/**
+	 *  Generate value bindings
+	 * @param value
+	 * @param bait
+	 * @returns
+	 */
+	bind: (value, bait) => {
+		const ret = RandomBindingString(16)
 
-	if (!bait) {
-		throw new Error("Bait is required")
-	}
+		if (!bait) {
+			throw new Error("Bait is required")
+		}
 
-	return {
-		genBindings: [{ source: `((${bait} - ${bait}) + ${value})`, target: ret }],
-		value: ret,
-	}
-})
+		return {
+			genBindings: [{ source: `((${bait} - ${bait}) + ${value})`, target: ret }],
+			value: ret,
+		}
+	},
 
-FunctionMap.set("int", input => {
-	return {
-		value: input,
-	}
-})
+	/**
+	 * Return a int of float number, because string in JSON-UI cannot read it.
+	 * @param input
+	 * @returns
+	 */
+	int: input => {
+		const ret = RandomBindingString(16)
+		return {
+			genBindings: [{ source: `${input}`, target: ret }],
+			value: ret,
+		}
+	},
+} satisfies Record<string, Callback>
+
+Object.entries(defaultFunctions).forEach(([key, value]) => FunctionMap.set(key, value))

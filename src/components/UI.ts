@@ -169,7 +169,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 
 		if (this.controls.size) {
 			obj.controls = []
-			this.controls.forEach((e, key) => obj.controls.push({ [key + e[0]]: e[1] }))
+			this.controls.forEach((e, key) => obj.controls.push({ [key + e[0]]: FormatProperties(e[1]) }))
 		}
 
 		return obj

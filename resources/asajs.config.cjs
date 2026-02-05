@@ -4,7 +4,7 @@
  */
 export const config = {
 	packinfo: {
-		name: "AsaJS - Installer Test",
+		name: "AsaJS",
 		description: "Create your Minecraft JSON-UI resource packs using JavaScript.",
 		version: [4, 0, 1],
 	},

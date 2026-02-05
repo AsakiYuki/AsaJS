@@ -15,4 +15,4 @@ export { ItemAuxID } from "./types/enums/Items.js"
 
 export { ArrayName, Operation } from "./types/properties/index.js"
 
-export { Lexer } from "./compilers/bindings/Lexer.js"
+export * from "./compilers/bindings/Binary.js"

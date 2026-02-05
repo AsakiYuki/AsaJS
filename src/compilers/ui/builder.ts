@@ -67,6 +67,7 @@ if (isBuildMode) {
 	let first = true
 	process.on("beforeExit", async () => {
 		if (first) {
+			first = false
 			await createBuildFolder()
 			await buildUI()
 			if (isLinkMode) await linkToGame()
@@ -85,7 +86,6 @@ if (isBuildMode) {
 				console.log("Install Path:", `\x1b[32m"${path.join(gamePath, await getBuildFolderName())}"\x1b[0m`)
 			console.log("=============================================================")
 		}
-		first = false
 	})
 } else if (isLinkMode) linkToGame()
 else if (unLinked) unlink()
