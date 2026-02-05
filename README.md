@@ -48,9 +48,9 @@ const label = Label({
 Modify("start", "start_screen_content").insertChild(label)
 ```
 
-## 📚 Documentation
+<!-- ## 📚 Documentation
 
-Detailed guides and API references are available at: 👉 https://asajs.asakiyuki.com/
+Detailed guides and API references are available at: 👉 https://asajs.asakiyuki.com/ -->
 
 ## 🤝 Contributing
 
