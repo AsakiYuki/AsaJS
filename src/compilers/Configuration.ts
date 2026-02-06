@@ -1,5 +1,6 @@
 import fs from "fs"
 import path from "path"
+import { createRequire } from "module"
 // @ts-ignore
 import { Config } from "../../config.js"
 
@@ -11,7 +12,7 @@ if (!fs.existsSync(".gitignore")) {
 	fs.writeFileSync(".gitignore", `node_modules`, "utf-8")
 }
 
-export const config: Config = require(path.resolve(process.cwd(), "asajs.config.cjs")).config
+export const config: Config = createRequire(import.meta.url)(path.resolve(process.cwd(), "asajs.config.cjs")).config
 
 export let isBuildMode = config.compiler?.enabled ?? false
 export let isLinkMode = config.compiler?.autoImport ?? false
