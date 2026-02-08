@@ -1,6 +1,6 @@
 {
 	"name": "asajs",
-	"version": "4.0.2",
+	"version": "4.0.3",
 	"description": "Create your Minecraft JSON-UI resource packs using JavaScript",
 	"keywords": [
 		"Minecraft",
@@ -28,7 +28,8 @@
 		"gen:enums": "bun scripts/enum",
 		"gen:items": "bun scripts/items",
 		"gen:autocomplete": "bun scripts/autocomplete-build",
-		"full-build": "bun run prefetch;\nbun run vanilla:defs;\nbun run gen:enums;\nbun run gen:items;\nbun run gen:autocomplete;\nbun run build"
+		"full-build": "bun run prefetch;\nbun run vanilla:defs;\nbun run gen:enums;\nbun run gen:items;\nbun run gen:autocomplete;\nbun run build",
+		"full-build-preview": "bun run prefetch --preview;\nbun run vanilla:defs;\nbun run gen:enums;\nbun run gen:items --preview;\nbun run gen:autocomplete;\nbun run build"
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",

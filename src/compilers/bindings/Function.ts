@@ -1,5 +1,4 @@
 import { RandomBindingString } from "../../components/Utils.js"
-import { intToBin } from "./Binary.js"
 import { Expression, GenBinding } from "./types.js"
 
 type Callback = (...args: Expression[]) => {
