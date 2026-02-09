@@ -2,7 +2,7 @@
  * Configuration object for the AsaJS build process.
  * @type {import('asajs/config.d.ts').Config}
  */
-const config = {
+export const config = {
 	packinfo: {
 		name: "AsaJS",
 		description: "Create your Minecraft JSON-UI resource packs using JavaScript.",
@@ -15,5 +15,3 @@ const config = {
 		importToPreview: false,
 	},
 }
-
-module.exports = { config }

@@ -4,15 +4,15 @@ import path from "path"
 import { Config } from "../../config.js"
 import { createRequire } from "module"
 
-if (!fs.existsSync("asajs.config.cjs")) {
-	fs.copyFileSync("node_modules/asajs/resources/asajs.config.cjs", "asajs.config.cjs")
+if (!fs.existsSync("asajs.config.js")) {
+	fs.copyFileSync("node_modules/asajs/resources/asajs.config.js", "asajs.config.js")
 }
 
 if (!fs.existsSync(".gitignore")) {
 	fs.writeFileSync(".gitignore", `node_modules`, "utf-8")
 }
 
-export const config: Config = createRequire(import.meta.url)(path.resolve(process.cwd(), "asajs.config.cjs")).config
+export const config: Config = createRequire(import.meta.url)(path.resolve(process.cwd(), "asajs.config.js")).config
 
 export let isBuildMode = config.compiler?.enabled ?? false
 export let isLinkMode = config.compiler?.autoImport ?? false
