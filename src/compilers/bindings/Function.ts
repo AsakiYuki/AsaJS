@@ -1,16 +1,13 @@
 import { RandomBindingString } from "../../components/Utils.js"
 import { Expression, GenBinding } from "./types.js"
 
-type Callback = (...args: Expression[]) => {
+type CallbackRet = {
 	genBindings?: GenBinding[]
 	value: Expression
 }
+type Callback = (...args: Expression[]) => CallbackRet
 
 export const FunctionMap = new Map<string, Callback>()
-
-function callFn(name: string, ...args: Expression[]) {
-	return FunctionMap.get(name)!(...args)
-}
 
 export const defaultFunctions = {
 	/**
@@ -19,7 +16,7 @@ export const defaultFunctions = {
 	 * @returns
 	 */
 	abs: number => {
-		const randomBinding = RandomBindingString(16)
+		const randomBinding = RandomBindingString()
 		return {
 			genBindings: [{ source: `((-1 + (${number} > 0) * 2) * ${number})`, target: randomBinding }],
 			value: randomBinding,
@@ -32,7 +29,7 @@ export const defaultFunctions = {
 	 * @returns
 	 */
 	negabs: number => {
-		const randomBinding = RandomBindingString(16)
+		const randomBinding = RandomBindingString()
 		return {
 			genBindings: [{ source: `((-1 + (${number} < 0) * 2) * ${number})`, target: randomBinding }],
 			value: randomBinding,
@@ -45,42 +42,47 @@ export const defaultFunctions = {
 	 * @returns
 	 */
 	new: expression => {
-		const randomBinding = RandomBindingString(16)
+		const randomBinding = RandomBindingString()
 		return {
 			genBindings: [{ source: expression, target: randomBinding }],
 			value: randomBinding,
 		}
 	},
 
-	/**
-	 * Returns the square root of a number.
-	 * @param number
-	 * @returns
-	 */
-	sqrt: number => {
-		const rtn = RandomBindingString(16),
-			$1 = RandomBindingString(16),
-			$2 = RandomBindingString(16)
-
-		const { genBindings: absValue, value: absRtn } = callFn("abs", number)
+	sqrt: n => {
+		const notAllow = RandomBindingString()
+		const g = RandomBindingString()
+		const h = RandomBindingString()
+		const ret = RandomBindingString()
 
 		return {
 			genBindings: [
 				{
-					source: `${number} * 100 / 2`,
-					target: $1,
-				},
-				...absValue!,
-				{
-					source: `${absRtn} > 1`,
-					target: $2,
+					source: `${n} / 2`,
+					target: g,
 				},
 				{
-					source: `(${number} < 0) * -1 + (${number} > -1) * (${$2} * ((${rtn} + ${number} / ${rtn}) / 2) + (not ${$2}) * ${rtn})`,
-					target: rtn,
+					source: `(${notAllow} * -1)`,
+					target: ret,
 				},
 			],
-			value: rtn,
+			value: ret,
+		}
+	},
+
+	cache_value: (cache_binding, override_binding, is_read) => {
+		return {
+			value: `((${is_read} * ${cache_binding}) + ((not ${is_read}) * ${override_binding}))`,
+		}
+	},
+
+	vector_length: (x, y, z) => {
+		const newBind = defaultFunctions.new(`${y} * ${y} + ${x} * ${x} + ${z} * ${z}`) as CallbackRet
+		const sqrtBind = defaultFunctions.sqrt(newBind.value) as CallbackRet
+
+		return {
+			genBindings: [newBind.genBindings![0], ...sqrtBind.genBindings!],
+			value: sqrtBind.value,
 		}
 	},
 
@@ -116,7 +118,7 @@ export const defaultFunctions = {
 	 * @returns
 	 */
 	bind: (value, bait) => {
-		const ret = RandomBindingString(16)
+		const ret = RandomBindingString()
 
 		if (!bait) {
 			throw new Error("Bait is required")
@@ -134,7 +136,7 @@ export const defaultFunctions = {
 	 * @returns
 	 */
 	int: input => {
-		const ret = RandomBindingString(16)
+		const ret = RandomBindingString()
 		return {
 			genBindings: [{ source: `${input}`, target: ret }],
 			value: ret,

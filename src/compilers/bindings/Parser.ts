@@ -31,7 +31,7 @@ export class Parser {
 
 	static intToBin(input: string) {
 		const bindings: GenBinding[] = []
-		const rtn = RandomBindingString(16)
+		const rtn = RandomBindingString()
 
 		for (let i = 0; i < 30; i++) {
 			bindings.push({
@@ -170,7 +170,7 @@ export class Parser {
 					return (left = this.cache.get(cacheStr) as Expression)
 				}
 
-				const ret = RandomBindingString(16)
+				const ret = RandomBindingString()
 
 				this.genBindings.push({
 					source: `(${left} - (${left} / ${right} * ${right}))`,

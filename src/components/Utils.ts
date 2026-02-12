@@ -89,7 +89,7 @@ export function ResolveBinding(cache: Map<string, unknown>, ...bindings: Binding
 									value: cache.get(mapkey) as string,
 								}
 							} else {
-								const ret = RandomBindingString(16)
+								const ret = RandomBindingString()
 								cache.set(mapkey, ret)
 
 								result.push({
@@ -163,7 +163,7 @@ export function RandomString(length: number, base: number = 32) {
 	return out.join("")
 }
 
-export function RandomBindingString(length: number, base: number = 32): Binding {
+export function RandomBindingString(length: number = 16, base: number = 32): Binding {
 	return `#${RandomString(length, base)}`
 }
 

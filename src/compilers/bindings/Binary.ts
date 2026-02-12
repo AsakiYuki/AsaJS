@@ -6,7 +6,7 @@ import { GenBinding } from "./types.js"
 export function intToBin(input: string) {
 	const { abs, negabs } = defaultFunctions
 
-	const ret = RandomBindingString(16)
+	const ret = RandomBindingString()
 	const bindings: GenBinding[] = []
 
 	// negative bit
@@ -22,7 +22,7 @@ export function intToBin(input: string) {
 }
 
 export function binToInt(input: Binding) {
-	const ret = RandomBindingString(16)
+	const ret = RandomBindingString()
 	const bindings: GenBinding[] = []
 
 	const nevBind = (input + "0") as Binding

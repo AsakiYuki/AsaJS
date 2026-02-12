@@ -17,7 +17,8 @@ export interface Control {
 	contained?: Value<boolean>
 	draggable?: Value<boolean>
 	follows_cursor?: Value<boolean>
-	property_bags?: Value<PropertyBags>
+	property_bag?: Value<PropertyBags>
+	property_bag_for_children?: Value<PropertyBags>
 	[key: Binding]: Value<any>
 	[key: Variable]: Value<any>
 }
