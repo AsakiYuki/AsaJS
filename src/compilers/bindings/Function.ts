@@ -69,6 +69,10 @@ export const defaultFunctions = {
 		return {
 			genBindings: [
 				{
+					source: `(${input} < 0)`,
+					target: isNegative,
+				},
+				{
 					source: `(${input} < 2)`,
 					target: isLowerThanTwo,
 				},
@@ -109,9 +113,30 @@ export const defaultFunctions = {
 		}
 	},
 
-	// str_length: str => {
-	// 	if (!/\#\w+/.test(str)) throw new Error("Invalid string")
-	// }
+	strlen: str => {
+		if (!/\#\w+/.test(str)) throw new Error("Invalid string")
+
+		const count = RandomBindingString()
+		const inputStr = RandomBindingString()
+
+		return {
+			genBindings: [
+				{
+					source: `0 * (${str} = 'a')`,
+					target: count,
+				},
+				{
+					source: `'a' + ${str}`,
+					target: inputStr,
+				},
+				{
+					source: `${count} + (not ((('%.' + (${count} + 1) + 's') * ${inputStr}) = ${inputStr}))`,
+					target: count,
+				},
+			],
+			value: count,
+		}
+	},
 
 	/**
 	 * Return a translatable string
@@ -120,6 +145,7 @@ export const defaultFunctions = {
 	 */
 	translatable: key => {
 		return {
+			genBindings: [],
 			value: `'%' + ${key}`,
 		}
 	},
