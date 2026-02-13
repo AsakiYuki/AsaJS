@@ -7,6 +7,7 @@ export interface Config {
 		importToPreview?: boolean
 		autoEnable?: boolean
 		gdkUserId?: string
+		fixInventoryItemRenderer?: boolean
 	}
 	packinfo?: {
 		name?: string

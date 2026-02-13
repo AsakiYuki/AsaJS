@@ -49,20 +49,43 @@ export const defaultFunctions = {
 		}
 	},
 
-	sqrt: n => {
-		const notAllow = RandomBindingString()
-		const g = RandomBindingString()
-		const h = RandomBindingString()
+	sqrt: input => {
 		const ret = RandomBindingString()
+
+		const isNegative = RandomBindingString()
+		const isLowerThanTwo = RandomBindingString()
+		const next = RandomBindingString()
+		const nextEqualOrGreaterThan = RandomBindingString()
+
+		const isNextEqualOrGreaterThanRet = `(${nextEqualOrGreaterThan} * ${ret})`
+		const isNotNextEqualOrGreaterThanRet = `((not ${nextEqualOrGreaterThan}) * ${next})`
+
+		const lowerThanTwoPart = `(${isLowerThanTwo} * ${input})`
+		const notLowerThanTwoPart = `((not ${isLowerThanTwo}) * (${isNextEqualOrGreaterThanRet} + ${isNotNextEqualOrGreaterThanRet}))`
+
+		const negativePart = `(${isNegative} * -1)`
+		const notNegativePart = `((not ${isNegative}) * (${lowerThanTwoPart} + ${notLowerThanTwoPart}))`
 
 		return {
 			genBindings: [
 				{
-					source: `${n} / 2`,
-					target: g,
+					source: `(${input} < 2)`,
+					target: isLowerThanTwo,
 				},
 				{
-					source: `(${notAllow} * -1)`,
+					source: input,
+					target: ret,
+				},
+				{
+					source: `(${ret} + ${input} / ${ret}) / 2`,
+					target: next,
+				},
+				{
+					source: `(${next} = ${ret}) or (${next} > ${ret})`,
+					target: nextEqualOrGreaterThan,
+				},
+				{
+					source: `${negativePart} + ${notNegativePart}`,
 					target: ret,
 				},
 			],
@@ -85,6 +108,10 @@ export const defaultFunctions = {
 			value: sqrtBind.value,
 		}
 	},
+
+	// str_length: str => {
+	// 	if (!/\#\w+/.test(str)) throw new Error("Invalid string")
+	// }
 
 	/**
 	 * Return a translatable string
