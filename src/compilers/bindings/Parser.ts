@@ -4,6 +4,7 @@ import { BindingItem } from "../../types/properties/value.js"
 import { FunctionMap } from "./Function.js"
 import { Lexer } from "./Lexer.js"
 import { RandomBindingString } from "../../components/Utils.js"
+import { isHasBinding } from "./Checker.js"
 
 export class Parser {
 	position: number = 0
@@ -72,14 +73,63 @@ export class Parser {
 	}
 
 	private parseExpression(): Expression {
-		return this.parseOrExpression()
+		return this.parseBinaryExpression()
+	}
+
+	private parseBinaryExpression(): Expression {
+		let left = this.parseOrExpression(),
+			current
+
+		while ((current = this.at()) && current.kind === TokenKind.OPERATOR && current.value === "?") {
+			this.eat()
+			let middle = this.parseExpression(),
+				right: string
+
+			if ((current = this.at()) && current.kind === TokenKind.OPERATOR && current.value === ":") {
+				this.eat()
+				right = this.parseExpression()
+			} else this.expect(TokenKind.OPERATOR, "Unexpected token!")
+
+			let leftBind, middleBind, rightBind
+
+			if (isHasBinding(left)) {
+				leftBind = RandomBindingString()
+				this.genBindings.push({
+					source: `((0 + ${left}) > 0)`,
+					target: leftBind,
+				})
+			} else this.expect(TokenKind.WORD, "Unexpected token!")
+
+			if (isHasBinding(middle)) {
+				middleBind = RandomBindingString()
+				this.genBindings.push({
+					source: middle,
+					target: middleBind,
+				})
+			} else this.expect(TokenKind.WORD, "Unexpected token!")
+
+			if (isHasBinding(right!)) {
+				rightBind = RandomBindingString()
+				this.genBindings.push({
+					source: right!,
+					target: rightBind,
+				})
+			} else this.expect(TokenKind.WORD, "Unexpected token!")
+
+			const ifTrueExpression = `(('prefix' + ${leftBind} + ${middleBind}) - ('prefixfalse' + ${middleBind})) - 'prefixtrue')`
+			const ifFalseExpression = `(('prefix' + ${leftBind} + ${rightBind}) - ('prefixtrue' + ${rightBind})) - 'prefixfalse')`
+
+			return `(${ifTrueExpression} + ${ifFalseExpression})`
+		}
+
+		return left
 	}
 
 	private parseOrExpression(): Expression {
 		let left = this.parseAndExpression(),
 			current
 
-		while ((current = this.at()) && this.at().kind === TokenKind.OPERATOR && current.value === "||") {
+		while ((current = this.at()) && current.kind === TokenKind.OPERATOR && current.value === "||") {
 			this.eat()
 			left = `(${left} or ${this.parseAndExpression()})`
 		}
@@ -91,7 +141,7 @@ export class Parser {
 		let left = this.parseComparisonExpression(),
 			current
 
-		while ((current = this.at()) && this.at().kind === TokenKind.OPERATOR && current.value === "&&") {
+		while ((current = this.at()) && current.kind === TokenKind.OPERATOR && current.value === "&&") {
 			this.eat()
 			left = `(${left} and ${this.parseComparisonExpression()})`
 		}
@@ -105,7 +155,7 @@ export class Parser {
 
 		while (
 			(current = this.at()) &&
-			this.at().kind === TokenKind.OPERATOR &&
+			current.kind === TokenKind.OPERATOR &&
 			["==", ">", "<", ">=", "<=", "!="].includes(<string>current.value)
 		) {
 			const operator = this.eat()
@@ -140,7 +190,7 @@ export class Parser {
 
 		while (
 			(current = this.at()) &&
-			this.at()?.kind === TokenKind.OPERATOR &&
+			current?.kind === TokenKind.OPERATOR &&
 			["+", "-"].includes(<string>current.value)
 		) {
 			const operator = this.eat()
@@ -158,7 +208,7 @@ export class Parser {
 
 		while (
 			(current = this.at()) &&
-			this.at()?.kind === TokenKind.OPERATOR &&
+			current?.kind === TokenKind.OPERATOR &&
 			["*", "/", "%"].includes(<string>current.value)
 		) {
 			const operator = this.eat()

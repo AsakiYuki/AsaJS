@@ -48,6 +48,8 @@ export function Lexer(input: string, start: number = 0, end?: number) {
 			case "/":
 			case "%":
 			case "^":
+			case "?":
+			case ":":
 				tokens.push(makeToken(input, TokenKind.OPERATOR, index))
 				break
 

@@ -25,3 +25,7 @@ export function isOctalChar(char: string) {
 export function isCompileBinding(input: string) {
 	return input.startsWith("[") && input.endsWith("]")
 }
+
+export function isHasBinding(input: string) {
+	return /#\w+/.test(input)
+}
