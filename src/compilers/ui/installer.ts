@@ -174,12 +174,12 @@ export function getGamedataPath() {
 		}
 
 		case "linux": {
-			const gamedata = path.join(process.env.HOME!, "\\.local\\share\\mcpelauncher\\games\\com.mojang")
+			const gamedata = path.join(process.env.HOME!, "/.local/share/mcpelauncher/games/com.mojang")
 			if (fs.existsSync(gamedata)) return (pathinfo.gamepath = gamedata)
 			else {
 				return (pathinfo.gamepath = path.join(
 					process.env.HOME!,
-					"\\.var\\app\\io.mrarm.mcpelauncher\\data\\mcpelauncher\\games\\com.mojang",
+					"/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher/games/com.mojang",
 				))
 			}
 		}
