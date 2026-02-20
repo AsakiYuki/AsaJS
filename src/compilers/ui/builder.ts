@@ -1,4 +1,4 @@
-import { config, isBuildMode, isLinkMode, unLinked } from "../Configuration.js"
+import { config, isBuildMode, isLinkMode, isTestMode, unLinked } from "../Configuration.js"
 import { Memory } from "../Memory.js"
 import { createBuildFolder, gamePath, getBuildFolderName, linkToGame, unlink } from "./linker.js"
 import { genManifest, version } from "./manifest.js"
@@ -56,7 +56,12 @@ async function buildUI() {
 		BuildCache.set("version", version).then(() => Log("INFO", "version set!")),
 		fs
 			.stat("build/pack_icon.png")
-			.catch(() => fs.copyFile("node_modules/asajs/resources/pack_icon.png", "build/pack_icon.png"))
+			.catch(() =>
+				fs.copyFile(
+					isTestMode ? "resources/pack_icon.png" : "node_modules/asajs/resources/pack_icon.png",
+					"build/pack_icon.png",
+				),
+			)
 			.then(() => Log("INFO", "build/pack_icon.png copied!")),
 	])
 

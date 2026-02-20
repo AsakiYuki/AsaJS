@@ -6,3 +6,5 @@ test
 .gitignore
 .tsbuildinfo
 tsconfig.json
+asajs.config.js
+build

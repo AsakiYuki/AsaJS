@@ -4,22 +4,27 @@ import path from "path"
 import { Config } from "../../config.js"
 import { createRequire } from "module"
 
-if (!fs.existsSync("asajs.config.js")) {
-	fs.copyFileSync("node_modules/asajs/resources/asajs.config.js", "asajs.config.js")
+const options: Record<string, unknown> = {}
+
+for (const arg of process.argv) {
+	if (arg.startsWith("--")) options[arg.slice(2)] = true
 }
 
-if (!fs.existsSync(".gitignore")) {
-	fs.writeFileSync(".gitignore", `node_modules`, "utf-8")
+export const isTestMode = options["test"] ?? false
+
+if (!fs.existsSync("asajs.config.js")) {
+	fs.copyFileSync(
+		isTestMode ? "resources/asajs.config.js" : "node_modules/asajs/resources/asajs.config.js",
+		"asajs.config.js",
+	)
 }
 
 export const config: Config = createRequire(import.meta.url)(path.resolve(process.cwd(), "asajs.config.js")).config
 
-export let isBuildMode = config.compiler?.enabled ?? false
-export let isLinkMode = config.compiler?.autoImport ?? false
-export let unLinked = !(config.compiler?.autoImport ?? true)
+export const isBuildMode = options["build"] ?? config.compiler?.enabled ?? false
+export const isLinkMode = options["link"] ?? config.compiler?.autoImport ?? false
+export const unLinked = options["unlink"] ?? !(config.compiler?.autoImport ?? true)
 
-for (const arg of process.argv) {
-	if (arg === "--build") isBuildMode = true
-	if (arg === "--link") isLinkMode = true
-	else if (arg === "--unlink") unLinked = true
+if (!fs.existsSync(".gitignore")) {
+	fs.writeFileSync(".gitignore", `node_modules`, "utf-8")
 }
