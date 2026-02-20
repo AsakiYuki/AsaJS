@@ -13,10 +13,14 @@ for (const arg of process.argv) {
 export const isTestMode = options["test"] ?? false
 
 if (!fs.existsSync("asajs.config.js")) {
-	fs.copyFileSync(
-		isTestMode ? "resources/asajs.config.js" : "node_modules/asajs/resources/asajs.config.js",
-		"asajs.config.js",
-	)
+	if (isTestMode) {
+		fs.writeFileSync(
+			"asajs.config.js",
+			fs.readFileSync("resources/asajs.config.js", "utf-8").replace("asajs/", "./"),
+		)
+	} else {
+		fs.copyFileSync("node_modules/asajs/resources/asajs.config.js", "asajs.config.js")
+	}
 }
 
 export const config: Config = createRequire(import.meta.url)(path.resolve(process.cwd(), "asajs.config.js")).config
