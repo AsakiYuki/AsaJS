@@ -88,7 +88,10 @@ if (isBuildMode) {
 			console.log("Version:", config.packinfo?.version || [4, 0, 0])
 			console.log("UUID:", await BuildCache.get<[string, string]>("uuid"))
 			if (gamePath)
-				console.log("Install Path:", `\x1b[32m"${path.join(gamePath, await getBuildFolderName())}"\x1b[0m`)
+				console.log(
+					"Install Path:",
+					`\x1b[32m"${path.join(gamePath, "development_resource_packs", await getBuildFolderName())}"\x1b[0m`,
+				)
 			console.log("=============================================================")
 		}
 	})

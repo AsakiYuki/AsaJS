@@ -22,7 +22,7 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc --watch",
-		"test": "bun test/app.ts --test",
+		"test": "bun test/app.ts",
 		"prefetch": "bun scripts/prefetch",
 		"vanilla:defs": "bun scripts/vanilladefs",
 		"gen:enums": "bun scripts/enum",

@@ -1,4 +1,9 @@
-import { Variable } from "./src/types/properties/value.ts"
+import { BindingItem, Variable } from "./src/types/properties/value.ts"
+
+export interface RetBindingValue {
+	generate_bindings?: Array<{ source_property_name: string; target_property_name: string }>
+	return_value: string
+}
 
 export interface Config {
 	compiler?: {
@@ -27,4 +32,5 @@ export interface Config {
 		}[]
 	}
 	global_variables?: Record<Variable, string>
+	binding_functions?: Record<string, (...args: string[]) => RetBindingValue>
 }

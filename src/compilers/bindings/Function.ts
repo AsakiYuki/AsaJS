@@ -1,4 +1,6 @@
-import { RandomBindingString } from "../../components/Utils.js"
+import { RandomBindingString, ResolveBinding } from "../../components/Utils.js"
+import { BindingItem } from "../../types/properties/value.js"
+import { bindingFuntions } from "../Configuration.js"
 import { Expression, GenBinding } from "./types.js"
 
 type CallbackRet = {
@@ -198,3 +200,24 @@ export const defaultFunctions = {
 } satisfies Record<string, Callback>
 
 Object.entries(defaultFunctions).forEach(([key, value]) => FunctionMap.set(key, value))
+if (bindingFuntions)
+	Object.entries(bindingFuntions).forEach(([key, value]) => {
+		// @ts-ignore
+		FunctionMap.set(key, (...args) => {
+			const { generate_bindings, return_value } = value(...args)
+			if (generate_bindings) {
+				const resolve = ResolveBinding(new Map(), ...(generate_bindings as BindingItem[]))
+				return {
+					genBindings: resolve.map(({ source_property_name, target_property_name }) => ({
+						source: source_property_name!,
+						target: target_property_name!,
+					})),
+					value: return_value,
+				}
+			}
+
+			return {
+				value: return_value,
+			}
+		})
+	})

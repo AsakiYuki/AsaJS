@@ -41,7 +41,7 @@ export async function createBuildFolder() {
 }
 
 export async function getBuildFolderName() {
-	return await BuildCache.getWithSetDefault("build-key", () => RandomString(16))
+	return await BuildCache.getWithSetDefault("build-key", () => `asajs-build-${RandomString(16)}`)
 }
 
 export let gamePath: string | null = null
