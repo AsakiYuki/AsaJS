@@ -1,6 +1,6 @@
 {
 	"name": "asajs",
-	"version": "4.0.9",
+	"version": "4.0.11-indev",
 	"description": "Create your Minecraft JSON-UI resource packs using JavaScript",
 	"keywords": [
 		"Minecraft",
@@ -14,7 +14,7 @@
 		"type": "git",
 		"url": "git+https://github.com/asakiyuki/asajs.git"
 	},
-	"license": "MIT",
+	"license": "GPL-3.0-only",
 	"author": "Asaki Yuki",
 	"type": "module",
 	"main": "dist/js/index.js",
