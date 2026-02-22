@@ -15,6 +15,12 @@ export interface Config {
 		fixInventoryItemRenderer?: boolean
 		buildFolder?: string
 	}
+
+	ui_analyzer?: {
+		enabled?: boolean
+		imports?: string[]
+	}
+
 	packinfo?: {
 		name?: string
 		description?: string

@@ -121,9 +121,16 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	 * @param name
 	 * @returns
 	 */
-	addChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>, name?: string) {
+	addChild<T extends Type, K extends Renderer | null>(
+		child: UI<T, K>,
+		properties?: Properties<T, K>,
+		name?: string,
+		callback?: (name: string) => void,
+	) {
 		if (this === <any>child) throw new Error("Cannot add a child to itself")
-		this.controls.set(name || RandomString(16), [child, properties || {}])
+		const childName = name || RandomString(16)
+		this.controls.set(childName, [child, properties || {}])
+		callback?.(childName)
 		return this
 	}
 
@@ -307,8 +314,12 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 		})
 	}
 
-	insertChild<T extends Type, K extends Renderer | null>(child: UI<T, K>, properties?: Properties<T, K>) {
-		return this.insertFrontChild(child, properties)
+	insertChild<T extends Type, K extends Renderer | null>(
+		child: UI<T, K>,
+		properties?: Properties<T, K>,
+		name?: string,
+	) {
+		return this.insertFrontChild(child, properties, name)
 	}
 
 	replaceChild<T extends Type, K extends Renderer | null>(where: S, child: UI<T, K>, properties?: Properties<T, K>) {

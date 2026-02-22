@@ -199,10 +199,12 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 	const memoryUI = MemoryModify[paths[namespace][name]]?.[name]
 	// @ts-ignore
 	if (memoryUI) return memoryUI as ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>
-	if (!paths[namespace]) {
+	const path = paths[namespace]
+
+	if (!path) {
 		throw new Error(`Namespace '${namespace}' does not exist`)
 		// @ts-ignore
-	} else if (!paths[namespace][name]) {
+	} else if (typeof path !== "string" && !paths[namespace][name]) {
 		throw new Error(`Element '${name}' does not exist in namespace '${namespace}'`)
 	}
 	// @ts-ignore
@@ -210,7 +212,7 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 		namespace,
 		name,
 		// @ts-ignore
-		paths[namespace][name],
+		typeof path === "string" ? path : paths[namespace][name],
 	)
 	// @ts-ignore
 	;(MemoryModify[paths[namespace][name]] ||= {})[name] = modifyUI

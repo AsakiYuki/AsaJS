@@ -146,7 +146,27 @@ for (const [namespace, elements] of vanilla) {
 	}
 }
 
+const prefix = `interface Element {
+	file: string
+	type: string
+	children?: string[]
+	extend?: {
+		name: string
+		namespace: string
+	}
+}
+
+interface VanillaDefs {
+	[key: string]: {
+		[key: string]: Element
+	}
+}`
+
 fs.writeFileSync("cache/vanilla-defs.json", JSON.stringify(json, null, 4))
+fs.writeFileSync(
+	"src/analyzer/vanilladefs.ts",
+	`${prefix}\n\nexport const vanilladefs: VanillaDefs = ${JSON.stringify(json, null, 4)}`,
+)
 
 // Types
 interface VanillaElement {

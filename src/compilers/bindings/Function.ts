@@ -1,6 +1,7 @@
-import { RandomBindingString, ResolveBinding } from "../../components/Utils.js"
+import { RandomBindingString, RandomString, ResolveBinding } from "../../components/Utils.js"
 import { BindingItem } from "../../types/properties/value.js"
 import { bindingFuntions } from "../Configuration.js"
+import { isString } from "./Checker.js"
 import { Expression, GenBinding } from "./types.js"
 
 type CallbackRet = {
@@ -137,6 +138,60 @@ export const defaultFunctions = {
 				},
 			],
 			value: count,
+		}
+	},
+
+	contains: (source_str, contains_str) => {
+		return {
+			value: `not ((${source_str} - ${contains_str}) = ${source_str})`,
+		}
+	},
+
+	starts_with: (source_str, start_str) => {
+		const prefix = `'asajs:${RandomString(5)}:'`
+		if (isString(source_str)) {
+			if (isString(start_str)) {
+				return {
+					value: `${source_str.slice(1, -1).startsWith(start_str.slice(1, -1))}`,
+				}
+			} else {
+				source_str = prefix.slice(0, -1) + source_str.slice(1)
+				const start_str_bind = RandomBindingString()
+
+				return {
+					genBindings: [
+						{
+							source: `${prefix} + ${start_str}`,
+							target: start_str_bind,
+						},
+					],
+					value: `not ((${source_str} - ${start_str_bind}) = ${source_str})`,
+				}
+			}
+		} else {
+			if (isString(start_str)) {
+				const strLength = start_str.length - 2
+				return {
+					value: `('%.${strLength}s' * ${source_str} = ${start_str})`,
+				}
+			} else {
+				const source_str_bind = RandomBindingString()
+				const start_str_bind = RandomBindingString()
+
+				return {
+					genBindings: [
+						{
+							source: `${prefix} + ${source_str}`,
+							target: source_str_bind,
+						},
+						{
+							source: `${prefix} + ${start_str}`,
+							target: start_str_bind,
+						},
+					],
+					value: `not ((${source_str_bind} - ${start_str_bind}) = ${source_str_bind})`,
+				}
+			}
 		}
 	},
 

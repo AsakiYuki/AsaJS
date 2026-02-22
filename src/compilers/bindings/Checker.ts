@@ -29,3 +29,7 @@ export function isCompileBinding(input: string) {
 export function isHasBinding(input: string) {
 	return /#\w+/.test(input)
 }
+
+export function isString(input: string) {
+	return /^'.+'$/.test(input)
+}
