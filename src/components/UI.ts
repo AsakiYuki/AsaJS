@@ -14,6 +14,7 @@ import { RandomString, ResolveBinding } from "./Utils.js"
 import { RandomNamespace } from "../compilers/Random.js"
 
 import util from "node:util"
+import { config } from "../compilers/Configuration.js"
 
 interface ExtendUI {
 	name: string
@@ -60,7 +61,8 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomNamespace()
 
-		if (!path) this.path = `asajs/${this.namespace}.json`
+		if (!path)
+			this.path = `asajs/${this.namespace}${config.compiler?.fileExtension ? (config.compiler.fileExtension.startsWith(".") ? config.compiler.fileExtension : `.${config.compiler.fileExtension}`) : ".json"}`
 		else this.path = path
 
 		this.extendable = this.name.search("/") === -1
@@ -125,12 +127,12 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		child: UI<T, K>,
 		properties?: Properties<T, K>,
 		name?: string,
-		callback?: (name: string) => void,
+		callback?: (name: string, parent: UI<T, K>) => void,
 	) {
 		if (this === <any>child) throw new Error("Cannot add a child to itself")
 		const childName = name || RandomString(16)
 		this.controls.set(childName, [child, properties || {}])
-		callback?.(childName)
+		callback?.(childName, <any>this)
 		return this
 	}
 

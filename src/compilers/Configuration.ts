@@ -3,6 +3,9 @@ import path from "path"
 import jsonc from "jsonc-parser"
 import { Config, RetBindingValue } from "../../config.js"
 import { createRequire } from "module"
+import { rebaseUIFiles } from "../analyzer/rebaseUIFiles.js"
+import { generateUIDefs } from "../analyzer/generate-ui-defs.js"
+import { genCustomCode } from "../analyzer/generate-code.js"
 
 const options: Record<string, unknown> = {}
 
@@ -64,5 +67,20 @@ export const buildFolder = config.compiler?.buildFolder || "build"
 export const bindingFuntions = config.binding_functions
 
 if (!fs.existsSync(".gitignore")) {
-	fs.writeFileSync(".gitignore", `node_modules`, "utf-8")
+	fs.writeFileSync(".gitignore", "node_modules\ncustom", "utf-8")
+}
+
+if (config.ui_analyzer?.enabled) {
+	config.ui_analyzer.imports?.forEach(v => {
+		if (!fs.existsSync(path.join(config.ui_analyzer?.generate_path || "database", `${v}.ts`))) {
+			if (!fs.existsSync(path.join("database", `${v}-defs.json`))) {
+				if (fs.existsSync(path.join("custom", v, "ui/_ui_defs.json"))) {
+					rebaseUIFiles(v)
+					generateUIDefs(v)
+				} else throw new Error(`${v} ui_defs.json not found`)
+			}
+
+			genCustomCode(v)
+		}
+	})
 }

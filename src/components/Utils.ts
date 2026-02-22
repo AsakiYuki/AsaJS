@@ -133,10 +133,11 @@ export function ResolveBinding(cache: Map<string, unknown>, ...bindings: Binding
 					binding.source_property_name = out
 				}
 			}
-
-			binding.binding_type = BindingType.VIEW
-
+			binding.binding_type ||= BindingType.VIEW
 			if (!binding.target_property_name) throw new Error("Binding must have a target property name")
+		} else if (binding.binding_collection_name) {
+			if (Object.keys(binding).length > 1) binding.binding_type ||= BindingType.COLLECTION
+			else binding.binding_type ||= BindingType.COLLECTION_DETAILS
 		}
 		result.push(binding)
 	}
@@ -196,7 +197,10 @@ export function b(input: string): CompileBinding {
 // Quick Elements
 export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, name: K) {
 	// @ts-ignore
-	const memoryUI = MemoryModify[paths[namespace][name]]?.[name]
+	const getPath = paths[namespace] || paths[namespace][name]
+
+	// @ts-ignore
+	const memoryUI = MemoryModify[getPath]?.[name]
 	// @ts-ignore
 	if (memoryUI) return memoryUI as ModifyUI<VanillaType<T, K>, VanillaElementChilds<T, K>>
 	const path = paths[namespace]
@@ -204,7 +208,7 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 	if (!path) {
 		throw new Error(`Namespace '${namespace}' does not exist`)
 		// @ts-ignore
-	} else if (typeof path !== "string" && !paths[namespace][name]) {
+	} else if (typeof path !== "string" && !getPath) {
 		throw new Error(`Element '${name}' does not exist in namespace '${namespace}'`)
 	}
 	// @ts-ignore
@@ -212,10 +216,10 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 		namespace,
 		name,
 		// @ts-ignore
-		typeof path === "string" ? path : paths[namespace][name],
+		typeof path === "string" ? path : getPath,
 	)
 	// @ts-ignore
-	;(MemoryModify[paths[namespace][name]] ||= {})[name] = modifyUI
+	;(MemoryModify[getPath] ||= {})[name] = modifyUI
 
 	return modifyUI
 }

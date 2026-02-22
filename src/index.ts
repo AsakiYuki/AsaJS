@@ -1,5 +1,5 @@
-import "./compilers/Configuration.js"
 import "./compilers/PreCompile.js"
+import "./compilers/Configuration.js"
 import "./compilers/ui/builder.js"
 import "./compilers/ui/installer.js"
 
@@ -17,3 +17,5 @@ export { ArrayName, Operation } from "./types/properties/index.js"
 
 export * from "./compilers/bindings/Binary.js"
 export { API } from "./components/API.js"
+
+export { MemoryModify } from "./compilers/Memory.js"

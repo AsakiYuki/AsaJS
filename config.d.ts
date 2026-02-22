@@ -14,10 +14,12 @@ export interface Config {
 		gdkUserId?: string
 		fixInventoryItemRenderer?: boolean
 		buildFolder?: string
+		fileExtension?: string
 	}
 
 	ui_analyzer?: {
 		enabled?: boolean
+		generate_path?: string
 		imports?: string[]
 	}
 
