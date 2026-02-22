@@ -1,4 +1,4 @@
-import { config, isBuildMode, isLinkMode, isTestMode, unLinked } from "../Configuration.js"
+import { buildFolder, config, isBuildMode, isLinkMode, isTestMode, unLinked } from "../Configuration.js"
 import { Memory } from "../Memory.js"
 import { createBuildFolder, gamePath, getBuildFolderName, linkToGame, unlink } from "./linker.js"
 import { genManifest, version } from "./manifest.js"
@@ -9,6 +9,7 @@ import { BuildCache } from "./buildcache.js"
 import { disableRSP, enableRSP } from "./installer.js"
 import { Log } from "../PreCompile.js"
 import path from "path"
+import { API_events } from "../../components/API.js"
 
 async function buildUI() {
 	const build = Memory.build()
@@ -20,8 +21,8 @@ async function buildUI() {
 	if (config.global_variables) build.set("ui/_global_variables.json", config.global_variables)
 
 	const out = await Promise.all(
-		build.entries().map(async ([file, value]) => {
-			const outFile = `build/${file}`
+		Array.from(build.entries()).map(async ([file, value]) => {
+			const outFile = `${buildFolder}/${file}`
 			await fs
 				.stat(outFile.split(/\\|\//g).slice(0, -1).join("/"))
 				.catch(async () => await fs.mkdir(outFile.split(/\\|\//g).slice(0, -1).join("/"), { recursive: true }))
@@ -47,23 +48,24 @@ async function buildUI() {
 
 	await Promise.all([
 		fs
-			.writeFile("build/manifest.json", await genManifest(), "utf-8")
-			.then(() => Log("INFO", "build/manifest.json created!")),
+			.writeFile(`${buildFolder}/manifest.json`, await genManifest(), "utf-8")
+			.then(() => Log("INFO", `${buildFolder}/manifest.json created!`)),
 		fs
-			.writeFile("build/.gitignore", [...out, "manifest.json"].join("\n"), "utf-8")
-			.then(() => Log("INFO", "build/.gitignore created!")),
+			.writeFile(`${buildFolder}/.gitignore`, [...out, "manifest.json"].join("\n"), "utf-8")
+			.then(() => Log("INFO", `${buildFolder}/.gitignore created!`)),
 		BuildCache.set("build-files", [...out, "manifest.json"]).then(() => Log("INFO", "build-files set!")),
 		BuildCache.set("version", version).then(() => Log("INFO", "version set!")),
 		fs
-			.stat("build/pack_icon.png")
+			.stat(`${buildFolder}/pack_icon.png`)
 			.catch(() =>
 				fs.copyFile(
 					isTestMode ? "resources/pack_icon.png" : "node_modules/asajs/resources/pack_icon.png",
-					"build/pack_icon.png",
+					`${buildFolder}/pack_icon.png`,
 				),
 			)
-			.then(() => Log("INFO", "build/pack_icon.png copied!")),
-	])
+			.then(() => Log("INFO", `${buildFolder}/pack_icon.png copied!`))
+			.catch(() => Log("WARN", `cannot copy ${buildFolder}/pack_icon.png!`)),
+	]).catch(error => console.error(error))
 
 	return out.length
 }
@@ -93,6 +95,9 @@ if (isBuildMode) {
 					`\x1b[32m"${path.join(gamePath, "development_resource_packs", await getBuildFolderName())}"\x1b[0m`,
 				)
 			console.log("=============================================================")
+
+			// API events
+			API_events.onBuildFinish.forEach(v => v(config))
 		}
 	})
 } else if (isLinkMode) linkToGame()

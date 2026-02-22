@@ -16,3 +16,4 @@ export { ItemAuxID } from "./types/enums/Items.js"
 export { ArrayName, Operation } from "./types/properties/index.js"
 
 export * from "./compilers/bindings/Binary.js"
+export { API } from "./components/API.js"

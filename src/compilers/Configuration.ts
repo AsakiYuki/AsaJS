@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path"
-// @ts-ignore
+import jsonc from "jsonc-parser"
 import { Config, RetBindingValue } from "../../config.js"
 import { createRequire } from "module"
 
@@ -10,7 +10,11 @@ for (const arg of process.argv) {
 	if (arg.startsWith("--")) options[arg.slice(2)] = true
 }
 
-export const isTestMode = !fs.existsSync("node_modules/asajs")
+export let isTestMode = false
+try {
+	const { name } = jsonc.parse(fs.readFileSync(path.resolve("package.json"), "utf-8"))
+	if (name === "asajs") isTestMode = true
+} catch (error) {}
 
 if (!fs.existsSync("asajs.config.js")) {
 	if (isTestMode) {
@@ -55,6 +59,7 @@ export const config: Config = createRequire(import.meta.url)(path.resolve(proces
 export const isBuildMode = options["build"] ?? config.compiler?.enabled ?? false
 export const isLinkMode = options["link"] ?? config.compiler?.autoImport ?? false
 export const unLinked = options["unlink"] ?? !(config.compiler?.autoImport ?? true)
+export const buildFolder = config.compiler?.buildFolder || "build"
 
 export const bindingFuntions = config.binding_functions
 

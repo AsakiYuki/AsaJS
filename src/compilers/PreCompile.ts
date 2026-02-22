@@ -19,12 +19,14 @@ Array.prototype.lastItem = function () {
 }
 
 const now = performance.now()
-type LogType = "INFO"
+type LogType = "INFO" | "WARN"
 
 function TypeHighlight(type: LogType) {
 	switch (type) {
 		case "INFO":
 			return `\x1b[32mINFO\x1b[0m`
+		case "WARN":
+			return `\x1b[33mWARN\x1b[0m`
 		default:
 			return type satisfies never
 	}

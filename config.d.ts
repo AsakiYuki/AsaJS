@@ -1,4 +1,4 @@
-import { BindingItem, Variable } from "./src/types/properties/value.ts"
+import { Variable } from "./src/types/properties/value.ts"
 
 export interface RetBindingValue {
 	generate_bindings?: Array<{ source_property_name: string; target_property_name: string }>
@@ -13,6 +13,7 @@ export interface Config {
 		autoEnable?: boolean
 		gdkUserId?: string
 		fixInventoryItemRenderer?: boolean
+		buildFolder?: string
 	}
 	packinfo?: {
 		name?: string

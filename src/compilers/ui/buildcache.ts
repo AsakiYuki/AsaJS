@@ -1,4 +1,5 @@
 import fs from "fs/promises"
+import { buildFolder } from "../Configuration.js"
 
 export class BuildCache {
 	private static queue: Promise<void> = Promise.resolve()
@@ -14,7 +15,9 @@ export class BuildCache {
 	static async get<T = unknown>(key: string): Promise<T | null> {
 		return this.enqueue<T>(async () => {
 			try {
-				return await fs.readFile("build/cache.json", "utf-8").then(data => JSON.parse(data)[key] ?? null)
+				return await fs
+					.readFile(`${buildFolder}/cache.json`, "utf-8")
+					.then(data => JSON.parse(data)[key] ?? null)
 			} catch (error) {
 				return null
 			}
@@ -33,13 +36,13 @@ export class BuildCache {
 			let data: Record<string, any> = {}
 
 			try {
-				data = JSON.parse(await fs.readFile("build/cache.json", "utf-8"))
+				data = JSON.parse(await fs.readFile(`${buildFolder}/cache.json`, "utf-8"))
 			} catch {}
 
 			if (key in data) return data[key]
 			data[key] = outVal
 
-			await fs.writeFile("build/cache.json", JSON.stringify(data), "utf-8")
+			await fs.writeFile(`${buildFolder}/cache.json`, JSON.stringify(data), "utf-8")
 			return outVal
 		})
 	}
@@ -48,15 +51,15 @@ export class BuildCache {
 		return this.enqueue(async () => {
 			try {
 				return fs.writeFile(
-					"build/cache.json",
+					`${buildFolder}/cache.json`,
 					JSON.stringify({
-						...(await fs.readFile("build/cache.json", "utf-8").then(data => JSON.parse(data))),
+						...(await fs.readFile(`${buildFolder}/cache.json`, "utf-8").then(data => JSON.parse(data))),
 						[key]: value,
 					}),
 					"utf-8",
 				)
 			} catch (error) {
-				return fs.writeFile("build/cache.json", JSON.stringify({ [key]: value }), "utf-8")
+				return fs.writeFile(`${buildFolder}/cache.json`, JSON.stringify({ [key]: value }), "utf-8")
 			}
 		})
 	}
