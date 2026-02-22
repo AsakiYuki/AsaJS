@@ -28,9 +28,7 @@ export function rebaseUIFiles(pack_folder: string) {
 				const relativePath = fullPath.replace(targetDir + path.sep, "")
 				const normalizedPath = relativePath.split(path.sep).join("/")
 
-				if (!ui.has(normalizedPath)) {
-					fs.rmSync(fullPath, { force: true })
-				} else {
+				if (ui.has(normalizedPath)) {
 					try {
 						const fileContent = fs.readFileSync(fullPath, "utf-8")
 						const parsedData = parse(fileContent)

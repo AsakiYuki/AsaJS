@@ -53,11 +53,6 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 			process.exit(1)
 		}
 
-		if (namespace && !/^\w+$/.test(namespace)) {
-			console.error(`The '${namespace}' cannot be used as a namespace`)
-			process.exit(1)
-		}
-
 		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomNamespace()
 

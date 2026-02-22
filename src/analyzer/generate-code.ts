@@ -1,6 +1,7 @@
 import path from "node:path"
 import fs from "fs"
 import { config } from "../compilers/Configuration.js"
+import { Type } from "../types/enums/Type.js"
 
 interface Element {
 	file: string
@@ -37,7 +38,9 @@ export function genCustomCode(pack_folder: string) {
 					`type ${typeName} = {`,
 					...Object.entries(element).map(([elementPath, elementData]) => {
 						filepaths[elementPath] = elementData.file
-						return `    "${elementPath}": {\n        type: Type.${elementData.type.toUpperCase()},\n        children: ${elementData.children ? elementData.children.map(c => `"${c}"`).join(" | ") : "string"}\n    },`
+						const type = elementData.type.toUpperCase()
+						// @ts-ignore
+						return `    "${elementPath}": {\n        type: Type.${Type[type] ? type : "PANEL"},\n        children: ${elementData.children ? elementData.children.map(c => `"${c}"`).join(" | ") : "string"}\n    },`
 					}),
 					"}",
 				].join("\n"),
