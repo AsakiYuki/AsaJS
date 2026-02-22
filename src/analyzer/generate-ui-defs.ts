@@ -45,7 +45,6 @@ export function generateUIDefs(pack_folder: string) {
 
 					const [name, extend] = element.split("@")
 					if (name.startsWith("$")) return
-					if (name.startsWith("$")) return
 					childElement.push(name)
 					const elementPath = `${prefix}${name}`
 					let extendsName: string | undefined
@@ -66,7 +65,7 @@ export function generateUIDefs(pack_folder: string) {
 						file,
 					}
 
-					if (controls) {
+					if (controls && Array.isArray(controls)) {
 						const children = scanElement(
 							controls.map((c: string) => Object.entries(c)[0]),
 							`${prefix}${name}/`,
@@ -119,9 +118,7 @@ export function generateUIDefs(pack_folder: string) {
 							...elementsMap.get(name)!,
 							type: elementDefs.type,
 						})
-					} else {
-						elementsMap.delete(name)
-					}
+					} else elementsMap.delete(name)
 				}
 			}
 		})
