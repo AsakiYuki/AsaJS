@@ -1,5 +1,5 @@
 import { Type } from "../types/enums/Type.js"
-import { Array3, Binding, BindingItem } from "../types/properties/value.js"
+import { Array3, Binding, BindingItem, Variable } from "../types/properties/value.js"
 import { ModifyUI, UI } from "./UI.js"
 
 import { Renderer } from "../types/enums/Renderer.js"
@@ -202,6 +202,12 @@ export function RandomBindingString(length: number = 16, base: number = 32, forc
 	else return `#${StringID}_binding_${rndStrBind++}`
 }
 
+let rndVarBind = 1
+export function RandomVariableBinding(length: number = 16, base: number = 32, force?: boolean): Variable {
+	if (force || allowRandomStringName) return `$${GenRandomString(length, base)}`
+	else return `$${StringID}_binding_${rndVarBind++}`
+}
+
 const rndMap = new Map<string, string>()
 
 export function s(input: string) {
@@ -216,12 +222,24 @@ export function s(input: string) {
 	}
 }
 
-export function bs(input: `#${string}`): `#${string}` {
+export function bs(input: Binding): Binding {
 	if (isNotObfuscate) return input
 	else {
-		if (rndMap.has(input)) return rndMap.get(input) as `#${string}`
+		if (rndMap.has(input)) return <Binding>rndMap.get(input)
 		else {
 			const ret = RandomBindingString()
+			rndMap.set(input, ret)
+			return ret
+		}
+	}
+}
+
+export function vs(input: Variable): Variable {
+	if (isNotObfuscate) return input
+	else {
+		if (rndMap.has(input)) return <Variable>rndMap.get(input)
+		else {
+			const ret = RandomVariableBinding()
 			rndMap.set(input, ret)
 			return ret
 		}

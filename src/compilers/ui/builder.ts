@@ -16,7 +16,7 @@ async function buildUI() {
 	const build = Memory.build()
 
 	build.set("ui/_ui_defs.json", {
-		ui_defs: Array.from(build.keys()),
+		ui_defs: Array.from(build.keys(), v => v.replace(/\\/g, "/")),
 	})
 
 	if (config.global_variables) build.set("ui/_global_variables.json", config.global_variables)
