@@ -20,7 +20,7 @@ export type Array2<T> = [T, T]
 export type Array3<T> = [T, T, T]
 export type Array4<T> = [T, T, T, T]
 
-export type Value<T> = Variable | T
+export type Value<T> = Variable | Binding | T
 export type AnimValue<T> = Value<T | Animation>
 
 export type BindingItem = {
