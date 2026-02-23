@@ -407,9 +407,9 @@ export class Parser {
 		if (!func) {
 			return this.expect(TokenKind.WORD, "Function not found!")!
 		} else {
-			const { genBindings, value } = func(...params)
+			const { genBindings, value, doNotAddParentesis } = func(...params)
 			if (genBindings) this.genBindings.push(...genBindings)
-			return `(${value})`
+			return doNotAddParentesis ? value : `(${value})`
 		}
 	}
 

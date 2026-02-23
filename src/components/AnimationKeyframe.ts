@@ -4,8 +4,7 @@ import { AnimType } from "../types/enums/AnimType.js"
 import { KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
 import { Animation } from "./Animation.js"
 import { Class } from "./Class.js"
-import { RandomString } from "./Utils.js"
-import { RandomNamespace } from "../compilers/Random.js"
+import { RandomNamespace, RandomString } from "./Utils.js"
 
 import util from "node:util"
 

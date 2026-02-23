@@ -16,6 +16,10 @@ export interface Config {
 		buildFolder?: string
 		fileExtension?: string
 		uiBuildFolder?: string
+		obfuscateStringName?: boolean
+		allowRandomStringName?: boolean
+		namespaceCount?: number
+		forceRandomStringLength?: number
 	}
 
 	ui_analyzer?: {

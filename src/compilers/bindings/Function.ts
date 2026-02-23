@@ -1,4 +1,4 @@
-import { RandomBindingString, RandomString, ResolveBinding } from "../../components/Utils.js"
+import { bs, RandomBindingString, RandomString, ResolveBinding } from "../../components/Utils.js"
 import { BindingItem } from "../../types/properties/value.js"
 import { bindingFuntions } from "../Configuration.js"
 import { isBinding, isNumber, isString } from "./Checker.js"
@@ -6,6 +6,7 @@ import { Expression, GenBinding } from "./types.js"
 
 type CallbackRet = {
 	genBindings?: GenBinding[]
+	doNotAddParentesis?: boolean
 	value: Expression
 }
 type Callback = (...args: Expression[]) => CallbackRet
@@ -236,6 +237,14 @@ export const defaultFunctions = {
 				genBindings: [genStrBinds],
 				value: `${genStrBinds.target} - (${start} * ${genStrBinds.target})`,
 			}
+		}
+	},
+
+	bs: input_binding => {
+		if (!isBinding(input_binding)) throw new Error("Invalid input binding")
+		return {
+			doNotAddParentesis: true,
+			value: bs(<`#${string}`>input_binding),
 		}
 	},
 

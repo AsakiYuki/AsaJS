@@ -10,12 +10,11 @@ import { BindingItem, ButtonMapping, ModificationItem, VariableItem, Variables }
 import { Animation } from "./Animation.js"
 import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { Class } from "./Class.js"
-import { RandomString, ResolveBinding } from "./Utils.js"
-import { RandomNamespace } from "../compilers/Random.js"
+import { defaultNamespace, RandomNamespace, RandomString, ResolveBinding } from "./Utils.js"
 import nodepath from "path"
 
 import util from "node:util"
-import { config, uiBuildFolder } from "../compilers/Configuration.js"
+import { config, isNotObfuscate, uiBuildFolder } from "../compilers/Configuration.js"
 
 interface ExtendUI {
 	name: string
@@ -52,6 +51,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		name?: string,
 		namespace?: string,
 		path?: string,
+		allowObfuscate?: boolean,
 	) {
 		super()
 
@@ -60,8 +60,13 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 			process.exit(1)
 		}
 
-		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
-		this.namespace = namespace || RandomNamespace()
+		if (isNotObfuscate || !(allowObfuscate ?? true)) {
+			this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
+			this.namespace = namespace || defaultNamespace || RandomNamespace()
+		} else {
+			this.name = RandomString(16)
+			this.namespace = RandomNamespace()
+		}
 
 		if (!path) this.path = nodepath.join(uiBuildFolder, `${this.namespace}${fileExt}`)
 		else this.path = path
@@ -204,7 +209,7 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 	protected modifications: ModificationItem[] = []
 
 	constructor(namespace: string, name: string, path: string) {
-		super(undefined, name, namespace, path)
+		super(undefined, name, namespace, path, false)
 	}
 
 	/**

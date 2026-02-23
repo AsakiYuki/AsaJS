@@ -40,6 +40,12 @@ import { SmartAnimation } from "../types/enums/SmartAnimation.js"
 import { MemoryModify } from "../compilers/Memory.js"
 import { Lexer } from "../compilers/bindings/Lexer.js"
 import { Token, TokenKind, TSToken, TSTokenKind } from "../compilers/bindings/types.js"
+import {
+	allowRandomStringName,
+	forceRandomStringLength,
+	isNotObfuscate,
+	namespaceCount,
+} from "../compilers/Configuration.js"
 
 type CompileBinding = `[${string}]`
 
@@ -145,9 +151,18 @@ export function ResolveBinding(cache: Map<string, unknown>, ...bindings: Binding
 	return result
 }
 
-export function RandomString(length: number, base: number = 32) {
+export let defaultNamespace: string | null = null
+export function SetDefaultNamespace(input: string) {
+	defaultNamespace = input
+}
+export function ClearDefaultNamespace() {
+	defaultNamespace = null
+}
+
+export function GenRandomString(length: number, base = 32) {
 	const chars = "0123456789abcdefghijklmnopqrstuvwxyz".slice(0, base)
 	const out = new Array<string>(length)
+	if (forceRandomStringLength) length = forceRandomStringLength
 
 	try {
 		const buffer = new Uint8Array(length)
@@ -164,8 +179,53 @@ export function RandomString(length: number, base: number = 32) {
 	return out.join("")
 }
 
-export function RandomBindingString(length: number = 16, base: number = 32): Binding {
-	return `#${RandomString(length, base)}`
+const StringID = GenRandomString(5, undefined)
+const nspl = allowRandomStringName
+	? Array.from({ length: namespaceCount }, () => RandomString(16))
+	: (() => {
+			return Array.from({ length: namespaceCount }, (i, index) => `${StringID}_namespace_${index + 1}`)
+		})()
+
+export function RandomNamespace() {
+	return nspl[Math.floor(Math.random() * nspl.length)]
+}
+
+let rndStr = 1
+export function RandomString(length: number, base: number = 32, force?: boolean) {
+	if (force || allowRandomStringName) return GenRandomString(length, base)
+	else return `${StringID}_string_${rndStr++}`
+}
+
+let rndStrBind = 1
+export function RandomBindingString(length: number = 16, base: number = 32, force?: boolean): Binding {
+	if (force || allowRandomStringName) return `#${GenRandomString(length, base)}`
+	else return `#${StringID}_binding_${rndStrBind++}`
+}
+
+const rndMap = new Map<string, string>()
+
+export function s(input: string) {
+	if (isNotObfuscate) return input
+	else {
+		if (rndMap.has(input)) return rndMap.get(input) as string
+		else {
+			const ret = RandomBindingString()
+			rndMap.set(input, ret)
+			return ret
+		}
+	}
+}
+
+export function bs(input: `#${string}`): `#${string}` {
+	if (isNotObfuscate) return input
+	else {
+		if (rndMap.has(input)) return rndMap.get(input) as `#${string}`
+		else {
+			const ret = RandomBindingString()
+			rndMap.set(input, ret)
+			return ret
+		}
+	}
 }
 
 export function GetItemByAuxID(auxID: number) {
@@ -224,36 +284,41 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 	return modifyUI
 }
 
-export function Panel(properties?: Panel, namespace?: string, name?: string) {
-	return new UI(Type.PANEL, name, namespace).setProperties(properties || {})
+export function Panel(properties?: Panel, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.PANEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function CollectionPanel(properties?: CollectionPanel, namespace?: string, name?: string) {
-	return new UI(Type.COLLECTION_PANEL, name, namespace).setProperties(properties || {})
+export function CollectionPanel(
+	properties?: CollectionPanel,
+	namespace?: string,
+	name?: string,
+	allowObfuscate?: boolean,
+) {
+	return new UI(Type.COLLECTION_PANEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function StackPanel(properties?: StackPanel, namespace?: string, name?: string) {
-	return new UI(Type.STACK_PANEL, name, namespace).setProperties(properties || {})
+export function StackPanel(properties?: StackPanel, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.STACK_PANEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function InputPanel(properties?: InputPanel, namespace?: string, name?: string) {
-	return new UI(Type.INPUT_PANEL, name, namespace).setProperties(properties || {})
+export function InputPanel(properties?: InputPanel, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.INPUT_PANEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Gird(properties?: Grid, namespace?: string, name?: string) {
-	return new UI(Type.GRID, name, namespace).setProperties(properties || {})
+export function Gird(properties?: Grid, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.GRID, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Screen(properties?: Screen, namespace?: string, name?: string) {
-	return new UI(Type.SCREEN, name, namespace).setProperties(properties || {})
+export function Screen(properties?: Screen, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.SCREEN, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Image(properties?: Image, namespace?: string, name?: string) {
-	return new UI(Type.IMAGE, name, namespace).setProperties(properties || {})
+export function Image(properties?: Image, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.IMAGE, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Label(properties?: Label, namespace?: string, name?: string) {
-	return new UI(Type.LABEL, name, namespace).setProperties(properties || {})
+export function Label(properties?: Label, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.LABEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
 export function Custom<R extends Renderer>(
@@ -261,54 +326,70 @@ export function Custom<R extends Renderer>(
 	properties?: Properties<Type.CUSTOM, R>,
 	namespace?: string,
 	name?: string,
+	allowObfuscate?: boolean,
 ) {
-	const custom = new UI<Type.CUSTOM, R>(Type.CUSTOM, name, namespace)
+	const custom = new UI<Type.CUSTOM, R>(Type.CUSTOM, name, namespace, undefined, allowObfuscate)
 	if (properties) custom.setProperties({ renderer, ...properties })
 	return custom
 }
 
-export function TooltipTrigger(properties?: TooltipTrigger, namespace?: string, name?: string) {
-	return new UI(Type.TOOLTIP_TRIGGER, name, namespace).setProperties(properties || {})
+export function TooltipTrigger(
+	properties?: TooltipTrigger,
+	namespace?: string,
+	name?: string,
+	allowObfuscate?: boolean,
+) {
+	return new UI(Type.TOOLTIP_TRIGGER, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Button(properties?: Button, namespace?: string, name?: string) {
-	return new UI(Type.BUTTON, name, namespace).setProperties(properties || {})
+export function Button(properties?: Button, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.BUTTON, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Toggle(properties?: Toggle, namespace?: string, name?: string) {
-	return new UI(Type.TOGGLE, name, namespace).setProperties(properties || {})
+export function Toggle(properties?: Toggle, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.TOGGLE, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Dropdown(properties?: Dropdown, namespace?: string, name?: string) {
-	return new UI(Type.DROPDOWN, name, namespace).setProperties(properties || {})
+export function Dropdown(properties?: Dropdown, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.DROPDOWN, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function SelectionWheel(properties?: SelectionWheel, namespace?: string, name?: string) {
-	return new UI(Type.SELECTION_WHEEL, name, namespace).setProperties(properties || {})
+export function SelectionWheel(
+	properties?: SelectionWheel,
+	namespace?: string,
+	name?: string,
+	allowObfuscate?: boolean,
+) {
+	return new UI(Type.SELECTION_WHEEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function EditBox(properties?: EditBox, namespace?: string, name?: string) {
-	return new UI(Type.EDIT_BOX, name, namespace).setProperties(properties || {})
+export function EditBox(properties?: EditBox, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.EDIT_BOX, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function ScrollbarBox(properties?: ScrollbarBox, namespace?: string, name?: string) {
-	return new UI(Type.SCROLLBAR_BOX, name, namespace).setProperties(properties || {})
+export function ScrollbarBox(properties?: ScrollbarBox, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.SCROLLBAR_BOX, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function ScrollbarTrack(properties?: ScrollbarTrack, namespace?: string, name?: string) {
-	return new UI(Type.SCROLL_TRACK, name, namespace).setProperties(properties || {})
+export function ScrollbarTrack(
+	properties?: ScrollbarTrack,
+	namespace?: string,
+	name?: string,
+	allowObfuscate?: boolean,
+) {
+	return new UI(Type.SCROLL_TRACK, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function ScrollView(properties?: ScrollView, namespace?: string, name?: string) {
-	return new UI(Type.SCROLL_VIEW, name, namespace).setProperties(properties || {})
+export function ScrollView(properties?: ScrollView, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.SCROLL_VIEW, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Slider(properties?: Slider, namespace?: string, name?: string) {
-	return new UI(Type.SLIDER, name, namespace).setProperties(properties || {})
+export function Slider(properties?: Slider, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.SLIDER, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function SliderBox(properties?: SliderBox, namespace?: string, name?: string) {
-	return new UI(Type.SLIDER_BOX, name, namespace).setProperties(properties || {})
+export function SliderBox(properties?: SliderBox, namespace?: string, name?: string, allowObfuscate?: boolean) {
+	return new UI(Type.SLIDER_BOX, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
 export function ExtendsOf<T extends Type, K extends Renderer | null>(
@@ -316,9 +397,10 @@ export function ExtendsOf<T extends Type, K extends Renderer | null>(
 	properties?: Properties<T, K>,
 	namespace?: string,
 	name?: string,
+	allowObfuscate?: boolean,
 ) {
 	if (!element.extendable) throw new Error("Cannot extend a UI that cannot be extended")
-	const ui = new UI<T, K>(undefined, name, namespace)
+	const ui = new UI<T, K>(undefined, name, namespace, undefined, allowObfuscate)
 	if (properties) ui.setProperties(properties)
 	// @ts-ignore
 	ui.extend = element

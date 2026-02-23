@@ -13,6 +13,9 @@ export const config = {
 		autoImport: true,
 		autoEnable: true,
 		importToPreview: false,
+		obfuscateStringName: true,
+		allowRandomStringName: true,
+		forceRandomStringLength: 16,
 	},
 	binding_functions: {
 		custom_abs: function (number) {
