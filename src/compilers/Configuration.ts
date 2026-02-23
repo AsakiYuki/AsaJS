@@ -66,9 +66,9 @@ export const unLinked = options["unlink"] ?? !(config.compiler?.autoImport ?? tr
 export const buildFolder = config.compiler?.buildFolder || "build"
 export const uiBuildFolder = config.compiler?.uiBuildFolder || "asajs"
 export const isNotObfuscate = debugMode || !(config.compiler?.obfuscateStringName ?? false)
-export const allowRandomStringName = !debugMode || (config.compiler?.allowRandomStringName ?? true)
-export const namespaceCount = debugMode ? 5 : (config.compiler?.namespaceCount ?? 15)
-export const forceRandomStringLength = debugMode ? 10 : config.compiler?.forceRandomStringLength
+export const allowRandomStringName = !(debugMode || !(config.compiler?.allowRandomStringName ?? true))
+export const namespaceCount = config.compiler?.namespaceCount ?? 15
+export const forceRandomStringLength = config.compiler?.forceRandomStringLength
 
 export const bindingFuntions = config.binding_functions
 

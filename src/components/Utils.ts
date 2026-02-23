@@ -203,9 +203,9 @@ export function RandomBindingString(length: number = 16, base: number = 32, forc
 }
 
 let rndVarBind = 1
-export function RandomVariableBinding(length: number = 16, base: number = 32, force?: boolean): Variable {
+export function RandomVariableString(length: number = 16, base: number = 32, force?: boolean): Variable {
 	if (force || allowRandomStringName) return `$${GenRandomString(length, base)}`
-	else return `$${StringID}_binding_${rndVarBind++}`
+	else return `$${StringID}_variable_${rndVarBind++}`
 }
 
 const rndMap = new Map<string, string>()
@@ -244,7 +244,7 @@ export function vs(input: Variable): Variable {
 	else {
 		if (rndMap.has(input)) return <Variable>`${rndMap.get(input)}${mode}`
 		else {
-			const ret = RandomVariableBinding()
+			const ret = RandomVariableString()
 			rndMap.set(input, ret)
 			return <Variable>`${ret}${mode}`
 		}

@@ -18,7 +18,7 @@ export function FormatProperties(properties: any) {
 
 		if (key.startsWith("$")) {
 			const [varName, varType] = key.split("|")
-
+			if (!varType) break
 			switch (varType) {
 				case "d":
 					properties[`${varName}|default`] = value

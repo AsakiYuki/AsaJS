@@ -1,12 +1,20 @@
+import { config, isNotObfuscate, uiBuildFolder } from "../compilers/Configuration.js"
 import { FormatAnimationProperties } from "../compilers/FormatProperties.js"
 import { Memory } from "../compilers/Memory.js"
 import { AnimType } from "../types/enums/AnimType.js"
 import { KeyframeAnimationProperties } from "../types/properties/element/Animation.js"
 import { Animation } from "./Animation.js"
 import { Class } from "./Class.js"
-import { RandomNamespace, RandomString } from "./Utils.js"
+import { defaultNamespace, RandomNamespace, RandomString } from "./Utils.js"
+import nodepath from "path"
 
 import util from "node:util"
+
+const fileExt = config.compiler?.fileExtension
+	? config.compiler.fileExtension.startsWith(".")
+		? config.compiler.fileExtension
+		: `.${config.compiler.fileExtension}`
+	: ".json"
 
 export class AnimationKeyframe<T extends AnimType> extends Class {
 	readonly path: string
@@ -21,6 +29,7 @@ export class AnimationKeyframe<T extends AnimType> extends Class {
 		name?: string,
 		namespace?: string,
 		path?: string,
+		allowObfuscate?: boolean,
 	) {
 		super()
 
@@ -29,14 +38,16 @@ export class AnimationKeyframe<T extends AnimType> extends Class {
 			process.exit(1)
 		}
 
-		if (namespace && !/^\w+$/.test(namespace)) {
-			console.error(`The '${namespace}' cannot be used as a namespace`)
-			process.exit(1)
+		if (isNotObfuscate || !(allowObfuscate ?? true)) {
+			this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
+			this.namespace = namespace || defaultNamespace || RandomNamespace()
+		} else {
+			this.name = RandomString(16)
+			this.namespace = RandomNamespace()
 		}
 
-		this.name = name || RandomString(16)
-		this.namespace = namespace || RandomNamespace()
-		this.path = path || `asajs/${this.namespace}.json`
+		if (!path) this.path = nodepath.join(uiBuildFolder, `${this.namespace}${fileExt}`)
+		else this.path = path
 
 		Memory.add(this)
 	}
