@@ -305,7 +305,7 @@ export function InputPanel(properties?: InputPanel, namespace?: string, name?: s
 	return new UI(Type.INPUT_PANEL, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 
-export function Gird(properties?: Grid, namespace?: string, name?: string, allowObfuscate?: boolean) {
+export function Grid(properties?: Grid, namespace?: string, name?: string, allowObfuscate?: boolean) {
 	return new UI(Type.GRID, name, namespace, undefined, allowObfuscate).setProperties(properties || {})
 }
 

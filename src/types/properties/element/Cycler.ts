@@ -1,6 +1,7 @@
 import { Value } from "../value.js"
+import { Sprite } from "./Sprite.js"
 
-export interface Image {
+export interface Image extends Sprite {
 	fill?: Value<boolean>
 	texture_path?: Value<string>
 	texture?: Value<string>
