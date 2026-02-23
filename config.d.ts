@@ -15,6 +15,7 @@ export interface Config {
 		fixInventoryItemRenderer?: boolean
 		buildFolder?: string
 		fileExtension?: string
+		uiBuildFolder?: string
 	}
 
 	ui_analyzer?: {

@@ -8,3 +8,4 @@ test
 tsconfig.json
 asajs.config.js
 build
+*.js.map

@@ -12,37 +12,20 @@ export function rebaseUIFiles(pack_folder: string) {
 
 	if (!fs.existsSync(targetDir)) return
 
-	const processDirectory = (currentDir: string) => {
-		const entries = fs.readdirSync(currentDir, { withFileTypes: true })
+	for (const relativePath of ui) {
+		const fullPath = path.join(targetDir, relativePath)
 
-		for (const entry of entries) {
-			const fullPath = path.join(currentDir, entry.name)
+		if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+			try {
+				const fileContent = fs.readFileSync(fullPath, "utf-8")
+				const parsedData = parse(fileContent)
 
-			if (entry.isDirectory()) {
-				processDirectory(fullPath)
-
-				if (fs.readdirSync(fullPath).length === 0) {
-					fs.rmdirSync(fullPath)
+				if (parsedData !== undefined) {
+					fs.writeFileSync(fullPath, JSON.stringify(parsedData, null, 4), "utf-8")
 				}
-			} else if (entry.isFile()) {
-				const relativePath = fullPath.replace(targetDir + path.sep, "")
-				const normalizedPath = relativePath.split(path.sep).join("/")
-
-				if (ui.has(normalizedPath)) {
-					try {
-						const fileContent = fs.readFileSync(fullPath, "utf-8")
-						const parsedData = parse(fileContent)
-
-						if (parsedData !== undefined) {
-							fs.writeFileSync(fullPath, JSON.stringify(parsedData, null, 4), "utf-8")
-						}
-					} catch (error) {
-						console.error(`Parser error: ${fullPath}`, error)
-					}
-				}
+			} catch (error) {
+				console.error(`Parser error: ${fullPath}`, error)
 			}
 		}
 	}
-
-	processDirectory(targetDir)
 }

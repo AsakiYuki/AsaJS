@@ -14,7 +14,7 @@ import { RandomString, ResolveBinding } from "./Utils.js"
 import { RandomNamespace } from "../compilers/Random.js"
 
 import util from "node:util"
-import { config } from "../compilers/Configuration.js"
+import { config, uiBuildFolder } from "../compilers/Configuration.js"
 
 interface ExtendUI {
 	name: string
@@ -57,7 +57,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		this.namespace = namespace || RandomNamespace()
 
 		if (!path)
-			this.path = `asajs/${this.namespace}${config.compiler?.fileExtension ? (config.compiler.fileExtension.startsWith(".") ? config.compiler.fileExtension : `.${config.compiler.fileExtension}`) : ".json"}`
+			this.path = `${uiBuildFolder}/${this.namespace}${config.compiler?.fileExtension ? (config.compiler.fileExtension.startsWith(".") ? config.compiler.fileExtension : `.${config.compiler.fileExtension}`) : ".json"}`
 		else this.path = path
 
 		this.extendable = this.name.search("/") === -1

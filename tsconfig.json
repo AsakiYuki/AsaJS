@@ -6,7 +6,7 @@
 		"outDir": "dist/js",
 		"declarationDir": "dist/types",
 		"declaration": true,
-		"sourceMap": false,
+		"sourceMap": true,
 		"strict": true,
 		"esModuleInterop": true,
 		"incremental": true,

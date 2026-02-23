@@ -63,6 +63,7 @@ export const isBuildMode = options["build"] ?? config.compiler?.enabled ?? false
 export const isLinkMode = options["link"] ?? config.compiler?.autoImport ?? false
 export const unLinked = options["unlink"] ?? !(config.compiler?.autoImport ?? true)
 export const buildFolder = config.compiler?.buildFolder || "build"
+export const uiBuildFolder = config.compiler?.uiBuildFolder || "asajs"
 
 export const bindingFuntions = config.binding_functions
 
