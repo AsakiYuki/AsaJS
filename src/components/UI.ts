@@ -12,6 +12,7 @@ import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { Class } from "./Class.js"
 import { RandomString, ResolveBinding } from "./Utils.js"
 import { RandomNamespace } from "../compilers/Random.js"
+import nodepath from "path"
 
 import util from "node:util"
 import { config, uiBuildFolder } from "../compilers/Configuration.js"
@@ -21,6 +22,12 @@ interface ExtendUI {
 	namespace: string
 	toString(): string
 }
+
+const fileExt = config.compiler?.fileExtension
+	? config.compiler.fileExtension.startsWith(".")
+		? config.compiler.fileExtension
+		: `.${config.compiler.fileExtension}`
+	: ".json"
 
 export class UI<T extends Type, K extends Renderer | null = null> extends Class {
 	readonly path: string
@@ -56,8 +63,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
 		this.namespace = namespace || RandomNamespace()
 
-		if (!path)
-			this.path = `${uiBuildFolder}/${this.namespace}${config.compiler?.fileExtension ? (config.compiler.fileExtension.startsWith(".") ? config.compiler.fileExtension : `.${config.compiler.fileExtension}`) : ".json"}`
+		if (!path) this.path = nodepath.join(uiBuildFolder, `${this.namespace}${fileExt}`)
 		else this.path = path
 
 		this.extendable = this.name.search("/") === -1

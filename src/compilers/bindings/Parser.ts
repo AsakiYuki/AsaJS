@@ -13,6 +13,8 @@ export class Parser {
 	output: Expression
 	tokens: Token[]
 
+	static hasError = false
+
 	constructor(
 		private input: string,
 		private cache = new Map<string, unknown>(),
@@ -414,6 +416,7 @@ export class Parser {
 	private expect(kind: TokenKind, err: string) {
 		const prev = this.at() || this.last()
 		if (!prev || prev.kind !== kind) {
+			Parser.hasError = true
 			throw new Error(
 				`\x1b[31m${this.getPointer(prev)}\n` + `[ERROR]: ${err}\x1b[0m - Expected ${TokenKind[kind]}`,
 			)

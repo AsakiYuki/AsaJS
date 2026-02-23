@@ -10,6 +10,7 @@ import { disableRSP, enableRSP } from "./installer.js"
 import { Log } from "../PreCompile.js"
 import path from "path"
 import { API_events } from "../../components/API.js"
+import { Parser } from "../bindings/Parser.js"
 
 async function buildUI() {
 	const build = Memory.build()
@@ -40,7 +41,9 @@ async function buildUI() {
 					),
 					"utf-8",
 				)
-				.then(() => Log("INFO", `${outFile} with ${Object.keys(value).length} elements created!`))
+				.then(() =>
+					Log("INFO", `${outFile.replace(/\\/g, "/")} with ${Object.keys(value).length} elements created!`),
+				)
 			build.delete(file)
 			return file
 		}),
@@ -58,12 +61,15 @@ async function buildUI() {
 		fs
 			.stat(`${buildFolder}/pack_icon.png`)
 			.catch(() =>
-				fs.copyFile(
-					isTestMode ? "resources/pack_icon.png" : "node_modules/asajs/resources/pack_icon.png",
-					`${buildFolder}/pack_icon.png`,
-				),
+				fs
+					.copyFile(
+						isTestMode
+							? "resources/pack_icon.png"
+							: path.join(process.cwd(), "node_modules/asajs/resources/pack_icon.png"),
+						`${buildFolder}/pack_icon.png`,
+					)
+					.then(() => Log("INFO", `${buildFolder}/pack_icon.png copied!`)),
 			)
-			.then(() => Log("INFO", `${buildFolder}/pack_icon.png copied!`))
 			.catch(() => Log("WARN", `cannot copy ${buildFolder}/pack_icon.png!`)),
 	]).catch(error => console.error(error))
 
@@ -75,6 +81,10 @@ if (isBuildMode) {
 	process.on("beforeExit", async () => {
 		if (first) {
 			first = false
+			if (Parser.hasError) {
+				console.error()
+				return
+			}
 			await createBuildFolder()
 			await buildUI()
 			if (isLinkMode) await linkToGame()

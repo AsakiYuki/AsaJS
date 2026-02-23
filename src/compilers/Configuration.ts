@@ -51,7 +51,7 @@ if (!fs.existsSync("asajs.config.js")) {
 			"asajs.config.js",
 			[
 				'import { RandomBindingString } from "asajs"\n',
-				fs.readFileSync("node_modules/asajs/resources/example-config.js", "utf-8"),
+				fs.readFileSync(path.join(process.cwd(), "node_modules/asajs/resources/example-config.js"), "utf-8"),
 			].join("\n"),
 		)
 	}
