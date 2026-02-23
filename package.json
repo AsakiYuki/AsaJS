@@ -1,6 +1,6 @@
 {
 	"name": "asajs",
-	"version": "4.1.3-indev",
+	"version": "4.1.3",
 	"description": "Create your Minecraft JSON-UI resource packs using JavaScript",
 	"keywords": [
 		"Minecraft",
