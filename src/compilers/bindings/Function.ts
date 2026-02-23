@@ -1,7 +1,7 @@
 import { RandomBindingString, RandomString, ResolveBinding } from "../../components/Utils.js"
 import { BindingItem } from "../../types/properties/value.js"
 import { bindingFuntions } from "../Configuration.js"
-import { isString } from "./Checker.js"
+import { isBinding, isNumber, isString } from "./Checker.js"
 import { Expression, GenBinding } from "./types.js"
 
 type CallbackRet = {
@@ -141,6 +141,12 @@ export const defaultFunctions = {
 		}
 	},
 
+	not_contains: (source_str, contains_str) => {
+		return {
+			value: `(${source_str} - ${contains_str}) = ${source_str}`,
+		}
+	},
+
 	contains: (source_str, contains_str) => {
 		return {
 			value: `not ((${source_str} - ${contains_str}) = ${source_str})`,
@@ -191,6 +197,44 @@ export const defaultFunctions = {
 					],
 					value: `not ((${source_str_bind} - ${start_str_bind}) = ${source_str_bind})`,
 				}
+			}
+		}
+	},
+
+	str_slice: (str, start, end) => {
+		const prefix = `'asajs:${RandomString(5)}:'`
+
+		if (isBinding(start)) start = `('%.' + (${start} + ${prefix.length - 2}) + 's')`
+		else if (isNumber(start)) start = `'%.${+start + prefix.length - 2}s'`
+		else throw new Error("Invalid start")
+
+		const genStrBinds: GenBinding = {
+			source: ``,
+			target: RandomBindingString(),
+		}
+
+		if (isBinding(str)) genStrBinds.source = `(${prefix} + ${str})`
+		else if (isString(str)) genStrBinds.source = `${prefix.slice(0, -1)}${str.slice(1)}`
+		else throw new Error("Invalid str")
+
+		if (end) {
+			if (isBinding(end)) end = `('%.' + (${end} + ${prefix.length - 2}) + 's')`
+			else if (isNumber(end)) end = `'%.${+end + prefix.length - 2}s'`
+			else throw new Error("Invalid end")
+
+			const sliceEnd: GenBinding = {
+				source: `(${end} * ${genStrBinds.target})`,
+				target: RandomBindingString(),
+			}
+
+			return {
+				genBindings: [genStrBinds, sliceEnd],
+				value: `${sliceEnd.target} - (${start} * ${sliceEnd.target})`,
+			}
+		} else {
+			return {
+				genBindings: [genStrBinds],
+				value: `${genStrBinds.target} - (${start} * ${genStrBinds.target})`,
 			}
 		}
 	},

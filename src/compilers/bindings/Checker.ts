@@ -30,6 +30,14 @@ export function isHasBinding(input: string) {
 	return /#\w+/.test(input)
 }
 
+export function isBinding(input: string) {
+	return /^#\w+$/.test(input)
+}
+
+export function isNumber(input: string) {
+	return /^[+-]?(?:\d+|\d+\.\d*|\.\d+)(?:[eE][+-]?\d+)?$/.test(input)
+}
+
 export function isString(input: string) {
 	return /^'.+'$/.test(input)
 }
