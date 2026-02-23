@@ -204,10 +204,6 @@ export const defaultFunctions = {
 	str_slice: (str, start, end) => {
 		const prefix = `'asajs:${RandomString(5)}:'`
 
-		if (isBinding(start)) start = `('%.' + (${start} + ${prefix.length - 2}) + 's')`
-		else if (isNumber(start)) start = `'%.${+start + prefix.length - 2}s'`
-		else throw new Error("Invalid start")
-
 		const genStrBinds: GenBinding = {
 			source: ``,
 			target: RandomBindingString(),
@@ -217,8 +213,12 @@ export const defaultFunctions = {
 		else if (isString(str)) genStrBinds.source = `${prefix.slice(0, -1)}${str.slice(1)}`
 		else throw new Error("Invalid str")
 
+		if (isBinding(start)) start = `('%.' + (${prefix.length - 2} + ${start}) + 's')`
+		else if (isNumber(start)) start = `'%.${+start + prefix.length - 2}s'`
+		else throw new Error("Invalid start")
+
 		if (end) {
-			if (isBinding(end)) end = `('%.' + (${end} + ${prefix.length - 2}) + 's')`
+			if (isBinding(end)) end = `('%.' + (${prefix.length - 2} + ${end}) + 's')`
 			else if (isNumber(end)) end = `'%.${+end + prefix.length - 2}s'`
 			else throw new Error("Invalid end")
 
