@@ -15,6 +15,23 @@ export function FormatProperties(properties: any) {
 			property_bag[<Binding>key] = value
 			delete properties[key]
 		}
+
+		if (key.startsWith("$")) {
+			const [varName, varType] = key.split("|")
+
+			switch (varType) {
+				case "d":
+					properties[`${varName}|default`] = value
+					delete properties[key]
+					break
+
+				case "default":
+					break
+
+				default:
+					throw new Error("Invalid variable type")
+			}
+		}
 	}
 
 	if (config.compiler?.fixInventoryItemRenderer && property_bag[BagBinding.ITEM_ID_AUX]) {

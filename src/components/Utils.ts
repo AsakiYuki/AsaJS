@@ -235,13 +235,18 @@ export function bs(input: Binding): Binding {
 }
 
 export function vs(input: Variable): Variable {
-	if (isNotObfuscate) return input
+	let [name, mode]: [Variable, string] = input.split("|") as [Variable, string]
+	input = name
+	if (mode) mode = "|" + mode
+	else mode = ""
+
+	if (isNotObfuscate) return <Variable>`${name}${mode}`
 	else {
-		if (rndMap.has(input)) return <Variable>rndMap.get(input)
+		if (rndMap.has(input)) return <Variable>`${rndMap.get(input)}${mode}`
 		else {
 			const ret = RandomVariableBinding()
 			rndMap.set(input, ret)
-			return ret
+			return <Variable>`${ret}${mode}`
 		}
 	}
 }

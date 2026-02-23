@@ -1,7 +1,7 @@
-import { bs, RandomBindingString, RandomString, ResolveBinding } from "../../components/Utils.js"
-import { BindingItem } from "../../types/properties/value.js"
+import { bs, RandomBindingString, RandomString, ResolveBinding, vs } from "../../components/Utils.js"
+import { Binding, BindingItem, Variable } from "../../types/properties/value.js"
 import { bindingFuntions } from "../Configuration.js"
-import { isBinding, isNumber, isString } from "./Checker.js"
+import { isBinding, isNumber, isString, isVariable } from "./Checker.js"
 import { Expression, GenBinding } from "./types.js"
 
 type CallbackRet = {
@@ -244,7 +244,15 @@ export const defaultFunctions = {
 		if (!isBinding(input_binding)) throw new Error("Invalid input binding")
 		return {
 			doNotAddParentesis: true,
-			value: bs(<`#${string}`>input_binding),
+			value: bs(<Binding>input_binding),
+		}
+	},
+
+	vs: input_variable => {
+		if (!isVariable(input_variable)) throw new Error("Invalid input binding")
+		return {
+			doNotAddParentesis: true,
+			value: vs(<Variable>input_variable),
 		}
 	},
 
