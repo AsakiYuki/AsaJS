@@ -14,13 +14,14 @@ import { AnimationKeyframe } from "../../components/AnimationKeyframe.js"
 
 export type Variable = `$${string}`
 export type Binding = `#${string}`
+export type Control = `@${string}` | `${string}@${string}`
 export type Animation = anim.Animation<AnimType> | AnimationKeyframe<AnimType> | `@${string}`
 
 export type Array2<T> = [T, T]
 export type Array3<T> = [T, T, T]
 export type Array4<T> = [T, T, T, T]
 
-export type Value<T> = Variable | Binding | T
+export type Value<T> = Variable | Binding | Control | T
 export type AnimValue<T> = Value<T | Animation>
 
 export type BindingItem = {

@@ -1,6 +1,7 @@
 import { AnimType } from "../types/enums/AnimType.js"
 import { SmartAnimation } from "../types/enums/SmartAnimation.js"
 import { AnimationProperties } from "../types/properties/element/Animation.js"
+import { Control } from "../types/properties/value.js"
 import { Class } from "./Class.js"
 import { KeyframeController } from "./KeyframeController.js"
 
@@ -138,8 +139,8 @@ export class Animation<T extends AnimType> extends Class {
 		return this
 	}
 
-	protected toString() {
-		return String(this.firstKey())
+	toString(): Control {
+		return <Control>String(this.firstKey())
 	}
 
 	protected [util.inspect.custom]($: any, opts: any) {

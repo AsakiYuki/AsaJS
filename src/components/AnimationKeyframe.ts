@@ -9,6 +9,7 @@ import { defaultNamespace, RandomNamespace, RandomString } from "./Utils.js"
 import nodepath from "path"
 
 import util from "node:util"
+import { Control } from "../types/properties/value.js"
 
 const fileExt = config.compiler?.fileExtension
 	? config.compiler.fileExtension.startsWith(".")
@@ -77,7 +78,7 @@ export class AnimationKeyframe<T extends AnimType> extends Class {
 		}
 	}
 
-	protected toString() {
+	toString(): Control {
 		return `@${this.namespace}.${this.name}`
 	}
 

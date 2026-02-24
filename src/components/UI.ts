@@ -6,7 +6,14 @@ import { Operation } from "../types/enums/Operation.js"
 import { Renderer } from "../types/enums/Renderer.js"
 import { Type } from "../types/enums/Type.js"
 import { Properties } from "../types/properties/components.js"
-import { BindingItem, ButtonMapping, ModificationItem, VariableItem, Variables } from "../types/properties/value.js"
+import {
+	BindingItem,
+	ButtonMapping,
+	Control,
+	ModificationItem,
+	VariableItem,
+	Variables,
+} from "../types/properties/value.js"
 import { Animation } from "./Animation.js"
 import { AnimationKeyframe } from "./AnimationKeyframe.js"
 import { Class } from "./Class.js"
@@ -165,7 +172,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		return ui
 	}
 
-	protected toString() {
+	toString(): Control {
 		return `@${this.namespace}.${this.name}`
 	}
 

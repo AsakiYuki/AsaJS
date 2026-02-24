@@ -8,7 +8,7 @@ export interface Sprite {
 	uv_size?: AnimValue<Array2<number>>
 	texture_file_system?: Value<string>
 	nineslice_size?: AnimValue<Array2<number> | Array3<number> | Array4<number>>
-	tiled?: Value<boolean>
+	tiled?: Value<boolean | { x: number; y: number }>
 	tiled_scale?: Value<Array<number>>
 	clip_direction?: Value<string | ClipDirection>
 	clip_ratio?: Value<number>
