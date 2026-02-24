@@ -523,8 +523,8 @@ export function AsepriteFlipBookKeyframe(
 }
 
 // Quick Animation
-type Anim<T extends AnimType> = AnimationProperties<T> | number
-type AnimWithSmartAnim<T extends AnimType> = [SmartAnimation | Anim<T>, ...Anim<T>[]]
+export type AnimationByType<T extends AnimType> = AnimationProperties<T> | number
+export type AnimWithSmartAnim<T extends AnimType> = [SmartAnimation | AnimationByType<T>, ...AnimationByType<T>[]]
 
 export function OffsetAnimation(...keyframes: AnimWithSmartAnim<AnimType.OFFSET>) {
 	return new Animation(AnimType.OFFSET, ...keyframes)
