@@ -12,4 +12,7 @@ export interface Layout {
 	anchor_from?: Value<string | Anchor>
 	anchor_to?: Value<string | Anchor>
 	anchor?: Value<string | Anchor>
+	contained?: Value<boolean>
+	draggable?: Value<boolean>
+	follows_cursor?: Value<boolean>
 }

@@ -4,7 +4,7 @@ export interface ScrollView {
 	scrollbar_track_button?: Value<string>
 	scrollbar_touch_button?: Value<string>
 	scroll_speed?: Value<number>
-	gesture_control_enabled?: Value<number>
+	gesture_control_enabled?: Value<boolean>
 	always_handle_scrolling?: Value<boolean>
 	touch_mode?: Value<boolean>
 	scrollbar_box?: Value<string>

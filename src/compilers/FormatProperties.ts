@@ -43,6 +43,11 @@ export function FormatProperties(properties: any) {
 		delete properties.anchor
 	}
 
+	if (properties.fit_to_width) {
+		properties["$fit_to_width"] = properties.fit_to_width
+		delete properties.fit_to_width
+	}
+
 	if (Object.keys(property_bag).length) {
 		if (properties.property_bag) {
 			properties.property_bag = { ...property_bag, ...properties.property_bag }

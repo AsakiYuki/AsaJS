@@ -22,10 +22,4 @@ export interface Slider {
 	background_hover_control?: Value<string>
 	progress_control?: Value<string>
 	progress_hover_control?: Value<string>
-	slider_render_bar_background_color?: Value<Array3<number>>
-	slider_render_bar_progress_color?: Value<Array3<number>>
-	slider_render_bar_outline_color?: Value<Array3<number>>
-	slider_render_bar_background_hover_color?: Value<Array3<number>>
-	slider_render_bar_progress_hover_color?: Value<Array3<number>>
-	slider_render_bar_outline_hover_color?: Value<Array3<number>>
 }

@@ -16,7 +16,7 @@ export interface TooltipTrigger extends InputPanel, e.TooltipTrigger {}
 
 export interface Button extends InputPanel, e.Button {}
 export interface Toggle extends InputPanel, e.Toggle {}
-export interface Dropdown extends Toggle, e.DropdownName {}
+export interface Dropdown extends Toggle, e.Dropdown {}
 export interface SelectionWheel extends InputPanel, e.SelectionWheel {}
 export interface EditBox extends Button, e.EditBox {}
 
