@@ -22,6 +22,7 @@ import nodepath from "path"
 
 import util from "node:util"
 import { config, isNotObfuscate, uiBuildFolder } from "../compilers/Configuration.js"
+import { FactoryManager } from "./Factory.js"
 
 interface ExtendUI {
 	name: string
@@ -34,6 +35,13 @@ const fileExt = config.compiler?.fileExtension
 		? config.compiler.fileExtension
 		: `.${config.compiler.fileExtension}`
 	: ".json"
+
+type ChildInput<C extends UI<Type, Renderer | null>> = {
+	child: C
+	properties?: C extends UI<infer T, infer K> ? Partial<Properties<T, K>> : never
+	name?: string
+	callback?: (name: string, parent: UI<Type, Renderer | null>) => void
+}
 
 export class UI<T extends Type, K extends Renderer | null = null> extends Class {
 	readonly path: string
@@ -49,6 +57,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	protected readonly buttonMappings: ButtonMapping[] = []
 	protected readonly anims: (Animation<AnimType> | AnimationKeyframe<AnimType>)[] = []
 	protected readonly extendType?: Type
+	protected factory?: FactoryManager
 
 	protected properties: Properties<T, K> = <any>{}
 	protected bindCache = new Map<string, unknown>()
@@ -90,6 +99,11 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	 */
 	setProperties(properties: Properties<T, K>) {
 		this.properties = { ...this.properties, ...properties }
+		return this
+	}
+
+	setFactory(factory: FactoryManager) {
+		this.factory = factory
 		return this
 	}
 
@@ -149,6 +163,16 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		return this
 	}
 
+	addChilds<UIs extends readonly UI<Type, Renderer | null>[]>(...childs: { [K in keyof UIs]: ChildInput<UIs[K]> }) {
+		const childrenList = childs as unknown as ChildInput<UI<Type, Renderer | null>>[]
+
+		childrenList.forEach(({ child, properties, name, callback }) => {
+			this.addChild(child, properties, name, callback)
+		})
+
+		return this
+	}
+
 	addAnimations(...anims: (Animation<AnimType> | AnimationKeyframe<AnimType>)[]) {
 		this.anims.push(...anims)
 		return this
@@ -186,6 +210,7 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 		if (this.bindings.length) obj.bindings = this.bindings
 		if (this.variables.length) obj.variables = this.variables
 		if (this.buttonMappings.length) obj.button_mappings = this.buttonMappings
+		if (this.factory) obj.factory = this.factory
 
 		if (this.anims.length) obj.anims = this.anims.map(a => String(a))
 

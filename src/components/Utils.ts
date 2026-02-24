@@ -46,6 +46,7 @@ import {
 	isNotObfuscate,
 	namespaceCount,
 } from "../compilers/Configuration.js"
+import { FactoryManager } from "./Factory.js"
 
 type CompileBinding = `[${string}]`
 
@@ -305,6 +306,10 @@ export function Modify<T extends Namespace, K extends Element<T>>(namespace: T, 
 	;(MemoryModify[getPath] ||= {})[name] = modifyUI
 
 	return modifyUI
+}
+
+export function Factory(name: string) {
+	return new FactoryManager(name)
 }
 
 export function Panel(properties?: Panel, namespace?: string, name?: string, allowObfuscate?: boolean) {
