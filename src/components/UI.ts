@@ -71,13 +71,19 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	) {
 		super()
 
-		if (name === "namespace") {
+		if (name && !/^\p{L}+$/u.test(name)) {
+			throw new Error("Invalid name")
+		} else if (name === "namespace") {
 			console.error("The 'namespace' cannot be used as a name")
 			process.exit(1)
 		}
 
+		if (namespace && !/^\p{L}+$/u.test(namespace)) {
+			throw new Error("Invalid namespace")
+		}
+
 		if (isNotObfuscate || !(allowObfuscate ?? true)) {
-			this.name = name?.match(/^(\w|\/)+/)?.[0] || RandomString(16)
+			this.name = name || RandomString(16)
 			this.namespace = namespace || defaultNamespace || RandomNamespace()
 		} else {
 			this.name = RandomString(16)

@@ -154,6 +154,7 @@ export function ResolveBinding(cache: Map<string, unknown>, ...bindings: Binding
 
 export let defaultNamespace: string | null = null
 export function SetDefaultNamespace(input: string) {
+	if (!/\p{L}+/u.test(input)) throw new Error("Invalid namespace")
 	defaultNamespace = input
 }
 export function ClearDefaultNamespace() {
