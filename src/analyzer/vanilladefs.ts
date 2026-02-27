@@ -40452,6 +40452,50 @@ export const vanilladefs: VanillaDefs = {
             "file": "ui/hud_screen.json",
             "type": "stack_panel"
         },
+        "subtitle_direction_label": {
+            "file": "ui/hud_screen.json",
+            "type": "label"
+        },
+        "subtitle_grid_item": {
+            "file": "ui/hud_screen.json",
+            "type": "panel",
+            "children": [
+                "subtitle_background"
+            ]
+        },
+        "subtitle_grid_item/subtitle_background": {
+            "file": "ui/hud_screen.json",
+            "type": "image",
+            "children": [
+                "direction_left",
+                "subtitle_text",
+                "direction_right"
+            ]
+        },
+        "subtitle_grid_item/subtitle_background/direction_left": {
+            "file": "ui/hud_screen.json",
+            "type": "label",
+            "extend": {
+                "name": "subtitle_direction_label",
+                "namespace": "hud"
+            }
+        },
+        "subtitle_grid_item/subtitle_background/subtitle_text": {
+            "file": "ui/hud_screen.json",
+            "type": "label",
+            "extend": {
+                "name": "chat_label",
+                "namespace": "hud"
+            }
+        },
+        "subtitle_grid_item/subtitle_background/direction_right": {
+            "file": "ui/hud_screen.json",
+            "type": "label",
+            "extend": {
+                "name": "subtitle_direction_label",
+                "namespace": "hud"
+            }
+        },
         "subtitle_panel": {
             "file": "ui/hud_screen.json",
             "type": "panel",
@@ -51245,6 +51289,232 @@ export const vanilladefs: VanillaDefs = {
             "extend": {
                 "name": "minecraftTenLabel",
                 "namespace": "common"
+            }
+        }
+    },
+    "sdl_content_navigation": {
+        "content_navigation_factory": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel"
+        },
+        "inventory_nav_item_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel",
+            "children": [
+                "inventory_nav_item"
+            ]
+        },
+        "inventory_nav_item_panel/inventory_nav_item": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "image",
+            "children": [
+                "divider_stack_panel"
+            ]
+        },
+        "inventory_nav_item_panel/inventory_nav_item/divider_stack_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "children": [
+                "top_pad",
+                "nav_button",
+                "divider"
+            ]
+        },
+        "inventory_nav_item_panel/inventory_nav_item/divider_stack_panel/top_pad": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "inventory_nav_item_panel/inventory_nav_item/divider_stack_panel/nav_button": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "button",
+            "extend": {
+                "name": "category_panel_button",
+                "namespace": "sdl_content_navigation"
+            }
+        },
+        "inventory_nav_item_panel/inventory_nav_item/divider_stack_panel/divider": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "extend": {
+                "name": "divider_panel",
+                "namespace": "sdl_content_navigation"
+            }
+        },
+        "category_panel_button": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "button",
+            "extend": {
+                "name": "button",
+                "namespace": "common"
+            },
+            "children": [
+                "default",
+                "hover",
+                "pressed"
+            ]
+        },
+        "category_panel_button/default": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "extend": {
+                "name": "category_stack_panel",
+                "namespace": "sdl_content_navigation"
+            }
+        },
+        "category_panel_button/hover": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "extend": {
+                "name": "category_stack_panel",
+                "namespace": "sdl_content_navigation"
+            }
+        },
+        "category_panel_button/pressed": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "extend": {
+                "name": "category_stack_panel",
+                "namespace": "sdl_content_navigation"
+            }
+        },
+        "divider_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "children": [
+                "top_pad",
+                "divider"
+            ]
+        },
+        "divider_panel/top_pad": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "divider_panel/divider": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel",
+            "extend": {
+                "name": "horizontal_divider",
+                "namespace": "common"
+            }
+        },
+        "category_stack_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "children": [
+                "pad_1",
+                "text",
+                "fill_pad",
+                "icon",
+                "pad_2",
+                "number"
+            ]
+        },
+        "category_stack_panel/pad_1": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "category_stack_panel/text": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "unknown"
+        },
+        "category_stack_panel/fill_pad": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "category_stack_panel/icon": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "image"
+        },
+        "category_stack_panel/pad_2": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "category_stack_panel/number": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "label"
+        },
+        "light_redirect_button_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel",
+            "children": [
+                "light_redirect_button"
+            ]
+        },
+        "light_redirect_button_panel/light_redirect_button": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "button",
+            "extend": {
+                "name": "light_content_button",
+                "namespace": "common_buttons"
+            }
+        },
+        "sdl_button_no_click_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel",
+            "children": [
+                "sdl_button_no_click"
+            ]
+        },
+        "sdl_button_no_click_panel/sdl_button_no_click": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "button",
+            "extend": {
+                "name": "light_content_button",
+                "namespace": "common_buttons"
+            }
+        },
+        "no_click_button": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "stack_panel",
+            "children": [
+                "pad_1",
+                "text",
+                "fill_pad",
+                "icon_panel",
+                "pad_2"
+            ]
+        },
+        "no_click_button/pad_1": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "no_click_button/text": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "unknown"
+        },
+        "no_click_button/fill_pad": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "no_click_button/icon_panel": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel",
+            "children": [
+                "icon"
+            ]
+        },
+        "no_click_button/icon_panel/icon": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "image",
+            "extend": {
+                "name": "arrow_down",
+                "namespace": "sdl_content_navigation"
+            }
+        },
+        "no_click_button/pad_2": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "panel"
+        },
+        "arrow_down": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "image"
+        },
+        "section_header_no_color_binding": {
+            "file": "ui/marketplace_sdl/sdl_content_navigation.json",
+            "type": "label",
+            "extend": {
+                "name": "store_section_header_label",
+                "namespace": "common_store"
             }
         }
     },
@@ -99807,8 +100077,6 @@ export const vanilladefs: VanillaDefs = {
             "file": "ui/settings_sections/realms_world_section.json",
             "type": "stack_panel",
             "children": [
-                "new_edit_world_opt_in_panel",
-                "new_edit_world_opt_in_divider",
                 "option_info_label",
                 "hardcore_info_label",
                 "realm_name_edit",
@@ -99852,50 +100120,6 @@ export const vanilladefs: VanillaDefs = {
                 "club_info_label",
                 "manage_feed_button"
             ]
-        },
-        "panel_content/new_edit_world_opt_in_panel": {
-            "file": "ui/settings_sections/realms_world_section.json",
-            "type": "stack_panel",
-            "children": [
-                "panel_title",
-                "panel_text",
-                "opt_in_button"
-            ]
-        },
-        "panel_content/new_edit_world_opt_in_panel/panel_title": {
-            "file": "ui/settings_sections/realms_world_section.json",
-            "type": "panel",
-            "extend": {
-                "name": "option_group_label",
-                "namespace": "settings_common"
-            }
-        },
-        "panel_content/new_edit_world_opt_in_panel/panel_text": {
-            "file": "ui/settings_sections/realms_world_section.json",
-            "type": "panel",
-            "extend": {
-                "name": "option_group_label",
-                "namespace": "settings_common"
-            }
-        },
-        "panel_content/new_edit_world_opt_in_panel/opt_in_button": {
-            "file": "ui/settings_sections/realms_world_section.json",
-            "type": "button",
-            "extend": {
-                "name": "action_button",
-                "namespace": "settings_common"
-            }
-        },
-        "panel_content/new_edit_world_opt_in_divider": {
-            "file": "ui/settings_sections/realms_world_section.json",
-            "type": "panel",
-            "children": [
-                "section_divider"
-            ]
-        },
-        "panel_content/new_edit_world_opt_in_divider/section_divider": {
-            "file": "ui/settings_sections/realms_world_section.json",
-            "type": "image"
         },
         "panel_content/option_info_label": {
             "file": "ui/settings_sections/realms_world_section.json",
@@ -118553,11 +118777,7 @@ export const vanilladefs: VanillaDefs = {
         },
         "sdl_scrolling_content_stack/store_screen_layout_factory": {
             "file": "ui/store_data_driven_screen.json",
-            "type": "stack_panel",
-            "extend": {
-                "name": "store_section_factory",
-                "namespace": "common_store"
-            }
+            "type": "unknown"
         },
         "sdl_scrolling_content_stack/footer": {
             "file": "ui/store_data_driven_screen.json",
@@ -118717,12 +118937,31 @@ export const vanilladefs: VanillaDefs = {
         },
         "main_panel/main_panel_content": {
             "file": "ui/store_data_driven_screen.json",
+            "type": "stack_panel",
+            "children": [
+                "nav_panel",
+                "main_panel_because_screen_content_is_a_whiny_baby_and_cant_use_fill"
+            ]
+        },
+        "main_panel/main_panel_content/nav_panel": {
+            "file": "ui/store_data_driven_screen.json",
             "type": "panel",
             "children": [
                 "sdl_screen_content"
             ]
         },
-        "main_panel/main_panel_content/sdl_screen_content": {
+        "main_panel/main_panel_content/nav_panel/sdl_screen_content": {
+            "file": "ui/store_data_driven_screen.json",
+            "type": "unknown"
+        },
+        "main_panel/main_panel_content/main_panel_because_screen_content_is_a_whiny_baby_and_cant_use_fill": {
+            "file": "ui/store_data_driven_screen.json",
+            "type": "panel",
+            "children": [
+                "sdl_screen_content"
+            ]
+        },
+        "main_panel/main_panel_content/main_panel_because_screen_content_is_a_whiny_baby_and_cant_use_fill/sdl_screen_content": {
             "file": "ui/store_data_driven_screen.json",
             "type": "unknown"
         },

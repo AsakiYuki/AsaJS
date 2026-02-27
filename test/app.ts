@@ -8,4 +8,4 @@ panel.addChild(
 	}),
 )
 
-Modify("start", "start_screen_content").insertChild(panel)
+Modify("start", "start_screen_content").insertChild(panel).addBindings({})
