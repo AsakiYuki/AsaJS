@@ -1,0 +1,28 @@
+{
+	"name": "create-asajs",
+	"version": "4.1.14",
+	"description": "Create an AsaJS projects",
+	"bin": {
+		"create-asajs": "./dist/index.js"
+	},
+	"keywords": [
+		"Minecraft",
+		"JSON-UI"
+	],
+	"license": "GPL-3.0-only",
+	"author": "Asaki Yuki",
+	"type": "commonjs",
+	"main": "index.js",
+	"dependencies": {
+		"@inquirer/prompts": "^8.3.0",
+		"@types/node": "^25.3.3"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc -w",
+		"test": "bun src/index.ts"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	}
+}

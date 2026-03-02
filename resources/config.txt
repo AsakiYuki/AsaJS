@@ -1,0 +1,25 @@
+/**
+ * Configuration object for the AsaJS build process.
+ * @type {import('asajs/config.d.ts').Config}
+ */
+export const config = {
+	packinfo: {
+		name: "{projectName}",
+		description: "Create your Minecraft JSON-UI resource packs using JavaScript.",
+		version: [1, 0, 0],
+	},
+	compiler: {
+		enabled: {allowCompiler},
+		autoImport: {autoInstall},
+		autoEnable: {autoInstall},
+		importToPreview: {installToPreview},
+		obfuscateStringName: false,
+		allowRandomStringName: true,
+		forceRandomStringLength: 16,
+	},
+	ui_analyzer: {
+		enabled: false,
+		generate_path: "src/modify",
+		imports: [],
+	},
+}
