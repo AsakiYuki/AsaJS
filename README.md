@@ -18,16 +18,8 @@ Say goodbye to the tedious and repetitive nature of manual JSON editing. AsaJS s
 
 To use AsaJS, ensure you have **[Node.js](https://nodejs.org/en)** installed on your system.
 
-**Latest stable version:**
-
 ```bash
-npm install asajs
-```
-
-**For our nightly builds:**
-
-```
-npm install asajs@indev
+npx create-asajs
 ```
 
 ## 📖 "Hello World!" Example
