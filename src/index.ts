@@ -28,6 +28,7 @@ async function setup({
 	await Promise.all([
 		fs.mkdir(p.join(path, "src"), { recursive: true }),
 		fs.mkdir(p.join(path, "build"), { recursive: true }),
+		fs.mkdir(p.join(path, "custom"), { recursive: true }),
 	])
 
 	const mapping: Record<string, string | number | boolean> = {
