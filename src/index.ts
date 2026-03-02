@@ -48,6 +48,15 @@ async function setup({
 				description: "Create your Minecraft JSON-UI resource packs using JavaScript.",
 				type: "module",
 				main: "src/index.js",
+				scripts: useTypeScript
+					? {
+							build: "npx bun src/index.ts",
+							dev: "npx bun --watch src/index.ts",
+						}
+					: {
+							build: "node src/index.js",
+							dev: "node src/index.js",
+						},
 			},
 			null,
 			4,

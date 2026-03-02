@@ -1,6 +1,6 @@
 {
 	"name": "create-asajs",
-	"version": "4.1.16",
+	"version": "4.1.17",
 	"description": "Create an AsaJS projects",
 	"bin": {
 		"create-asajs": "./dist/index.js"
