@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { input, confirm } from "@inquirer/prompts"
 import fs from "fs/promises"
 import { spawnSync } from "child_process"

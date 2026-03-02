@@ -1,6 +1,6 @@
 {
 	"name": "create-asajs",
-	"version": "4.1.14",
+	"version": "4.1.16",
 	"description": "Create an AsaJS projects",
 	"bin": {
 		"create-asajs": "./dist/index.js"
@@ -21,6 +21,13 @@
 		"build": "tsc",
 		"dev": "tsc -w",
 		"test": "bun src/index.ts"
+	},
+	"files": [
+		"dist",
+		"resources"
+	],
+	"publishConfig": {
+		"access": "public"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
