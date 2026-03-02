@@ -71,17 +71,6 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 	) {
 		super()
 
-		if (name && !/^\p{L}+$/u.test(name)) {
-			throw new Error("Invalid name")
-		} else if (name === "namespace") {
-			console.error("The 'namespace' cannot be used as a name")
-			process.exit(1)
-		}
-
-		if (namespace && !/^\p{L}+$/u.test(namespace)) {
-			throw new Error("Invalid namespace")
-		}
-
 		if (isNotObfuscate || !(allowObfuscate ?? true)) {
 			this.name = name || RandomString(16)
 			this.namespace = namespace || defaultNamespace || RandomNamespace()
@@ -242,6 +231,8 @@ export class UI<T extends Type, K extends Renderer | null = null> extends Class 
 export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> extends UI<T, null> {
 	private isClearBinding: boolean = false
 	private isClearVariables: boolean = false
+	private isClearControls: boolean = false
+	private isClearAnims: boolean = false
 	private isClearButtonMappings: boolean = false
 
 	protected modifications: ModificationItem[] = []
@@ -250,13 +241,23 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 		super(undefined, name, namespace, path, false)
 	}
 
-	/**
-	 * Remove all bindings of this modify element
-	 * @returns
-	 */
-	clearBinding() {
-		this.isClearBinding = true
-		return this
+	clearArray(arrayName: ArrayName) {
+		switch (arrayName) {
+			case ArrayName.BINDINGS:
+				this.isClearBinding = true
+				return this
+			case ArrayName.CONTROLS:
+				this.isClearControls = true
+				return this
+			case ArrayName.BUTTON_MAPPINGS:
+				this.isClearButtonMappings = true
+				return this
+			case ArrayName.ANIMS:
+				this.isClearAnims = true
+				return this
+			default:
+				return arrayName satisfies never
+		}
 	}
 
 	/**
@@ -265,15 +266,6 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 	 */
 	clearVariables() {
 		this.isClearVariables = true
-		return this
-	}
-
-	/**
-	 * Remove all button mappings of this element
-	 * @returns
-	 */
-	clearButtonMappings() {
-		this.isClearButtonMappings = true
 		return this
 	}
 
@@ -459,10 +451,25 @@ export class ModifyUI<T extends Type = Type.PANEL, S extends string = string> ex
 		const obj = this.toJsonUI()
 
 		if (this.isClearBinding) obj.bindings = []
+		if (this.isClearControls) obj.controls = []
+		if (this.isClearAnims) obj.anims = []
 		if (this.isClearVariables) obj.variables = []
 		if (this.isClearButtonMappings) obj.button_mappings = []
 
-		if (this.modifications.length) obj.modifications = this.modifications
+		if (this.modifications.length) {
+			// const map = new Map<ArrayName, Map<string, unknown>>()
+
+			// this.modifications.forEach(mod => {
+			// 	const { operation, array_name, control_name, target, target_control, value, where } = mod
+
+			// 	switch (array_name) {
+			// 		case ArrayName.CONTROLS: {
+			// 		}
+			// 	}
+			// })
+
+			obj.modifications = this.modifications
+		}
 
 		return obj
 	}

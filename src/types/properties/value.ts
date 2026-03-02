@@ -77,6 +77,6 @@ export type ModificationItem = {
 	where?: BindingItem | object
 	target?: object
 	target_control?: string
-	value?: object | (object | BindingItem)[]
+	value?: object
 	operation?: Operation
 }

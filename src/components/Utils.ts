@@ -217,7 +217,7 @@ export function s(input: string) {
 	else {
 		if (rndMap.has(input)) return rndMap.get(input) as string
 		else {
-			const ret = RandomBindingString()
+			const ret = RandomString(16)
 			rndMap.set(input, ret)
 			return ret
 		}

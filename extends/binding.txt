@@ -665,7 +665,6 @@
 #item_storage_current_amount
 #item_world_template_count_and_label
 #item_world_template_count_visible
-#itzlipofutzli
 #join_and_download_everything
 #join_by_code_text_edit
 #joinable_realms_panel_visible
@@ -683,7 +682,6 @@
 #keyboard_show_full_keyboard_options
 #keyboard_show_full_keyboard_options_enabled
 #keyboard_show_standard_keyboard_options
-#kh8C
 #lan_network_world_item_grid_dimension
 #language_collapsed_collection_length
 #language_columns_collection_length

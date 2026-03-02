@@ -1,11 +1,11 @@
-import { Label, Modify, Panel } from ".."
+import { Anchor, Label, Modify } from ".."
 
-const panel = Panel()
+const label = Label({
+	text: "Hello World!",
+	anchor: Anchor.TOP_MIDDLE,
+	offset: [0, 5],
+	layer: 50,
+	shadow: true,
+})
 
-panel.addChild(
-	Label({
-		text: "Hello World",
-	}),
-)
-
-Modify("start", "start_screen_content").insertChild(panel).addBindings({})
+Modify("start", "start_screen_content").insertChild(label)

@@ -13,23 +13,13 @@ export const config = {
 		autoImport: true,
 		autoEnable: true,
 		importToPreview: false,
-		obfuscateStringName: true,
+		obfuscateStringName: false,
 		allowRandomStringName: true,
 		forceRandomStringLength: 16,
 	},
-	binding_functions: {
-		custom_abs: function (number) {
-			const randomAbs = RandomBindingString(16)
-
-			return {
-				generate_bindings: [
-					{
-						source_property_name: `[ abs(${number}) ]`,
-						target_property_name: randomAbs,
-					},
-				],
-				return_value: randomAbs,
-			}
-		},
+	ui_analyzer: {
+		enabled: false,
+		generate_path: "src/modify",
+		imports: [],
 	},
 }
