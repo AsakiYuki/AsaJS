@@ -36,10 +36,12 @@ export abstract class UIInit<T extends Type, R extends Renderer | null = null> {
 
 	setProperties(properties: Properties<T, R>) {
 		Object.assign(this.properties, properties)
+		return this
 	}
 
 	setFactory(factory: FactoryManager) {
 		this.factory = factory
+		return this
 	}
 
 	addBindings(...bindings: BindingItem[]) {
