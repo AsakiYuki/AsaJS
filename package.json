@@ -1,10 +1,13 @@
 {
 	"name": "asajs",
-	"version": "4.2.0",
+	"version": "5.0.0",
 	"description": "Create your Minecraft JSON-UI resource packs using JavaScript",
 	"keywords": [
 		"Minecraft",
-		"JSON-UI"
+		"Bedrock",
+		"MCBE",
+		"Addons",
+		"Add-ons"
 	],
 	"homepage": "https://github.com/asakiyuki/asajs",
 	"bugs": {
@@ -21,16 +24,7 @@
 	"types": "dist/types/index.d.ts",
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsc --watch",
-		"test": "bun test/app.ts",
-		"prefetch": "bun scripts/prefetch",
-		"vanilla:defs": "bun scripts/vanilladefs",
-		"vanilla:paths-optimize": "bun scripts/paths-optimize",
-		"gen:enums": "bun scripts/enum",
-		"gen:items": "bun scripts/items",
-		"gen:autocomplete": "bun scripts/autocomplete-build",
-		"full-build": "bun run prefetch;\nbun run vanilla:defs;\nbun run gen:enums;\nbun run gen:items;\nbun run gen:autocomplete;\nbun run vanilla:paths-optimize;\nbun run build",
-		"full-build-preview": "bun run prefetch --preview;\nbun run vanilla:defs;\nbun run gen:enums;\nbun run gen:items --preview;\nbun run gen:autocomplete;\nbun run vanilla:paths-optimize;\nbun run build"
+		"dev": "tsc --watch"
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",

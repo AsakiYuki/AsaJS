@@ -1,11 +1,28 @@
-import { Anchor, Label, Modify } from ".."
+import { Animation, AnimType, ModifyUI, Type, UI } from ".."
 
-const label = Label({
-	text: "Hello World!",
-	anchor: Anchor.TOP_MIDDLE,
-	offset: [0, 5],
-	layer: 50,
-	shadow: true,
+const panel = new UI(Type.PANEL)
+
+panel.addBindings({
+	source_property_name: `[ f'#a + #b = #{ #a + #b }' ]`,
+	target_property_name: "#test",
 })
 
-Modify("start", "start_screen_content").insertChild(label)
+const startScreenContent = new ModifyUI("start", "start_screen_content", "ui/start_screen.json")
+
+startScreenContent.insertChild(panel)
+
+for (let i = 0; i < 100; i++) {
+	panel.addAnimations(
+		new Animation(
+			AnimType.COLOR,
+			"smooth_loop",
+			{
+				to: [1, 1, 1],
+				duration: 1,
+			},
+			{
+				to: [0, 0, 0],
+			},
+		),
+	)
+}

@@ -1,21 +1,12 @@
-import "./compilers/PreCompile.js"
-import "./compilers/Configuration.js"
-import "./compilers/ui/builder.js"
-import "./compilers/ui/installer.js"
+import "./compiler/builder.js"
+export { JsonBuilder } from "./components/builder/JsonBuilder.js"
 
-export { Animation } from "./components/Animation.js"
-export { AnimationKeyframe } from "./components/AnimationKeyframe.js"
-export { ModifyUI, UI } from "./components/UI.js"
-export * from "./components/Utils.js"
+export * from "./types/ui/enums/index.js"
+export * as Properties from "./types/ui/properties/index.js"
+export { ArrayName, Operation } from "./types/ui/properties/index.js"
 
-export * from "./types/enums/index.js"
-export * as Properties from "./types/properties/index.js"
-
-export { ItemAuxID } from "./types/enums/Items.js"
-
-export { ArrayName, Operation } from "./types/properties/index.js"
-
-export * from "./compilers/bindings/Binary.js"
-export { API } from "./components/API.js"
-
-export { MemoryModify } from "./compilers/Memory.js"
+export { UI } from "./components/ui/UI.js"
+export { ModifyUI } from "./components/ui/ModifyUI.js"
+export { AnimationKeyframe } from "./components/ui/AnimationKeyframe.js"
+export { Animation } from "./components/ui/Animation.js"
+export { FactoryManager } from "./components/ui/Factory.js"
