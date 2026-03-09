@@ -9,7 +9,7 @@ process.on("beforeExit", async () => {
 		isFirstRun = false
 
 		await Promise.all(
-			Cache.get<string[]>("build_files").map(async file => {
+			(Cache.get<string[]>("build_files") || []).map(async file => {
 				await fs.rm(path.resolve(file)).catch(() => {})
 			}) || [],
 		).then(v => {

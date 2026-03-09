@@ -11,7 +11,7 @@ export class Cache {
 		this.cache[key] = value
 	}
 
-	static get<T>(key: string): T {
+	static get<T>(key: string): undefined | T {
 		return this.cache[key]
 	}
 
