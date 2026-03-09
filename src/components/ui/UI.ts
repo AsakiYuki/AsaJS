@@ -13,7 +13,7 @@ export class UI<T extends Type, R extends Renderer | null = null> extends UIInit
 		name?: string,
 		namespace?: string,
 	) {
-		super((name ||= GetRandomString()), path.join("asajs", (namespace ||= GetRandomNamespace())))
+		super((name ||= GetRandomString()), path.join("ui", "build", (namespace ||= GetRandomNamespace())))
 		GetUIStorage(namespace, this.file + ".json").add(name, this)
 		this.namespace = namespace
 	}

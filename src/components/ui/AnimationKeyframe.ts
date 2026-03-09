@@ -14,7 +14,7 @@ export class AnimationKeyframe<T extends AnimType> {
 	) {
 		this.name ||= GetRandomString()
 		this.namespace ||= GetRandomNamespace()
-		GetUIStorage(this.namespace, path.join("asajs", this.namespace + ".json")).add(this.name, this)
+		GetUIStorage(this.namespace, path.join("ui", "build", this.namespace + ".json")).add(this.name, this)
 	}
 
 	setNext(keyframe: AnimationKeyframe<AnimType>) {
