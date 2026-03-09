@@ -10,3 +10,8 @@ export { ModifyUI } from "./components/ui/ModifyUI.js"
 export { AnimationKeyframe } from "./components/ui/AnimationKeyframe.js"
 export { Animation } from "./components/ui/Animation.js"
 export { FactoryManager } from "./components/ui/Factory.js"
+
+export * from "./utils/Utils.js"
+export * from "./utils/FastUI.js"
+export * from "./utils/QuickAnim.js"
+export * from "./utils/Random.js"

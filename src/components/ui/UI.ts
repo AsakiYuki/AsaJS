@@ -4,6 +4,7 @@ import { Type } from "../../types/ui/enums/Type.js"
 import { GetRandomNamespace, GetRandomString } from "../../utils/Random.js"
 import { UIInit } from "./UIInit.js"
 import { GetUIStorage } from "../../compiler/ui/uistorage.js"
+import { defaultNamespace } from "../../utils/Utils.js"
 
 export class UI<T extends Type, R extends Renderer | null = null> extends UIInit<T, R> {
 	protected readonly namespace: string
@@ -13,7 +14,10 @@ export class UI<T extends Type, R extends Renderer | null = null> extends UIInit
 		name?: string,
 		namespace?: string,
 	) {
-		super((name ||= GetRandomString()), path.join("ui", "build", (namespace ||= GetRandomNamespace())))
+		super(
+			(name ||= GetRandomString()),
+			path.join("ui", "build", (namespace ||= defaultNamespace || GetRandomNamespace())),
+		)
 		GetUIStorage(namespace, this.file + ".json").add(name, this)
 		this.namespace = namespace
 	}

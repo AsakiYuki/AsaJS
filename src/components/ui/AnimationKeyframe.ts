@@ -4,6 +4,7 @@ import { GetRandomNamespace, GetRandomString } from "../../utils/Random.js"
 import { GetUIStorage } from "../../compiler/ui/uistorage.js"
 import { KeyframeAnimationProperties } from "../../types/ui/properties/element/Animation.js"
 import { FormatAnimationProperties } from "../../compiler/properties.js"
+import { defaultNamespace } from "../../utils/Utils.js"
 
 export class AnimationKeyframe<T extends AnimType> {
 	constructor(
@@ -13,7 +14,7 @@ export class AnimationKeyframe<T extends AnimType> {
 		protected readonly namespace?: string,
 	) {
 		this.name ||= GetRandomString()
-		this.namespace ||= GetRandomNamespace()
+		this.namespace ||= defaultNamespace || GetRandomNamespace()
 		GetUIStorage(this.namespace, path.join("ui", "build", this.namespace + ".json")).add(this.name, this)
 	}
 
