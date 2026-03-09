@@ -1,4 +1,5 @@
 import { InitStorage, storage } from "./initstorate.js"
+import { UIDefs } from "./uidefs.js"
 
 export function GetUIStorage(namespace: string, file: string): UIStorage {
 	const $ = storage.get(file)
@@ -23,6 +24,7 @@ class UIStorage extends InitStorage {
 		file: string,
 	) {
 		super(file)
+		UIDefs.getInstance().add(file)
 	}
 
 	public toJSON() {

@@ -24,7 +24,8 @@
 	"types": "dist/types/index.d.ts",
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsc --watch"
+		"dev": "tsc --watch",
+		"test": "bun test/app.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^25.0.3",
