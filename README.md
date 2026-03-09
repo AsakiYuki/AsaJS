@@ -2,7 +2,7 @@
 <img src="./resources/logo.png" />
 
 <h2 align="center">
-    <a href="https://asajs.asakiyuki.com/">AsaJS</a> - The <a href="https://www.minecraft.net/en-us">Minecraft: Bedrock Edition</a> JSON-UI Framework
+    <a href="https://asajs.asakiyuki.com/">AsaJS</a> - The <a href="https://www.minecraft.net/en-us">Minecraft: Bedrock Edition</a> Add-ons Framework
 </h2>
     
 [![asajs version](https://img.shields.io/npm/v/asajs.svg?style=for-the-badge&labelColor=000000)](https://www.npmjs.com/package/asajs)
@@ -10,9 +10,9 @@
 [![asajs downloads](https://img.shields.io/npm/dm/asajs.svg?style=for-the-badge&labelColor=000000)](https://www.npmjs.com/package/asajs)
 </div>
 
-**AsaJS** is a NodeJS library designed to empower developers to create **JSON-UI** packages for Minecraft: Bedrock Edition using **JavaScript** or **TypeScript**.
+**AsaJS** is a NodeJS library designed to empower developers to create **Add-ons** for Minecraft: Bedrock Edition using **JavaScript** or **TypeScript**.
 
-Say goodbye to the tedious and repetitive nature of manual JSON editing. AsaJS streamlines your workflow by bringing the programmatic flexibility to Minecraft UI development.
+Say goodbye to the tedious and repetitive nature of manual JSON editing. AsaJS streamlines your workflow by bringing the programmatic flexibility to Minecraft Add-ons development.
 
 ## 🛠 Installation
 
