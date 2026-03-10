@@ -3,4 +3,3 @@ dist
 cache
 node_modules
 .tsbuildinfo
-asajs.config.js
