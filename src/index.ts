@@ -15,3 +15,5 @@ export * from "./utils/Utils.js"
 export * from "./utils/FastUI.js"
 export * from "./utils/QuickAnim.js"
 export * from "./utils/Random.js"
+
+export { Manifest } from "./components/builder/Manifest.js"

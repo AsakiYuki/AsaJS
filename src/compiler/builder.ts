@@ -22,7 +22,7 @@ process.on("beforeExit", async () => {
 			"build_files",
 			await Promise.all(
 				storage.entries().map(async ([file, builder]) => {
-					const fullpath = path.resolve(file)
+					const fullpath = path.resolve(path.join("build", file))
 					const dirname = path.dirname(fullpath)
 					await fs.stat(dirname).catch(async () => await fs.mkdir(dirname, { recursive: true }))
 					await fs.writeFile(fullpath, builder.build())

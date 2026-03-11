@@ -12,7 +12,7 @@ export abstract class InitStorage extends JsonBuilder {
 	private uiMap = new Map<string, UIInit<Type, Renderer | null> | AnimationKeyframe<AnimType>>()
 
 	constructor(public file: string) {
-		file = path.join("resoucepack", file)
+		file = path.join("resourcepack", file)
 		super(file)
 	}
 
