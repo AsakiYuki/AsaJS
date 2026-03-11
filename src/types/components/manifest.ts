@@ -24,28 +24,27 @@ export enum ModuleLanguage {
 export type ModuleProductType = "addon"
 export type MetadataGenerateWith = Record<string, Version[]>
 
-export enum DependencieModuleName {
-	COMMON = "@minecraft/common",
-	DEBUG_UTILITIES = "@minecraft/debug-utilities",
-	SERVER = "@minecraft/server",
-	SERVER_UI = "@minecraft/server-ui",
-	SERVER_GAMETEST = "@minecraft/server-gametest",
-	SERVER_NET = "@minecraft/server-net",
-	SERVER_ADMIN = "@minecraft/server-admin",
-	SERVER_EDITOR_BINDINGS = "@minecraft/server-editor-bindings",
-	SERVER_EDITOR = "@minecraft/server-editor",
-}
+export type DependencieModuleName =
+	| "@minecraft/common"
+	| "@minecraft/debug-utilities"
+	| "@minecraft/server"
+	| "@minecraft/server-ui"
+	| "@minecraft/server-gametest"
+	| "@minecraft/server-net"
+	| "@minecraft/server-admin"
+	| "@minecraft/server-editor-bindings"
+	| "@minecraft/server-editor"
 
 export const DependencieModuleUUID = {
-	[DependencieModuleName.COMMON]: "77ec12b4-1b2b-4c98-8d34-d1cd63f849d5",
-	[DependencieModuleName.DEBUG_UTILITIES]: "1796ea86-0daf-4409-99ee-fd6467cf1203",
-	[DependencieModuleName.SERVER]: "b26a4d4c-afdf-4690-88f8-931846312678",
-	[DependencieModuleName.SERVER_UI]: "2bd50a27-ab5f-4f40-a596-3641627c635e",
-	[DependencieModuleName.SERVER_GAMETEST]: "6f4b6893-1bb6-42fd-b458-7fa3d0c89616",
-	[DependencieModuleName.SERVER_NET]: "777b1798-13a6-401c-9cba-0cf17e31a81b",
-	[DependencieModuleName.SERVER_ADMIN]: "53d7f2bf-bf9c-49c4-ad1f-7c803d947920",
-	[DependencieModuleName.SERVER_EDITOR_BINDINGS]: "8518d9c7-a1f5-4bf3-acc7-78e87df595fc",
-	[DependencieModuleName.SERVER_EDITOR]: "1d565354-296d-11ed-a261-0242ac120002",
+	"@minecraft/common": "77ec12b4-1b2b-4c98-8d34-d1cd63f849d5",
+	"@minecraft/debug-utilities": "1796ea86-0daf-4409-99ee-fd6467cf1203",
+	"@minecraft/server": "b26a4d4c-afdf-4690-88f8-931846312678",
+	"@minecraft/server-ui": "2bd50a27-ab5f-4f40-a596-3641627c635e",
+	"@minecraft/server-gametest": "6f4b6893-1bb6-42fd-b458-7fa3d0c89616",
+	"@minecraft/server-net": "777b1798-13a6-401c-9cba-0cf17e31a81b",
+	"@minecraft/server-admin": "53d7f2bf-bf9c-49c4-ad1f-7c803d947920",
+	"@minecraft/server-editor-bindings": "8518d9c7-a1f5-4bf3-acc7-78e87df595fc",
+	"@minecraft/server-editor": "1d565354-296d-11ed-a261-0242ac120002",
 } satisfies Record<DependencieModuleName, UUID>
 
 export interface Header {
@@ -68,10 +67,10 @@ export interface Module {
 	language?: ModuleLanguage
 }
 
-export interface Dependencie<T extends DependencieModuleName = DependencieModuleName> {
-	module_name: T
-	uuid: (typeof DependencieModuleUUID)[T]
+export interface Dependencie {
+	module_name: DependencieModuleName
 	version: Version
+	uuid?: UUID
 }
 
 export interface Capabilitie {

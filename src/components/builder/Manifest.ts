@@ -4,6 +4,7 @@ import { JsonBuilder } from "./JsonBuilder.js"
 import {
 	Capabilitie,
 	Dependencie,
+	DependencieModuleUUID,
 	FormatVersion,
 	Header,
 	ManifestObject,
@@ -35,7 +36,12 @@ export class Manifest extends JsonBuilder {
 	}
 
 	public addDependencies(...dependencies: Dependencie[]) {
-		this.dependencies.push(...dependencies)
+		this.dependencies.push(
+			...dependencies.map(d => {
+				if (!d.uuid) d.uuid = DependencieModuleUUID[d.module_name]
+				return d
+			}),
+		)
 		return this
 	}
 
